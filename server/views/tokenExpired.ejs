@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reset Link Expired</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <div class="form-container fade-in" style="text-align: center">
+        <div
+          class="icon"
+          style="font-size: 3rem; margin-bottom: var(--space-4)"
+        >
+          ⏳
+        </div>
+        <h1 class="form-title">Reset Link Expired</h1>
+        <p style="color: var(--gray-600); margin-bottom: var(--space-6)">
+          The password reset link is invalid or has expired. Please request a
+          new one.
+        </p>
+        <a href="<%= process.env.CLIENT_URL %>" class="btn btn-primary"
+          >Back to Home</a
+        >
+      </div>
+    </div>
+  </body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Link Expired - Mentora</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <div class="message-card message-warning fade-in">
+        <div class="icon icon-warning">⏰</div>
+
+        <h1 class="brand-title">Mentora</h1>
+
+        <h2 class="page-title text-warning">Link Expired</h2>
+
+        <p class="subtitle">
+          The verification or reset link you clicked has expired or is invalid.
+          Don't worry, we can send you a new one! 🔄
+        </p>
+
+        <div style="margin: 2rem 0">
+          <div
+            style="
+              background: var(--warning-50);
+              padding: 1.5rem;
+              border-radius: var(--radius-lg);
+              margin-bottom: 2rem;
+            "
+          >
+            <h3
+              style="
+                color: var(--warning-700);
+                margin-bottom: 1rem;
+                font-size: 1.125rem;
+              "
+            >
+              🔗 What happened?
+            </h3>
+            <ul
+              style="
+                text-align: left;
+                color: var(--warning-600);
+                line-height: 1.8;
+              "
+            >
+              <li>
+                ⏱️ The link may have expired (usually valid for 15-30 minutes)
+              </li>
+              <li>🔄 You may have already used this link</li>
+              <li>📧 The link might have been corrupted in your email</li>
+              <li>🔒 This is a security measure to protect your account</li>
+            </ul>
+          </div>
+        </div>
+
+        <div
+          style="
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+          "
+        >
+          <a
+            href="<%= process.env.CLIENT_URL %>/forgot-password"
+            class="btn btn-primary"
+          >
+            📧 Request New Link
+          </a>
+          <a href="<%= process.env.CLIENT_URL %>/login" class="btn btn-success">
+            🔐 Back to Login
+          </a>
+        </div>
+
+        <div
+          style="
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--gray-200);
+          "
+        >
+          <p style="font-size: 0.875rem; color: var(--gray-500)">
+            Need help? Contact our support team at
+            <a href="mailto:support@mentora.com" class="link"
+              >support@mentora.com</a
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mentora Server - Welcome</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <div class="content-card fade-in">
+        <div
+          class="icon"
+          style="font-size: 4rem; margin-bottom: var(--space-6)"
+        >
+          🎓
+        </div>
+
+        <h1 class="brand-title">Mentora</h1>
+
+        <h2 class="page-title">Welcome to Mentora Server</h2>
+
+        <p class="subtitle">
+          🚀 The backend API is running successfully! This server powers the
+          Mentora learning management system with secure authentication, course
+          management, live sessions, and payment processing.
+        </p>
+
+        <div style="margin: 2rem 0">
+          <div
+            style="
+              background: var(--primary-50);
+              padding: 1.5rem;
+              border-radius: var(--radius-lg);
+              margin-bottom: 2rem;
+            "
+          >
+            <h3
+              style="
+                color: var(--primary-700);
+                margin-bottom: 1rem;
+                font-size: 1.125rem;
+              "
+            >
+              🌟 Server Features
+            </h3>
+            <ul
+              style="
+                text-align: left;
+                color: var(--primary-600);
+                line-height: 1.8;
+              "
+            >
+              <li>🔐 Secure JWT Authentication</li>
+              <li>📚 Course & Content Management</li>
+              <li>🎥 Live Session Integration (Zoom)</li>
+              <li>💳 Payment Processing (Stripe/PayPal)</li>
+              <li>📊 Analytics & Reporting</li>
+              <li>📧 Email Notifications</li>
+            </ul>
+          </div>
+        </div>
+
+        <div
+          style="
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+          "
+        >
+          <a href="/api-docs" class="btn btn-primary"> 📖 API Documentation </a>
+          <a href="http://localhost:5173" class="btn btn-success">
+            🌐 Open Application
+          </a>
+        </div>
+
+        <div
+          style="
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--gray-200);
+          "
+        >
+          <p style="font-size: 0.875rem; color: var(--gray-500)">
+            Server Status:
+            <span style="color: var(--success-600); font-weight: 600"
+              >🟢 Online</span
+            >
+            | Version: <strong>1.0.0</strong> | Environment:
+            <strong>Development</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

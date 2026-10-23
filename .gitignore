@@ -1,0 +1,41 @@
+# Node modules
+node_modules/
+
+# seeders
+/seeders
+
+# Vite build output
+/dist
+
+# Dependency directories
+/.vite
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Editor and IDE files
+.vscode/
+.idea/
+
+# Build directories (for some IDEs)
+/build/
+
+# npm package lock and yarn lock
+package-lock.json
+yarn.lock
+
+# Ignore study and temp folders
+study/
+temp/

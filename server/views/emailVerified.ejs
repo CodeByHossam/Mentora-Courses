@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Email Verified - Mentora</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <div class="message-card message-success fade-in">
+        <div class="icon icon-success">✅</div>
+
+        <h1 class="brand-title">Mentora</h1>
+
+        <h2 class="page-title text-success">Email Successfully Verified!</h2>
+
+        <p class="subtitle">
+          🎉 Congratulations! Your email address has been verified successfully.
+          You can now access all features of your Mentora account.
+        </p>
+
+        <div style="margin: 2rem 0">
+          <div
+            style="
+              background: var(--success-50);
+              padding: 1.5rem;
+              border-radius: var(--radius-lg);
+              margin-bottom: 2rem;
+            "
+          >
+            <h3
+              style="
+                color: var(--success-700);
+                margin-bottom: 1rem;
+                font-size: 1.125rem;
+              "
+            >
+              🚀 What's Next?
+            </h3>
+            <ul
+              style="
+                text-align: left;
+                color: var(--success-600);
+                line-height: 1.8;
+              "
+            >
+              <li>📚 Browse and enroll in courses</li>
+              <li>
+                👨‍🏫 Create and manage your own courses (if you're an instructor)
+              </li>
+              <li>💬 Join live sessions and discussions</li>
+              <li>📊 Track your learning progress</li>
+            </ul>
+          </div>
+        </div>
+
+        <div
+          style="
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+          "
+        >
+          <a href="<%= process.env.CLIENT_URL %>/login" class="btn btn-primary">
+            🔐 Login to Your Account
+          </a>
+          <a href="<%= process.env.CLIENT_URL %>" class="btn btn-success">
+            🏠 Go to Homepage
+          </a>
+        </div>
+
+        <div
+          style="
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--gray-200);
+          "
+        >
+          <p style="font-size: 0.875rem; color: var(--gray-500)">
+            Need help? Contact our support team at
+            <a href="mailto:support@mentora.com" class="link"
+              >support@mentora.com</a
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

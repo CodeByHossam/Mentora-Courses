@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page Not Found - Mentora</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <div class="message-card message-warning fade-in">
+        <div class="icon icon-warning">🔍</div>
+
+        <h1 class="brand-title">Mentora</h1>
+
+        <h2 class="page-title text-warning">404 - Page Not Found</h2>
+
+        <p class="subtitle">
+          Oops! The page you're looking for seems to have wandered off. Don't
+          worry, even the best explorers sometimes take a wrong turn! 🗺️
+        </p>
+
+        <div style="margin: 2rem 0">
+          <div
+            style="
+              background: var(--warning-50);
+              padding: 1.5rem;
+              border-radius: var(--radius-lg);
+              margin-bottom: 2rem;
+            "
+          >
+            <h3
+              style="
+                color: var(--warning-700);
+                margin-bottom: 1rem;
+                font-size: 1.125rem;
+              "
+            >
+              🧭 Let's get you back on track:
+            </h3>
+            <ul
+              style="
+                text-align: left;
+                color: var(--warning-600);
+                line-height: 1.8;
+              "
+            >
+              <li>🏠 Return to the homepage</li>
+              <li>📚 Browse our course catalog</li>
+              <li>🔍 Use the search feature</li>
+              <li>📞 Contact our support team</li>
+            </ul>
+          </div>
+        </div>
+
+        <div
+          style="
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+          "
+        >
+          <a href="<%= process.env.CLIENT_URL %>" class="btn btn-primary">
+            🏠 Go Home
+          </a>
+          <a
+            href="<%= process.env.CLIENT_URL %>/courses"
+            class="btn btn-success"
+          >
+            📚 Browse Courses
+          </a>
+        </div>
+
+        <div
+          style="
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--gray-200);
+          "
+        >
+          <p style="font-size: 0.875rem; color: var(--gray-500)">
+            Still lost? Our support team is here to help at
+            <a href="mailto:support@mentora.com" class="link"
+              >support@mentora.com</a
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

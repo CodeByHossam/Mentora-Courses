@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API Documentation - Mentora</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <style>
+      .api-section {
+        background: white;
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-md);
+        padding: var(--space-6);
+        margin-bottom: var(--space-6);
+        border-left: 4px solid var(--primary-500);
+      }
+      .endpoint {
+        background: var(--gray-50);
+        padding: var(--space-4);
+        border-radius: var(--radius-md);
+        margin: var(--space-3) 0;
+        font-family: "Courier New", monospace;
+      }
+      .method {
+        display: inline-block;
+        padding: var(--space-1) var(--space-3);
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        font-size: 0.75rem;
+        margin-right: var(--space-2);
+      }
+      .method-get {
+        background: var(--success-100);
+        color: var(--success-700);
+      }
+      .method-post {
+        background: var(--primary-100);
+        color: var(--primary-700);
+      }
+      .method-put {
+        background: var(--warning-100);
+        color: var(--warning-700);
+      }
+      .method-delete {
+        background: var(--error-100);
+        color: var(--error-700);
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      style="
+        background: linear-gradient(
+          135deg,
+          var(--primary-50) 0%,
+          var(--gray-50) 100%
+        );
+        min-height: 100vh;
+        padding: var(--space-8);
+      "
+    >
+      <div class="container">
+        <div style="text-align: center; margin-bottom: var(--space-12)">
+          <h1 class="brand-title">Mentora API</h1>
+          <p class="subtitle">
+            🚀 Comprehensive API documentation for developers building with
+            Mentora
+          </p>
+        </div>
+
+        <div class="api-section fade-in">
+          <h2 style="color: var(--primary-700); margin-bottom: var(--space-4)">
+            🔐 Authentication Endpoints
+          </h2>
+          <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <strong>/api/auth/register</strong> - Register a new user
+          </div>
+          <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <strong>/api/auth/login</strong> - User login
+          </div>
+          <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <strong>/api/auth/refresh</strong> - Refresh access token
+          </div>
+          <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <strong>/api/auth/me</strong> - Get current user profile
+          </div>
+          <div class="endpoint">
+            <span class="method method-put">PUT</span>
+            <strong>/api/auth/profile</strong> - Update user profile
+          </div>
+          <div class="endpoint">
+            <span class="method method-put">PUT</span>
+            <strong>/api/auth/payment-details</strong> - Update payment
+            information
+          </div>
+        </div>
+
+        <div class="api-section fade-in">
+          <h2 style="color: var(--success-700); margin-bottom: var(--space-4)">
+            📚 Course Management
+          </h2>
+          <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <strong>/api/courses</strong> - Get all courses
+          </div>
+          <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <strong>/api/courses</strong> - Create new course
+          </div>
+          <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <strong>/api/courses/:id</strong> - Get course by ID
+          </div>
+          <div class="endpoint">
+            <span class="method method-put">PUT</span>
+            <strong>/api/courses/:id</strong> - Update course
+          </div>
+          <div class="endpoint">
+            <span class="method method-delete">DELETE</span>
+            <strong>/api/courses/:id</strong> - Delete course
+          </div>
+        </div>
+
+        <div class="api-section fade-in">
+          <h2 style="color: var(--warning-700); margin-bottom: var(--space-4)">
+            🎥 Live Sessions
+          </h2>
+          <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <strong>/api/live-sessions</strong> - Get live sessions
+          </div>
+          <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <strong>/api/live-sessions</strong> - Schedule new session
+          </div>
+          <div class="endpoint">
+            <span class="method method-put">PUT</span>
+            <strong>/api/live-sessions/:id/start</strong> - Start live session
+          </div>
+          <div class="endpoint">
+            <span class="method method-put">PUT</span>
+            <strong>/api/live-sessions/:id/end</strong> - End live session
+          </div>
+        </div>
+
+        <div class="api-section fade-in">
+          <h2 style="color: var(--error-700); margin-bottom: var(--space-4)">
+            💳 Payment System
+          </h2>
+          <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <strong>/api/payments/user/bills</strong> - Get user bills and
+            payments
+          </div>
+          <div class="endpoint">
+            <span class="method method-post">POST</span>
+            <strong>/api/payments/process</strong> - Process payment
+          </div>
+          <div class="endpoint">
+            <span class="method method-get">GET</span>
+            <strong>/api/payments/reports</strong> - Get payment reports (Admin)
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: var(--space-12)">
+          <div
+            style="
+              background: white;
+              padding: var(--space-8);
+              border-radius: var(--radius-2xl);
+              box-shadow: var(--shadow-lg);
+            "
+          >
+            <h3 style="color: var(--gray-800); margin-bottom: var(--space-4)">
+              🛠️ Developer Resources
+            </h3>
+            <div
+              style="
+                display: flex;
+                gap: var(--space-4);
+                justify-content: center;
+                flex-wrap: wrap;
+              "
+            >
+              <a href="<%= process.env.CLIENT_URL %>" class="btn btn-primary">
+                🏠 Main Application
+              </a>
+              <a href="mailto:developers@mentora.com" class="btn btn-success">
+                📧 Developer Support
+              </a>
+            </div>
+            <p
+              style="
+                margin-top: var(--space-4);
+                color: var(--gray-600);
+                font-size: 0.875rem;
+              "
+            >
+              Base URL:
+              <code
+                style="
+                  background: var(--gray-100);
+                  padding: var(--space-1);
+                  border-radius: var(--radius-sm);
+                "
+                ><%= process.env.SERVER_URL || 'http://localhost:5000' %></code
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

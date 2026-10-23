@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Server Error - Mentora</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <div class="message-card message-error fade-in">
+        <div class="icon icon-error">⚠️</div>
+
+        <h1 class="brand-title">Mentora</h1>
+
+        <h2 class="page-title text-error">500 - Server Error</h2>
+
+        <p class="subtitle">
+          Whoops! Something went wrong on our end. Our team of digital mechanics
+          is already working to fix this issue. 🔧
+        </p>
+
+        <div style="margin: 2rem 0">
+          <div
+            style="
+              background: var(--error-50);
+              padding: 1.5rem;
+              border-radius: var(--radius-lg);
+              margin-bottom: 2rem;
+            "
+          >
+            <h3
+              style="
+                color: var(--error-700);
+                margin-bottom: 1rem;
+                font-size: 1.125rem;
+              "
+            >
+              🛠️ What you can do:
+            </h3>
+            <ul
+              style="
+                text-align: left;
+                color: var(--error-600);
+                line-height: 1.8;
+              "
+            >
+              <li>🔄 Refresh the page in a few minutes</li>
+              <li>🏠 Return to the homepage</li>
+              <li>📞 Contact support if the issue persists</li>
+              <li>☕ Take a coffee break while we fix this</li>
+            </ul>
+          </div>
+        </div>
+
+        <div
+          style="
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+          "
+        >
+          <button onclick="window.location.reload()" class="btn btn-primary">
+            🔄 Try Again
+          </button>
+          <a href="<%= process.env.CLIENT_URL %>" class="btn btn-success">
+            🏠 Go Home
+          </a>
+        </div>
+
+        <div
+          style="
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--gray-200);
+          "
+        >
+          <p style="font-size: 0.875rem; color: var(--gray-500)">
+            Error Code: <strong><%= errorCode || '500' %></strong> | Time:
+            <strong><%= new Date().toLocaleString() %></strong>
+          </p>
+          <p
+            style="
+              font-size: 0.875rem;
+              color: var(--gray-500);
+              margin-top: 0.5rem;
+            "
+          >
+            Need immediate assistance? Contact
+            <a href="mailto:support@mentora.com" class="link"
+              >support@mentora.com</a
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
