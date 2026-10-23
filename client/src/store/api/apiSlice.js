@@ -2,13 +2,13 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { setCredentials, sendLogout } from "../slices/authSlice";
 const baseUrl =
-  import.meta.env.MODE === "production"
-    ? "https://mentora-api-rqbb.onrender.com/api"
+  import.meta.env.VITE_NODE_ENV === "production"
+    ? "https://mentora-courses-api.onrender.com/api"
     : "http://localhost:5000/api";
 
 const refreshUrl =
-  import.meta.env.MODE === "production"
-    ? "https://mentora-api-rqbb.onrender.com/api/auth/refresh"
+  import.meta.env.VITE_NODE_ENV === "production"
+    ? "https://mentora-courses-api.onrender.com/api/auth/refresh"
     : "http://localhost:5000/api/auth/refresh";
 const baseQuery = fetchBaseQuery({
   baseUrl,
@@ -23,7 +23,7 @@ const baseQuery = fetchBaseQuery({
     try {
       const cookies = document.cookie?.split(";") || [];
       const csrfCookie = cookies.find(
-        (c) => typeof c === "string" && c.trim().startsWith("csrf-token=")
+        (c) => typeof c === "string" && c.trim().startsWith("csrf-token="),
       );
       if (csrfCookie) {
         const csrfToken = csrfCookie.split("=")[1];
@@ -57,7 +57,7 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
             accessToken: refreshData.data.accessToken,
             user: api.getState().auth.user,
             //try to use decoded data !!!!!!!!!!!!!!!!!
-          })
+          }),
         );
 
         result = await baseQuery(args, api, extraOptions);

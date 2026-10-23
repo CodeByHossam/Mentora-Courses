@@ -196,7 +196,7 @@ export const handleGlobalError = (error, errorInfo) => {
   console.error('Global error caught:', error, errorInfo);
   
   // Log to external service in production
-  if (process.env.NODE_ENV === 'production') {
+  if (import.meta.env.NODE_ENV === 'production') {
     // TODO: Send to error tracking service (Sentry, LogRocket, etc.)
   }
   
