@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 const {
   getBillingAccountByRole,
   processCoursePurchase,
@@ -93,7 +94,7 @@ const getBillingAccount = async (req, res) => {
     const account = await getBillingAccountByRole(userId, userRole);
 
     if (!account) {
-      console.error(
+      logger.error(
         `❌ Failed to create billing account for ${userRole}: ${userId}`
       );
       return res.status(500).json({
@@ -167,7 +168,7 @@ const getBillingAccount = async (req, res) => {
     // Send response and close getBillingAccount
     res.status(200).json(responseData);
   } catch (error) {
-    console.error("❌ Error getting billing account:", error);
+    logger.error("❌ Error getting billing account:", error);
     res.status(500).json({
       success: false,
       message: "Failed to retrieve billing account",
@@ -222,7 +223,7 @@ const getAdminBillingAccount = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('❌ getAdminBillingAccount error:', error);
+    logger.error('❌ getAdminBillingAccount error:', error);
     res.status(500).json({ success: false, message: 'Failed to get admin billing account' });
   }
 };
@@ -312,7 +313,7 @@ const payoutInstructorCommission = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ payoutInstructorCommission error:", error);
+    logger.error("❌ payoutInstructorCommission error:", error);
     return res.status(500).json({ success: false, message: error.message || "Failed to process payout" });
   }
 };
@@ -476,7 +477,7 @@ const getBillingSummaryController = async (req, res) => {
       data: summary,
     });
   } catch (error) {
-    console.error("❌ Error getting billing summary:", error);
+    logger.error("❌ Error getting billing summary:", error);
     res.status(500).json({
       success: false,
       message: "Failed to generate billing summary",
@@ -519,7 +520,7 @@ const getAdminDashboard = async (req, res) => {
       dashboard: dashboardData,
     });
   } catch (error) {
-    console.error("❌ Error getting admin dashboard:", error);
+    logger.error("❌ Error getting admin dashboard:", error);
     res.status(500).json({
       success: false,
       message: "Failed to get admin dashboard",
@@ -562,7 +563,7 @@ const getInstructorDashboard = async (req, res) => {
       dashboard: dashboardData,
     });
   } catch (error) {
-    console.error("❌ Error getting instructor dashboard:", error);
+    logger.error("❌ Error getting instructor dashboard:", error);
     res.status(500).json({
       success: false,
       message: "Failed to get instructor dashboard",
@@ -604,7 +605,7 @@ const getStudentDashboard = async (req, res) => {
       dashboard: dashboardData,
     });
   } catch (error) {
-    console.error("❌ Error getting student dashboard:", error);
+    logger.error("❌ Error getting student dashboard:", error);
     res.status(500).json({
       success: false,
       message: "Failed to get student dashboard",
@@ -654,7 +655,7 @@ const requestPayout = async (req, res) => {
       newBalance: instructorAccount.availableBalance,
     });
   } catch (error) {
-    console.error("❌ Error requesting payout:", error);
+    logger.error("❌ Error requesting payout:", error);
     res.status(500).json({
       success: false,
       message: error.message || "Failed to request payout",
@@ -700,7 +701,7 @@ const addStudentCredits = async (req, res) => {
       availableCredits: studentAccount.availableCredits,
     });
   } catch (error) {
-    console.error("❌ Error adding student credits:", error);
+    logger.error("❌ Error adding student credits:", error);
     res.status(500).json({
       success: false,
       message: "Failed to add credits",
@@ -860,7 +861,7 @@ const addGiftCard = async (req, res) => {
 
       // Set amount to course price for student gift cards
       coursePrice = foundCourse.price;
-      console.log(`📚 Found course: ${foundCourse.title}, Price: $${coursePrice}`);
+      logger.info(`📚 Found course: ${foundCourse.title}, Price: $${coursePrice}`);
     }
 
     // 🏦 GET OR CREATE USER'S BILLING ACCOUNT
@@ -911,7 +912,7 @@ const addGiftCard = async (req, res) => {
     };
 
     const cardNumber = generateCardNumber();
-    console.log("🎯 Generated card number:", cardNumber);
+    logger.info("🎯 Generated card number:", cardNumber);
 
     // Create GiftCard model record with card number
     const giftCardRecord = await GiftCard.create({
@@ -962,7 +963,7 @@ const addGiftCard = async (req, res) => {
     };
 
     const billingType = giftCardTypeToBillingType[giftCardType] || "gift_card";
-    console.log("🔄 Gift card type mapping:", { giftCardType, billingType });
+    logger.info("🔄 Gift card type mapping:", { giftCardType, billingType });
 
     // 📦 SIMPLIFIED: Use addGiftAmount method (updates permanent box and history)
     userBillingAccount.addGiftAmount(
@@ -1014,12 +1015,12 @@ const addGiftCard = async (req, res) => {
     };
 
     // 📧 LOG SUCCESS MESSAGE
-    console.log(`✅ Gift card issued successfully:`);
-    console.log(`   💳 Amount: $${amount}`);
-    console.log(`   👤 Recipient: ${targetUser.name} (${targetUser.email})`);
-    console.log(`   🏷️ Type: ${giftCardType}`);
-    console.log(`   👨‍💼 Issued by: ${req.user.name || req.user.email}`);
-    console.log(
+    logger.info(`✅ Gift card issued successfully:`);
+    logger.info(`   💳 Amount: $${amount}`);
+    logger.info(`   👤 Recipient: ${targetUser.name} (${targetUser.email})`);
+    logger.info(`   🏷️ Type: ${giftCardType}`);
+    logger.info(`   👨‍💼 Issued by: ${req.user.name || req.user.email}`);
+    logger.info(
       `   🆔 Gift Amount Record ID: ${
         giftCardRecord._id || giftCardRecord.issuedAt
       }`
@@ -1032,7 +1033,7 @@ const addGiftCard = async (req, res) => {
       data: responseData,
     });
   } catch (error) {
-    console.error("❌ Error adding gift card:", error);
+    logger.error("❌ Error adding gift card:", error);
     res.status(500).json({
       success: false,
       message: "Failed to process gift card",
@@ -1157,7 +1158,7 @@ const getGiftCardHistory = async (req, res) => {
       expiredCards: giftCards.filter((card) => !card.isActive).length,
     };
 
-    console.log("🎁 Gift card history retrieved:", {
+    logger.info("🎁 Gift card history retrieved:", {
       totalGiftCards,
       currentPage: parseInt(page),
       totalPages,
@@ -1177,7 +1178,7 @@ const getGiftCardHistory = async (req, res) => {
       stats,
     });
   } catch (error) {
-    console.error("❌ Error fetching gift card history:", error);
+    logger.error("❌ Error fetching gift card history:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch gift card history",
@@ -1277,7 +1278,7 @@ const processCoursePaymentWithBilling = async (req, res) => {
         paymentMethod: method,
       });
     } catch (billingError) {
-      console.error(
+      logger.error(
         `❌ Billing integration error for payment ${payment._id}:`,
         billingError
       );
@@ -1290,8 +1291,9 @@ const processCoursePaymentWithBilling = async (req, res) => {
       payment.status = "processing";
       await payment.save();
 
-      // For demo purposes, mark as completed (in real app, wait for gateway confirmation)
-      if (process.env.NODE_ENV === "development") {
+      // Electronic payments are confirmed by gateway webhooks in production.
+      // Allow explicit opt-in auto-completion for local/test environments only.
+      if (process.env.AUTO_COMPLETE_PAYMENTS === "true") {
         payment.status = "completed";
         payment.paidAt = new Date();
         payment.completedAt = new Date();
@@ -1329,7 +1331,7 @@ const processCoursePaymentWithBilling = async (req, res) => {
       data: responseData,
     });
   } catch (error) {
-    console.error("❌ Error processing course payment:", error);
+    logger.error("❌ Error processing course payment:", error);
     res.status(500).json({
       success: false,
       message: "Failed to process course payment",
@@ -1348,8 +1350,8 @@ const processCoursePaymentWithBilling = async (req, res) => {
  */
 const submitAdminFeePayment = async (req, res) => {
   try {
-    console.log("🔍 BACKEND - Received req.body:", req.body);
-    console.log(
+    logger.info("🔍 BACKEND - Received req.body:", req.body);
+    logger.info(
       "🔍 BACKEND - Received req.file:",
       req.file ? "File present" : "No file"
     );
@@ -1357,17 +1359,17 @@ const submitAdminFeePayment = async (req, res) => {
     const { amount, description = "Admin fee payment" } = req.body;
     const userId = req.user.id;
 
-    console.log(
+    logger.info(
       "🔍 BACKEND - Extracted amount:",
       amount,
       "Type:",
       typeof amount
     );
-    console.log("🔍 BACKEND - Amount validation:", !amount, amount <= 0);
+    logger.info("🔍 BACKEND - Amount validation:", !amount, amount <= 0);
 
     // Validate required fields
     if (!amount || amount <= 0) {
-      console.log("🔍 BACKEND - Validation failed for amount:", amount);
+      logger.info("🔍 BACKEND - Validation failed for amount:", amount);
       return res.status(400).json({
         success: false,
         message: "Valid payment amount is required",
@@ -1452,7 +1454,7 @@ const submitAdminFeePayment = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Error submitting admin fee payment:", error);
+    logger.error("❌ Error submitting admin fee payment:", error);
     res.status(500).json({
       success: false,
       message: "Failed to submit admin fee payment",
@@ -1471,16 +1473,16 @@ const submitAdminFeePayment = async (req, res) => {
  */
 const getPendingAdminFeePayments = async (req, res) => {
   try {
-    console.log("🔍 ADMIN FEE PAYMENTS - Request received");
-    console.log(
+    logger.info("🔍 ADMIN FEE PAYMENTS - Request received");
+    logger.info(
       "🔍 User:",
       req.user ? `${req.user.name} (${req.user.role})` : "No user"
     );
-    console.log("🔍 Query params:", req.query);
+    logger.info("🔍 Query params:", req.query);
 
     // Verify admin access
     if (req.user.role !== "admin") {
-      console.log("🔍 Access denied - user role:", req.user.role);
+      logger.info("🔍 Access denied - user role:", req.user.role);
       return res.status(403).json({
         success: false,
         message: "Access denied. Admin role required.",
@@ -1502,7 +1504,7 @@ const getPendingAdminFeePayments = async (req, res) => {
       .limit(limit)
       .lean();
 
-    console.log(
+    logger.info(
       `🔍 Found ${pendingPayments.length} pending admin fee payments:`,
       {
         totalPending: await BillingTransaction.countDocuments({
@@ -1537,7 +1539,7 @@ const getPendingAdminFeePayments = async (req, res) => {
           try {
             receiptUrl = await getFile(payment.metadata.receiptKey, 3600); // 1 hour expiry
           } catch (error) {
-            console.error("Error generating receipt URL:", error);
+            logger.error("Error generating receipt URL:", error);
           }
         }
 
@@ -1563,7 +1565,7 @@ const getPendingAdminFeePayments = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Error getting pending admin fee payments:", error);
+    logger.error("❌ Error getting pending admin fee payments:", error);
     res.status(500).json({
       success: false,
       message: "Failed to retrieve pending payments",
@@ -1582,7 +1584,7 @@ const getPendingAdminFeePayments = async (req, res) => {
  */
 const approveAdminFeePayment = async (req, res) => {
   try {
-    console.log("🔍 APPROVE/REJECT - Request received:", {
+    logger.info("🔍 APPROVE/REJECT - Request received:", {
       transactionId: req.params.transactionId,
       action: req.body.action,
       adminNotes: req.body.adminNotes,
@@ -1636,7 +1638,7 @@ const approveAdminFeePayment = async (req, res) => {
     };
 
     if (action === "approve") {
-      console.log("🔍 Processing APPROVE action...");
+      logger.info("🔍 Processing APPROVE action...");
       // Get user's billing account and finalize the payment
       const billingAccount = await getBillingAccountByRole(
         transaction.userId._id,
@@ -1670,7 +1672,7 @@ const approveAdminFeePayment = async (req, res) => {
 
         transaction.metadata.finalizedAt = new Date();
 
-        console.log(
+        logger.info(
           `✅ Admin fee payment approved for ${transaction.userId.role}:`,
           {
             userId: transaction.userId._id,
@@ -1684,10 +1686,10 @@ const approveAdminFeePayment = async (req, res) => {
         );
       }
     } else if (action === "reject") {
-      console.log("🔍 Processing REJECT action...");
+      logger.info("🔍 Processing REJECT action...");
       // For rejection, we don't need to update billing accounts
       // Just update the transaction status and metadata
-      console.log("✅ Admin fee payment rejected - no billing changes needed");
+      logger.info("✅ Admin fee payment rejected - no billing changes needed");
     }
 
     await transaction.save();
@@ -1715,7 +1717,7 @@ const approveAdminFeePayment = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Error approving admin fee payment:", error);
+    logger.error("❌ Error approving admin fee payment:", error);
     res.status(500).json({
       success: false,
       message: "Failed to process approval",
@@ -1767,7 +1769,7 @@ const getUserGiftCards = async (req, res) => {
     const totalValue = allCards.reduce((sum, card) => sum + (card.amount || 0), 0);
     const activeCards = allCards.filter((card) => card.isActive && !card.isRedeemed).length;
 
-    console.log("🎁 User gift cards retrieved:", {
+    logger.info("🎁 User gift cards retrieved:", {
       userId: req.user._id,
       count: giftCards.length,
       totalCards,
@@ -1794,7 +1796,7 @@ const getUserGiftCards = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Error fetching user gift cards:", error);
+    logger.error("❌ Error fetching user gift cards:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch gift cards",
@@ -1850,7 +1852,7 @@ const deleteGiftCard = async (req, res) => {
     if (userBillingAccount) {
       const userRole = giftCard.userId.role;
       
-      console.log(`🗑️ Deleting gift card for ${userRole}:`, {
+      logger.info(`🗑️ Deleting gift card for ${userRole}:`, {
         amount: giftCard.amount,
         userId: giftCard.userId._id,
         userName: giftCard.userId.name
@@ -1873,7 +1875,7 @@ const deleteGiftCard = async (req, res) => {
           deducted: giftCard.amount
         };
 
-        console.log(`   💼 Instructor deduction:`, deductionDetails);
+        logger.info(`   💼 Instructor deduction:`, deductionDetails);
         
       } else if (userRole === 'student') {
         // 👨‍🎓 STUDENT: Just remove the card, no balance deduction
@@ -1884,7 +1886,7 @@ const deleteGiftCard = async (req, res) => {
           message: 'Student loses gift card only, no balance deduction'
         };
 
-        console.log(`   🎓 Student: Gift card removed, no balance deduction`);
+        logger.info(`   🎓 Student: Gift card removed, no balance deduction`);
       }
 
       // Remove from giftAmount array if exists
@@ -1899,7 +1901,7 @@ const deleteGiftCard = async (req, res) => {
       }
 
       await userBillingAccount.save();
-      console.log("✅ Gift card deleted and billing account updated");
+      logger.info("✅ Gift card deleted and billing account updated");
     }
 
     // 📊 STORE GIFT CARD INFO BEFORE DELETION
@@ -1932,13 +1934,13 @@ const deleteGiftCard = async (req, res) => {
     await GiftCard.findByIdAndDelete(giftCard._id);
 
     // 📧 LOG SUCCESS MESSAGE
-    console.log(`🗑️ Gift card deleted successfully:`);
-    console.log(`   💳 Card Number: ${giftCard.cardNumber}`);
-    console.log(`   💰 Amount: $${giftCard.amount}`);
-    console.log(
+    logger.info(`🗑️ Gift card deleted successfully:`);
+    logger.info(`   💳 Card Number: ${giftCard.cardNumber}`);
+    logger.info(`   💰 Amount: $${giftCard.amount}`);
+    logger.info(
       `   👤 Recipient: ${giftCard.userId.name} (${giftCard.userId.email})`
     );
-    console.log(`   🗑️ Deleted by: ${req.user.name || req.user.email}`);
+    logger.info(`   🗑️ Deleted by: ${req.user.name || req.user.email}`);
 
     // 🎉 SUCCESS RESPONSE
     const successMessage = giftCard.userId.role === 'instructor'
@@ -1959,7 +1961,7 @@ const deleteGiftCard = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Error deleting gift card:", error);
+    logger.error("❌ Error deleting gift card:", error);
     res.status(500).json({
       success: false,
       message: "Failed to delete gift card",
@@ -1993,7 +1995,7 @@ const getFinancialReconciliation = async (req, res) => {
       data: reconciliation,
     });
   } catch (error) {
-    console.error("❌ Error in financial reconciliation:", error);
+    logger.error("❌ Error in financial reconciliation:", error);
     res.status(500).json({
       success: false,
       message: "Failed to perform financial reconciliation",

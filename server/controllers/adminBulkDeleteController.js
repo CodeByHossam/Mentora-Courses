@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 /**
  * Admin Bulk Deletion Controller
  *
@@ -80,20 +81,20 @@ const AdminBillingAccount = require("../models/AdminBillingAccount");
  */
 const getDeletionStatistics = asyncHandler(async (req, res) => {
   try {
-    console.log("🔍 ADMIN BULK DELETE STATISTICS REQUEST");
-    console.log(
+    logger.info("🔍 ADMIN BULK DELETE STATISTICS REQUEST");
+    logger.info(
       "👤 User:",
       req.user
         ? `${req.user.name} (${req.user.email}) - Role: ${req.user.role}`
         : "No user found"
     );
-    console.log("🕒 Timestamp:", new Date().toISOString());
+    logger.info("🕒 Timestamp:", new Date().toISOString());
 
     // Set JSON-only headers to prevent HTML responses
     res.setHeader("Content-Type", "application/json");
     res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 
-    console.log("📊 Querying database for deletion statistics...");
+    logger.info("📊 Querying database for deletion statistics...");
 
     const stats = {
       // Safe to delete models
@@ -138,11 +139,11 @@ const getDeletionStatistics = asyncHandler(async (req, res) => {
       },
     };
 
-    console.log("✅ DELETION STATISTICS RETRIEVED:");
-    console.log("📈 Safe Models:", stats.safeModels);
-    console.log("🔗 Relationship Models:", stats.relationshipModels);
-    console.log("⚠️ Sensitive Models:", stats.sensitiveModels);
-    console.log("🛡️ Protected Models:", stats.protectedModels);
+    logger.info("✅ DELETION STATISTICS RETRIEVED:");
+    logger.info("📈 Safe Models:", stats.safeModels);
+    logger.info("🔗 Relationship Models:", stats.relationshipModels);
+    logger.info("⚠️ Sensitive Models:", stats.sensitiveModels);
+    logger.info("🛡️ Protected Models:", stats.protectedModels);
 
     const totalSafe = Object.values(stats.safeModels).reduce(
       (sum, count) => sum + count,
@@ -161,11 +162,11 @@ const getDeletionStatistics = asyncHandler(async (req, res) => {
       0
     );
 
-    console.log("📊 SUMMARY:");
-    console.log(`   Safe to Delete: ${totalSafe} records`);
-    console.log(`   Sensitive: ${totalSensitive} records`);
-    console.log(`   Protected: ${totalProtected} records`);
-    console.log(`   With Relationships: ${totalRelationship} records`);
+    logger.info("📊 SUMMARY:");
+    logger.info(`   Safe to Delete: ${totalSafe} records`);
+    logger.info(`   Sensitive: ${totalSensitive} records`);
+    logger.info(`   Protected: ${totalProtected} records`);
+    logger.info(`   With Relationships: ${totalRelationship} records`);
 
     res.json({
       success: true,
@@ -173,8 +174,8 @@ const getDeletionStatistics = asyncHandler(async (req, res) => {
       data: stats,
     });
   } catch (error) {
-    console.error("❌ ERROR IN DELETION STATISTICS:", error);
-    console.error("❌ Stack trace:", error.stack);
+    logger.error("❌ ERROR IN DELETION STATISTICS:", error);
+    logger.error("❌ Stack trace:", error.stack);
 
     // Ensure JSON response even on error
     res.setHeader("Content-Type", "application/json");
@@ -225,8 +226,8 @@ const bulkDeletePayments = asyncHandler(async (req, res) => {
     const deletedCount = await Payment.countDocuments();
     await Payment.deleteMany({});
 
-    console.log(`🗑️ Admin ${req.user.name} deleted ${deletedCount} payment records`);
-    console.log(`📦 PERMANENT BOXES PROTECTED: All balances remain intact`);
+    logger.info(`🗑️ Admin ${req.user.name} deleted ${deletedCount} payment records`);
+    logger.info(`📦 PERMANENT BOXES PROTECTED: All balances remain intact`);
     
     res.json({
       success: true,
@@ -240,7 +241,7 @@ const bulkDeletePayments = asyncHandler(async (req, res) => {
       }
     });
   } catch (error) {
-    console.error("❌ Error bulk deleting payments:", error);
+    logger.error("❌ Error bulk deleting payments:", error);
     res.status(500).json({
       success: false,
       message: "Failed to delete payments",
@@ -269,7 +270,7 @@ const bulkDeleteBillingTransactions = asyncHandler(async (req, res) => {
     const deletedCount = await BillingTransaction.countDocuments();
     await BillingTransaction.deleteMany({});
 
-    console.log(
+    logger.info(
       `🗑️ Admin ${req.user.name} deleted ${deletedCount} billing transactions`
     );
     res.json({
@@ -278,7 +279,7 @@ const bulkDeleteBillingTransactions = asyncHandler(async (req, res) => {
       deletedCount,
     });
   } catch (error) {
-    console.error("❌ Error bulk deleting billing transactions:", error);
+    logger.error("❌ Error bulk deleting billing transactions:", error);
     res.status(500).json({
       success: false,
       message: "Failed to delete billing transactions",
@@ -304,14 +305,14 @@ const bulkDeleteGiftCards = asyncHandler(async (req, res) => {
     const deletedCount = await GiftCard.countDocuments();
     await GiftCard.deleteMany({});
 
-    console.log(`🗑️ Admin ${req.user.name} deleted ${deletedCount} gift cards`);
+    logger.info(`🗑️ Admin ${req.user.name} deleted ${deletedCount} gift cards`);
     res.json({
       success: true,
       message: `Deleted ${deletedCount} gift cards`,
       deletedCount,
     });
   } catch (error) {
-    console.error("❌ Error bulk deleting gift cards:", error);
+    logger.error("❌ Error bulk deleting gift cards:", error);
     res.status(500).json({
       success: false,
       message: "Failed to delete gift cards",
@@ -340,7 +341,7 @@ const bulkDeleteAdminFeePayments = asyncHandler(async (req, res) => {
     const deletedCount = await AdminFeePayment.countDocuments();
     await AdminFeePayment.deleteMany({});
 
-    console.log(
+    logger.info(
       `🗑️ Admin ${req.user.name} deleted ${deletedCount} admin fee payments`
     );
     res.json({
@@ -349,7 +350,7 @@ const bulkDeleteAdminFeePayments = asyncHandler(async (req, res) => {
       deletedCount,
     });
   } catch (error) {
-    console.error("❌ Error bulk deleting admin fee payments:", error);
+    logger.error("❌ Error bulk deleting admin fee payments:", error);
     res.status(500).json({
       success: false,
       message: "Failed to delete admin fee payments",
@@ -379,7 +380,7 @@ const bulkDeleteComment = asyncHandler(async (req, res) => {
     await Comment.deleteMany({});
 
     // Log the action
-    console.log(
+    logger.info(
       `🗑️ Admin ${req.user.name} (${req.user.email}) deleted ${deletedCount} Comment`
     );
 
@@ -389,7 +390,7 @@ const bulkDeleteComment = asyncHandler(async (req, res) => {
       deletedCount,
     });
   } catch (error) {
-    console.error("❌ Error bulk deleting Comment:", error);
+    logger.error("❌ Error bulk deleting Comment:", error);
     res.status(500).json({
       success: false,
       message: "Failed to delete Comment",
@@ -421,7 +422,7 @@ const bulkDeleteTests = asyncHandler(async (req, res) => {
     await Test.deleteMany({});
     await Grade.deleteMany({});
 
-    console.log(
+    logger.info(
       `🗑️ Admin ${req.user.name} deleted ${testsCount} tests and ${gradesCount} grades`
     );
 
@@ -431,7 +432,7 @@ const bulkDeleteTests = asyncHandler(async (req, res) => {
       deletedCounts: { tests: testsCount, grades: gradesCount },
     });
   } catch (error) {
-    console.error("❌ Error bulk deleting tests:", error);
+    logger.error("❌ Error bulk deleting tests:", error);
     res.status(500).json({
       success: false,
       message: "Failed to delete tests",
@@ -459,7 +460,7 @@ const bulkDeleteNotifications = asyncHandler(async (req, res) => {
     const deletedCount = await Notification.countDocuments();
     await Notification.deleteMany({});
 
-    console.log(
+    logger.info(
       `🗑️ Admin ${req.user.name} deleted ${deletedCount} notifications`
     );
 
@@ -469,7 +470,7 @@ const bulkDeleteNotifications = asyncHandler(async (req, res) => {
       deletedCount,
     });
   } catch (error) {
-    console.error("❌ Error bulk deleting notifications:", error);
+    logger.error("❌ Error bulk deleting notifications:", error);
     res.status(500).json({
       success: false,
       message: "Failed to delete notifications",
@@ -497,7 +498,7 @@ const bulkDeleteMessages = asyncHandler(async (req, res) => {
     const deletedCount = await Message.countDocuments();
     await Message.deleteMany({});
 
-    console.log(`🗑️ Admin ${req.user.name} deleted ${deletedCount} messages`);
+    logger.info(`🗑️ Admin ${req.user.name} deleted ${deletedCount} messages`);
 
     res.json({
       success: true,
@@ -505,7 +506,7 @@ const bulkDeleteMessages = asyncHandler(async (req, res) => {
       deletedCount,
     });
   } catch (error) {
-    console.error("❌ Error bulk deleting messages:", error);
+    logger.error("❌ Error bulk deleting messages:", error);
     res.status(500).json({
       success: false,
       message: "Failed to delete messages",
@@ -534,7 +535,7 @@ const bulkDeleteLiveSessions = asyncHandler(async (req, res) => {
     const deletedCount = await LiveSession.countDocuments();
     await LiveSession.deleteMany({});
 
-    console.log(
+    logger.info(
       `🗑️ Admin ${req.user.name} deleted ${deletedCount} live sessions`
     );
 
@@ -544,7 +545,7 @@ const bulkDeleteLiveSessions = asyncHandler(async (req, res) => {
       deletedCount,
     });
   } catch (error) {
-    console.error("❌ Error bulk deleting live sessions:", error);
+    logger.error("❌ Error bulk deleting live sessions:", error);
     res.status(500).json({
       success: false,
       message: "Failed to delete live sessions",
@@ -572,7 +573,7 @@ const bulkDeleteCertificates = asyncHandler(async (req, res) => {
     const deletedCount = await Certificate.countDocuments();
     await Certificate.deleteMany({});
 
-    console.log(
+    logger.info(
       `🗑️ Admin ${req.user.name} deleted ${deletedCount} certificates`
     );
 
@@ -582,7 +583,7 @@ const bulkDeleteCertificates = asyncHandler(async (req, res) => {
       deletedCount,
     });
   } catch (error) {
-    console.error("❌ Error bulk deleting certificates:", error);
+    logger.error("❌ Error bulk deleting certificates:", error);
     res.status(500).json({
       success: false,
       message: "Failed to delete certificates",
@@ -616,7 +617,7 @@ const bulkDeleteEnrollmentRequests = asyncHandler(async (req, res) => {
     const deletedCount = await EnrollmentRequest.countDocuments(filter);
     await EnrollmentRequest.deleteMany(filter);
 
-    console.log(
+    logger.info(
       `🗑️ Admin ${req.user.name} deleted ${deletedCount} enrollment requests`
     );
 
@@ -626,7 +627,7 @@ const bulkDeleteEnrollmentRequests = asyncHandler(async (req, res) => {
       deletedCount,
     });
   } catch (error) {
-    console.error("❌ Error bulk deleting enrollment requests:", error);
+    logger.error("❌ Error bulk deleting enrollment requests:", error);
     res.status(500).json({
       success: false,
       message: "Failed to delete enrollment requests",
@@ -713,7 +714,7 @@ const bulkDeleteAllNonCritical = asyncHandler(async (req, res) => {
       0
     );
 
-    console.log(
+    logger.info(
       `🗑️ Admin ${req.user.name} performed bulk deletion of ${totalDeleted} non-critical records`
     );
 
@@ -723,7 +724,7 @@ const bulkDeleteAllNonCritical = asyncHandler(async (req, res) => {
       deletionResults,
     });
   } catch (error) {
-    console.error("❌ Error in bulk delete all non-critical:", error);
+    logger.error("❌ Error in bulk delete all non-critical:", error);
     res.status(500).json({
       success: false,
       message: "Failed to delete non-critical data",

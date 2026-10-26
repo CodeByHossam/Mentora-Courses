@@ -1,3 +1,4 @@
+const logger = require('./logger');
 const cron = require("node-cron");
 const { processAnnualFees } = require("./billingUtils");
 
@@ -9,14 +10,14 @@ const initializeBillingCronJobs = () => {
   cron.schedule(
     "0 2 * * *",
     async () => {
-      console.log("Running daily annual fee processing...");
+      logger.info("Running daily annual fee processing...");
       try {
         const results = await processAnnualFees();
-        console.log(
+        logger.info(
           `Annual fee processing completed. Processed ${results.length} users.`
         );
       } catch (error) {
-        console.error("Error in annual fee processing cron job:", error);
+        logger.error("Error in annual fee processing cron job:", error);
       }
     },
     {
@@ -29,7 +30,7 @@ const initializeBillingCronJobs = () => {
   cron.schedule(
     "0 */6 * * *",
     async () => {
-      console.log("Running account status check...");
+      logger.info("Running account status check...");
       try {
         const User = require("../models/User");
         const { checkAndUpdateAccountStatus } = require("./billingUtils");
@@ -55,18 +56,18 @@ const initializeBillingCronJobs = () => {
               updatedCount++;
             }
           } catch (error) {
-            console.error(
+            logger.error(
               `Error checking account status for user ${user._id}:`,
               error
             );
           }
         }
 
-        console.log(
+        logger.info(
           `Account status check completed. Updated ${updatedCount} accounts.`
         );
       } catch (error) {
-        console.error("Error in account status check cron job:", error);
+        logger.error("Error in account status check cron job:", error);
       }
     },
     {
@@ -75,7 +76,7 @@ const initializeBillingCronJobs = () => {
     }
   );
 
-  console.log("Billing cron jobs initialized successfully");
+  logger.info("Billing cron jobs initialized successfully");
 };
 
 module.exports = {

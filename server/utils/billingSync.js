@@ -1,3 +1,4 @@
+const logger = require('./logger');
 // utils/billingSync.js
 /**
  * Billing Synchronization Utilities
@@ -37,7 +38,7 @@ const syncCoursePurchase = async (paymentData) => {
     paymentId
   } = paymentData;
 
-  console.log('🔄 Starting course purchase synchronization:', {
+  logger.info('🔄 Starting course purchase synchronization:', {
     studentId,
     instructorId,
     courseId,
@@ -201,7 +202,7 @@ const syncCoursePurchase = async (paymentData) => {
       transactions.push(adminTransaction);
     }
 
-    console.log('✅ Course purchase synchronization completed:', {
+    logger.info('✅ Course purchase synchronization completed:', {
       transactionsCreated: transactions.length,
       studentBalance: studentAccount?.currentBalance,
       instructorBalance: instructorAccount?.availableBalance,
@@ -219,7 +220,7 @@ const syncCoursePurchase = async (paymentData) => {
     };
 
   } catch (error) {
-    console.error('❌ Course purchase synchronization failed:', error);
+    logger.error('❌ Course purchase synchronization failed:', error);
     throw error;
   }
 };
@@ -239,7 +240,7 @@ const syncPayoutApproval = async (payoutData) => {
     adminId
   } = payoutData;
 
-  console.log('🔄 Starting payout approval synchronization:', {
+  logger.info('🔄 Starting payout approval synchronization:', {
     instructorId,
     payoutAmount,
     payoutRequestId
@@ -283,7 +284,7 @@ const syncPayoutApproval = async (payoutData) => {
       await adminAccount.save();
     }
 
-    console.log('✅ Payout approval synchronization completed:', {
+    logger.info('✅ Payout approval synchronization completed:', {
       instructorBalance: instructorAccount.availableBalance,
       totalPayoutsReceived: instructorAccount.totalPayoutsReceived
     });
@@ -296,7 +297,7 @@ const syncPayoutApproval = async (payoutData) => {
     };
 
   } catch (error) {
-    console.error('❌ Payout approval synchronization failed:', error);
+    logger.error('❌ Payout approval synchronization failed:', error);
     throw error;
   }
 };
@@ -319,7 +320,7 @@ const syncRefundApproval = async (refundData) => {
     adminId
   } = refundData;
 
-  console.log('🔄 Starting refund approval synchronization:', {
+  logger.info('🔄 Starting refund approval synchronization:', {
     refundId,
     requesterId,
     requesterType,
@@ -382,7 +383,7 @@ const syncRefundApproval = async (refundData) => {
       await adminAccount.save();
     }
 
-    console.log('✅ Refund approval synchronization completed:', {
+    logger.info('✅ Refund approval synchronization completed:', {
       requesterBalance: requesterType === 'student' ? 
         requesterAccount.currentBalance : 
         requesterAccount.availableBalance,
@@ -397,7 +398,7 @@ const syncRefundApproval = async (refundData) => {
     };
 
   } catch (error) {
-    console.error('❌ Refund approval synchronization failed:', error);
+    logger.error('❌ Refund approval synchronization failed:', error);
     throw error;
   }
 };
@@ -417,7 +418,7 @@ const syncAdminFeePaymentApproval = async (paymentData) => {
     adminId
   } = paymentData;
 
-  console.log('🔄 Starting admin fee payment synchronization:', {
+  logger.info('🔄 Starting admin fee payment synchronization:', {
     instructorId,
     paymentAmount,
     adminFeePaymentId
@@ -502,7 +503,7 @@ const syncAdminFeePaymentApproval = async (paymentData) => {
       await adminAccount.save();
     }
 
-    console.log('✅ Admin fee payment synchronization completed:', {
+    logger.info('✅ Admin fee payment synchronization completed:', {
       allocatedAmount: actualPayment,
       excessAmount,
       newOwedFees: instructorAccount.owedAdminFees,
@@ -524,7 +525,7 @@ const syncAdminFeePaymentApproval = async (paymentData) => {
     };
 
   } catch (error) {
-    console.error('❌ Admin fee payment synchronization failed:', error);
+    logger.error('❌ Admin fee payment synchronization failed:', error);
     throw error;
   }
 };

@@ -1,0 +1,12 @@
+{
+  "name": "mentora-courses",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "test": "cd server && npm test && cd ../client && npm test",
+    "test:unit": "cd server && npm run test:unit",
+    "test:integration": "cd server && npm run test:integration",
+    "test:coverage": "cd server && npm run test:coverage",
+    "test:e2e": "cd e2e && npm test"
+  }
+}

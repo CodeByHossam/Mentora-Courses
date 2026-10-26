@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 /**
  * Webhook Controller
  *
@@ -91,18 +92,18 @@ const validatePayPalWebhook = (headers, body) => {
 // @route   POST /api/webhooks/stripe
 // @access  Public (but verified via signature)
 const handleStripeWebhook = asyncHandler(async (req, res) => {
-  console.log("🔔 Stripe webhook received!");
-  console.log("📋 Headers:", JSON.stringify(req.headers, null, 2));
-  console.log("📦 Body length:", req.body ? req.body.length : "No body");
-  console.log("🌐 Original URL:", req.originalUrl);
+  logger.info("🔔 Stripe webhook received!");
+  logger.info("📋 Headers:", JSON.stringify(req.headers, null, 2));
+  logger.info("📦 Body length:", req.body ? req.body.length : "No body");
+  logger.info("🌐 Original URL:", req.originalUrl);
 
   const sig = req.headers["stripe-signature"];
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
   // Enhanced security validation
   if (!endpointSecret) {
-    console.error("❌ Stripe webhook secret not configured");
-    console.error(
+    logger.error("❌ Stripe webhook secret not configured");
+    logger.error(
       "❌ STRIPE_WEBHOOK_SECRET env var:",
       process.env.STRIPE_WEBHOOK_SECRET ? "SET" : "NOT SET"
     );
@@ -110,25 +111,25 @@ const handleStripeWebhook = asyncHandler(async (req, res) => {
   }
 
   if (!sig) {
-    console.error("❌ Missing Stripe signature header");
-    console.error("❌ Available headers:", Object.keys(req.headers));
+    logger.error("❌ Missing Stripe signature header");
+    logger.error("❌ Available headers:", Object.keys(req.headers));
     return res.status(400).send("Missing signature header");
   }
 
-  console.log("✅ Webhook secret configured");
-  console.log("✅ Signature header present:", sig.substring(0, 20) + "...");
-  console.log(
+  logger.info("✅ Webhook secret configured");
+  logger.info("✅ Signature header present:", sig.substring(0, 20) + "...");
+  logger.info(
     "🔑 Expected webhook secret (first 20 chars):",
     endpointSecret.substring(0, 20) + "..."
   );
 
   // Rate limiting check for webhooks (basic IP-based)
   const clientIP = req.ip || req.connection.remoteAddress;
-  console.log("🌐 Webhook request from IP:", clientIP);
+  logger.info("🌐 Webhook request from IP:", clientIP);
 
   // Skip IP validation in development
   if (process.env.NODE_ENV === "production" && !isValidStripeIP(clientIP)) {
-    console.error("Webhook request from invalid IP:", clientIP);
+    logger.error("Webhook request from invalid IP:", clientIP);
     return res.status(403).send("Forbidden");
   }
 
@@ -136,28 +137,28 @@ const handleStripeWebhook = asyncHandler(async (req, res) => {
 
   try {
     if (!stripe) {
-      console.error("Stripe webhook received but Stripe is not configured");
+      logger.error("Stripe webhook received but Stripe is not configured");
       return res.status(503).send("Stripe service not configured");
     }
 
     // Verify webhook signature using raw body
-    console.log("🔐 Attempting signature verification...");
+    logger.info("🔐 Attempting signature verification...");
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
-    console.log("✅ Signature verification successful");
+    logger.info("✅ Signature verification successful");
   } catch (err) {
-    console.error("❌ Webhook signature verification failed:", err.message);
-    console.error("❌ Error details:", err);
+    logger.error("❌ Webhook signature verification failed:", err.message);
+    logger.error("❌ Error details:", err);
 
     // In development, try to parse the body anyway for debugging
     if (process.env.NODE_ENV !== "production") {
-      console.log(
+      logger.info(
         "🔧 Development mode: Attempting to parse body without signature verification"
       );
       try {
         event = JSON.parse(req.body.toString());
-        console.log("✅ Body parsed successfully in development mode");
+        logger.info("✅ Body parsed successfully in development mode");
       } catch (parseErr) {
-        console.error(
+        logger.error(
           "❌ Failed to parse body even without signature verification:",
           parseErr.message
         );
@@ -169,12 +170,12 @@ const handleStripeWebhook = asyncHandler(async (req, res) => {
   }
 
   try {
-    console.log("🎯 Processing Stripe event:", event.type);
-    console.log("📊 Event data:", JSON.stringify(event.data.object, null, 2));
+    logger.info("🎯 Processing Stripe event:", event.type);
+    logger.info("📊 Event data:", JSON.stringify(event.data.object, null, 2));
 
     switch (event.type) {
       case "checkout.session.completed":
-        console.log("✅ Processing checkout.session.completed");
+        logger.info("✅ Processing checkout.session.completed");
         await handleCheckoutSessionCompleted(event.data.object);
         break;
 
@@ -194,11 +195,11 @@ const handleStripeWebhook = asyncHandler(async (req, res) => {
       // Unhandled event type - no action needed
     }
 
-    console.log("✅ Webhook processing completed successfully");
+    logger.info("✅ Webhook processing completed successfully");
     res.status(200).json({ received: true });
   } catch (error) {
-    console.error("❌ Error processing webhook:", error);
-    console.error("❌ Error stack:", error.stack);
+    logger.error("❌ Error processing webhook:", error);
+    logger.error("❌ Error stack:", error.stack);
     res.status(500).json({ error: "Webhook processing failed" });
   }
 });
@@ -208,11 +209,11 @@ const handleStripeWebhook = asyncHandler(async (req, res) => {
  * This is the primary event for successful payments
  */
 const handleCheckoutSessionCompleted = async (session) => {
-  console.log(
+  logger.info(
     "🎯 handleCheckoutSessionCompleted called with session:",
     session.id
   );
-  console.log("📊 Session details:", {
+  logger.info("📊 Session details:", {
     id: session.id,
     payment_intent: session.payment_intent,
     payment_status: session.payment_status,
@@ -222,21 +223,21 @@ const handleCheckoutSessionCompleted = async (session) => {
 
   try {
     // Find payment by session ID (not payment intent)
-    console.log("🔍 Searching for payment with stripeSessionId:", session.id);
+    logger.info("🔍 Searching for payment with stripeSessionId:", session.id);
     const payment = await Payment.findOne({
       stripeSessionId: session.id,
     })
       .populate("userId", "name email role enrolledCourses")
       .populate("course", "title instructor enrolledStudents");
 
-    console.log(
+    logger.info(
       "💾 Payment found:",
       payment ? `ID: ${payment._id}, Status: ${payment.status}` : "NOT FOUND"
     );
 
     if (!payment) {
-      console.error("❌ Payment not found for session:", session.id);
-      console.log(
+      logger.error("❌ Payment not found for session:", session.id);
+      logger.info(
         "🔍 Let me search by payment intent instead:",
         session.payment_intent
       );
@@ -249,14 +250,14 @@ const handleCheckoutSessionCompleted = async (session) => {
         .populate("course", "title instructor enrolledStudents");
 
       if (paymentByIntent) {
-        console.log("✅ Found payment by payment intent:", paymentByIntent._id);
+        logger.info("✅ Found payment by payment intent:", paymentByIntent._id);
         // Update the session ID for future webhooks
         paymentByIntent.stripeSessionId = session.id;
         await paymentByIntent.save();
         // Continue processing with this payment
         return await processPaymentCompletion(paymentByIntent, session);
       } else {
-        console.error("❌ Payment not found by session ID OR payment intent");
+        logger.error("❌ Payment not found by session ID OR payment intent");
         return;
       }
     }
@@ -264,7 +265,7 @@ const handleCheckoutSessionCompleted = async (session) => {
     // Process the payment completion
     return await processPaymentCompletion(payment, session);
   } catch (error) {
-    console.error("Error handling checkout session completed:", error);
+    logger.error("Error handling checkout session completed:", error);
     throw error;
   }
 };
@@ -273,16 +274,16 @@ const handleCheckoutSessionCompleted = async (session) => {
  * Process payment completion (shared logic for session and payment intent)
  */
 const processPaymentCompletion = async (payment, sessionOrIntent) => {
-  console.log("🔄 Processing payment completion for payment:", payment._id);
+  logger.info("🔄 Processing payment completion for payment:", payment._id);
 
   try {
     // Verify payment hasn't already been processed
     if (payment.status === "paid") {
-      console.log("⚠️ Payment already processed, skipping:", payment._id);
+      logger.info("⚠️ Payment already processed, skipping:", payment._id);
       return;
     }
 
-    console.log("💰 Updating payment status to paid");
+    logger.info("💰 Updating payment status to paid");
     // Update payment status
     payment.status = "paid";
     payment.paidAt = new Date();
@@ -309,21 +310,21 @@ const processPaymentCompletion = async (payment, sessionOrIntent) => {
       };
     }
 
-    console.log("💾 Saving payment to database");
+    logger.info("💾 Saving payment to database");
     await payment.save();
-    console.log("✅ Payment saved successfully");
+    logger.info("✅ Payment saved successfully");
 
     // Auto-enroll student if configured
-    console.log("🎓 Starting auto-enrollment process");
+    logger.info("🎓 Starting auto-enrollment process");
     await handleAutoEnrollment(payment);
 
     // Update user bills
-    console.log("📋 Updating user bills");
+    logger.info("📋 Updating user bills");
     await updateUserBills(payment);
 
-    console.log("🎉 Payment completion processing finished successfully");
+    logger.info("🎉 Payment completion processing finished successfully");
   } catch (error) {
-    console.error("❌ Error in processPaymentCompletion:", error);
+    logger.error("❌ Error in processPaymentCompletion:", error);
     throw error;
   }
 };
@@ -333,7 +334,7 @@ const processPaymentCompletion = async (payment, sessionOrIntent) => {
  * Backup handler for direct payment intent usage
  */
 const handlePaymentIntentSucceeded = async (paymentIntent) => {
-  console.log(
+  logger.info(
     "🎯 handlePaymentIntentSucceeded called with payment intent:",
     paymentIntent.id
   );
@@ -346,19 +347,19 @@ const handlePaymentIntentSucceeded = async (paymentIntent) => {
       .populate("course", "title instructor enrolledStudents");
 
     if (!payment) {
-      console.error(
+      logger.error(
         "❌ Payment not found for payment intent:",
         paymentIntent.id
       );
       return;
     }
 
-    console.log("✅ Payment found for payment intent:", payment._id);
+    logger.info("✅ Payment found for payment intent:", payment._id);
 
     // Use shared processing function
     return await processPaymentCompletion(payment, paymentIntent);
   } catch (error) {
-    console.error("Error handling payment intent succeeded:", error);
+    logger.error("Error handling payment intent succeeded:", error);
     throw error;
   }
 };
@@ -373,7 +374,7 @@ const handlePaymentIntentFailed = async (paymentIntent) => {
     });
 
     if (!payment) {
-      console.error(
+      logger.error(
         "Payment not found for failed payment intent:",
         paymentIntent.id
       );
@@ -390,7 +391,7 @@ const handlePaymentIntentFailed = async (paymentIntent) => {
 
     await payment.save();
   } catch (error) {
-    console.error("Error handling payment intent failed:", error);
+    logger.error("Error handling payment intent failed:", error);
     throw error;
   }
 };
@@ -399,72 +400,72 @@ const handlePaymentIntentFailed = async (paymentIntent) => {
  * Handle automatic enrollment after successful payment
  */
 const handleAutoEnrollment = async (payment) => {
-  console.log("🎓 handleAutoEnrollment called for payment:", payment._id);
+  logger.info("🎓 handleAutoEnrollment called for payment:", payment._id);
 
   try {
     // Check if auto-enrollment is enabled (this should be fetched from admin settings)
     const autoEnrollEnabled = true; // TODO: Get from AdminSettings
-    console.log("⚙️ Auto-enrollment enabled:", autoEnrollEnabled);
+    logger.info("⚙️ Auto-enrollment enabled:", autoEnrollEnabled);
 
     if (!autoEnrollEnabled) {
-      console.log("⚠️ Auto-enrollment disabled, skipping");
+      logger.info("⚠️ Auto-enrollment disabled, skipping");
       return;
     }
 
     const course = payment.course;
     const student = payment.userId;
 
-    console.log("📚 Course:", course ? course.title : "NOT FOUND");
-    console.log("👤 Student:", student ? student.name : "NOT FOUND");
+    logger.info("📚 Course:", course ? course.title : "NOT FOUND");
+    logger.info("👤 Student:", student ? student.name : "NOT FOUND");
 
     if (!course || !student) {
-      console.error("❌ Missing course or student data for enrollment");
+      logger.error("❌ Missing course or student data for enrollment");
       return;
     }
 
     // Check if student is already enrolled
     const alreadyEnrolled = course.enrolledStudents.includes(student._id);
-    console.log("🔍 Student already enrolled:", alreadyEnrolled);
+    logger.info("🔍 Student already enrolled:", alreadyEnrolled);
 
     if (alreadyEnrolled) {
-      console.log("⚠️ Student already enrolled, skipping enrollment");
+      logger.info("⚠️ Student already enrolled, skipping enrollment");
       return;
     }
 
-    console.log("➕ Adding student to course enrolled students");
+    logger.info("➕ Adding student to course enrolled students");
     // Add student to course
     course.enrolledStudents.push(student._id);
     await course.save();
-    console.log("✅ Student added to course successfully");
+    logger.info("✅ Student added to course successfully");
 
     // Add course to student's enrolled courses
     const courseAlreadyInStudent = student.enrolledCourses.includes(course._id);
-    console.log(
+    logger.info(
       "🔍 Course already in student enrolled courses:",
       courseAlreadyInStudent
     );
 
     if (!courseAlreadyInStudent) {
-      console.log("➕ Adding course to student enrolled courses");
+      logger.info("➕ Adding course to student enrolled courses");
       student.enrolledCourses.push(course._id);
       await student.save();
-      console.log("✅ Course added to student successfully");
+      logger.info("✅ Course added to student successfully");
     }
 
     // Create billing transaction for instructor commission tracking
-    console.log("💰 Starting billing transaction creation");
+    logger.info("💰 Starting billing transaction creation");
     try {
       const paymentAmount = payment.finalAmount || payment.amount;
-      console.log("💵 Payment amount:", paymentAmount);
-      console.log("👨‍🏫 Course instructor:", course.instructor);
+      logger.info("💵 Payment amount:", paymentAmount);
+      logger.info("👨‍🏫 Course instructor:", course.instructor);
 
       if (course.instructor && paymentAmount) {
-        console.log("📊 Getting admin settings for fee calculation");
+        logger.info("📊 Getting admin settings for fee calculation");
         // Get admin settings for fee calculation (match direct transaction logic)
         const AdminSettings = require("../models/AdminSettings");
         let adminSettings = await AdminSettings.findOne();
         if (!adminSettings) {
-          console.log("⚙️ Creating default admin settings");
+          logger.info("⚙️ Creating default admin settings");
           // Create default settings if none exist
           adminSettings = await AdminSettings.create({
             paymentSettings: {
@@ -483,7 +484,7 @@ const handleAutoEnrollment = async (payment) => {
           adminFee + (originalAmount * adminPercentage) / 100;
         const instructorAmount = originalAmount - totalAdminProfit;
 
-        console.log("🧮 Billing calculation:", {
+        logger.info("🧮 Billing calculation:", {
           originalAmount,
           adminFee,
           adminPercentage,
@@ -491,7 +492,7 @@ const handleAutoEnrollment = async (payment) => {
           instructorAmount: instructorAmount.toFixed(2),
         });
 
-        console.log("🔄 Calling createBillingTransactionForCoursePayment");
+        logger.info("🔄 Calling createBillingTransactionForCoursePayment");
         await createBillingTransactionForCoursePayment({
           studentId: student._id,
           courseId: course._id,
@@ -504,29 +505,29 @@ const handleAutoEnrollment = async (payment) => {
           paymentId: payment._id,
           method: "stripe",
         });
-        console.log(
+        logger.info(
           `✅ Billing transaction created for Stripe webhook payment: ${payment._id}`
         );
-        console.log(
+        logger.info(
           `💰 Payment breakdown: Total: $${originalAmount}, Admin: $${totalAdminProfit.toFixed(
             2
           )}, Instructor: $${instructorAmount.toFixed(2)}`
         );
       } else {
-        console.log(
+        logger.info(
           "⚠️ Skipping billing transaction - missing instructor or payment amount"
         );
       }
     } catch (billingError) {
-      console.error(
+      logger.error(
         "❌ Error creating billing transaction in webhook:",
         billingError
       );
-      console.error("❌ Billing error stack:", billingError.stack);
+      logger.error("❌ Billing error stack:", billingError.stack);
       // Don't fail the enrollment if billing fails
     }
   } catch (error) {
-    console.error("Error in auto-enrollment:", error);
+    logger.error("Error in auto-enrollment:", error);
     // Don't throw error - payment was successful, enrollment can be handled manually
   }
 };
@@ -538,7 +539,7 @@ const updateUserBills = async (payment) => {
   try {
     const user = await User.findById(payment.userId._id);
     if (!user) {
-      console.error("User not found:", payment.userId._id);
+      logger.error("User not found:", payment.userId._id);
       return;
     }
 
@@ -554,7 +555,7 @@ const updateUserBills = async (payment) => {
       await user.save();
     }
   } catch (error) {
-    console.error("Error updating user bills:", error);
+    logger.error("Error updating user bills:", error);
     // Don't throw error - payment was successful
   }
 };
@@ -563,57 +564,57 @@ const updateUserBills = async (payment) => {
 // @route   POST /api/webhooks/paypal
 // @access  Public (but verified via signature)
 const handlePayPalWebhook = asyncHandler(async (req, res) => {
-  console.log("🔔 PayPal webhook received!");
-  console.log("📋 Headers:", JSON.stringify(req.headers, null, 2));
-  console.log("📦 Body:", JSON.stringify(req.body, null, 2));
+  logger.info("🔔 PayPal webhook received!");
+  logger.info("📋 Headers:", JSON.stringify(req.headers, null, 2));
+  logger.info("📦 Body:", JSON.stringify(req.body, null, 2));
 
   try {
     const webhookEvent = req.body;
-    console.log("🎯 Processing PayPal event:", webhookEvent.event_type);
+    logger.info("🎯 Processing PayPal event:", webhookEvent.event_type);
 
     // Enhanced PayPal webhook security validation
     if (!validatePayPalWebhook(req.headers, req.body)) {
-      console.error("❌ PayPal webhook signature validation failed");
+      logger.error("❌ PayPal webhook signature validation failed");
       return res.status(400).json({ error: "Invalid webhook signature" });
     }
-    console.log("✅ PayPal webhook signature validated");
+    logger.info("✅ PayPal webhook signature validated");
 
     // Sanitize event type
     const eventType = sanitizeText(webhookEvent.event_type, 50);
-    console.log("🧹 Sanitized event type:", eventType);
+    logger.info("🧹 Sanitized event type:", eventType);
 
     switch (webhookEvent.event_type) {
       case "PAYMENT.CAPTURE.COMPLETED":
-        console.log("💰 Processing PAYMENT.CAPTURE.COMPLETED");
+        logger.info("💰 Processing PAYMENT.CAPTURE.COMPLETED");
         await handlePayPalPaymentCompleted(webhookEvent);
         break;
       case "PAYMENT.CAPTURE.DENIED":
-        console.log("❌ Processing PAYMENT.CAPTURE.DENIED");
+        logger.info("❌ Processing PAYMENT.CAPTURE.DENIED");
         await handlePayPalPaymentFailed(webhookEvent);
         break;
       case "CHECKOUT.ORDER.APPROVED":
-        console.log("✅ Processing CHECKOUT.ORDER.APPROVED - no action needed");
+        logger.info("✅ Processing CHECKOUT.ORDER.APPROVED - no action needed");
         break;
       default:
-        console.log(
+        logger.info(
           "⚠️ Unhandled PayPal webhook event:",
           webhookEvent.event_type
         );
     }
 
-    console.log("✅ PayPal webhook processed successfully");
+    logger.info("✅ PayPal webhook processed successfully");
     res.status(200).json({ received: true });
   } catch (error) {
-    console.error("❌ PayPal webhook error:", error);
-    console.error("❌ PayPal webhook error stack:", error.stack);
+    logger.error("❌ PayPal webhook error:", error);
+    logger.error("❌ PayPal webhook error stack:", error.stack);
     res.status(400).json({ error: "PayPal webhook processing failed" });
   }
 });
 
 // Helper function to handle PayPal payment completion
 const handlePayPalPaymentCompleted = async (webhookEvent) => {
-  console.log("🎯 handlePayPalPaymentCompleted called");
-  console.log(
+  logger.info("🎯 handlePayPalPaymentCompleted called");
+  logger.info(
     "📊 Webhook event resource:",
     JSON.stringify(webhookEvent.resource, null, 2)
   );
@@ -622,87 +623,87 @@ const handlePayPalPaymentCompleted = async (webhookEvent) => {
     const resource = webhookEvent.resource;
     const customId = resource.custom_id;
 
-    console.log("🔍 Custom ID from PayPal webhook:", customId);
+    logger.info("🔍 Custom ID from PayPal webhook:", customId);
 
     if (!customId) {
-      console.error("❌ No custom_id found in PayPal webhook");
+      logger.error("❌ No custom_id found in PayPal webhook");
       return;
     }
 
     // Find payment by ID
-    console.log("🔍 Searching for payment with ID:", customId);
+    logger.info("🔍 Searching for payment with ID:", customId);
     const payment = await Payment.findById(customId)
       .populate("userId", "name email enrolledCourses")
       .populate("course", "title instructor enrolledStudents");
 
-    console.log(
+    logger.info(
       "💾 Payment found:",
       payment ? `ID: ${payment._id}, Status: ${payment.status}` : "NOT FOUND"
     );
 
     if (!payment) {
-      console.error("❌ Payment not found for PayPal webhook:", customId);
+      logger.error("❌ Payment not found for PayPal webhook:", customId);
       return;
     }
 
     // Check if already processed
     if (payment.status === "paid") {
-      console.log(
+      logger.info(
         "⚠️ PayPal payment already processed, skipping:",
         payment._id
       );
       return;
     }
 
-    console.log("💰 Updating PayPal payment status to paid");
+    logger.info("💰 Updating PayPal payment status to paid");
     // Update payment status
     payment.status = "paid";
     payment.paidAt = new Date();
     payment.paypalPaymentId = resource.id;
     payment.paymentGatewayResponse = resource;
 
-    console.log("💾 Saving PayPal payment to database");
+    logger.info("💾 Saving PayPal payment to database");
     await payment.save();
-    console.log("✅ PayPal payment saved successfully");
+    logger.info("✅ PayPal payment saved successfully");
 
     // Auto-enroll student in course
-    console.log("🎓 Starting PayPal auto-enrollment process");
+    logger.info("🎓 Starting PayPal auto-enrollment process");
     const course = await Course.findById(payment.course._id);
-    console.log("📚 Course found:", course ? course.title : "NOT FOUND");
-    console.log(
+    logger.info("📚 Course found:", course ? course.title : "NOT FOUND");
+    logger.info(
       "👤 Student:",
       payment.userId ? payment.userId.name : "NOT FOUND"
     );
 
     if (course && !course.enrolledStudents.includes(payment.userId._id)) {
-      console.log("➕ Adding student to course enrolled students");
+      logger.info("➕ Adding student to course enrolled students");
       course.enrolledStudents.push(payment.userId._id);
       await course.save();
-      console.log("✅ Student enrolled in course successfully");
+      logger.info("✅ Student enrolled in course successfully");
 
       // Add course to student's enrolled courses
       const student = payment.userId;
       if (student && !student.enrolledCourses.includes(course._id)) {
-        console.log("➕ Adding course to student enrolled courses");
+        logger.info("➕ Adding course to student enrolled courses");
         student.enrolledCourses.push(course._id);
         await student.save();
-        console.log("✅ Course added to student successfully");
+        logger.info("✅ Course added to student successfully");
       }
 
       // Create billing transaction for instructor commission tracking
-      console.log("💰 Starting PayPal billing transaction creation");
+      logger.info("💰 Starting PayPal billing transaction creation");
       try {
         const paymentAmount = payment.finalAmount || payment.amount;
-        console.log("💵 PayPal payment amount:", paymentAmount);
-        console.log("👨‍🏫 Course instructor:", course.instructor);
+        logger.info("💵 PayPal payment amount:", paymentAmount);
+        logger.info("👨‍🏫 Course instructor:", course.instructor);
 
         if (course.instructor && paymentAmount) {
-          console.log("📊 Getting admin settings for PayPal fee calculation");
+          logger.info("📊 Getting admin settings for PayPal fee calculation");
           // Get admin settings for fee calculation (match direct transaction logic)
           const AdminSettings = require("../models/AdminSettings");
           let adminSettings = await AdminSettings.findOne();
           if (!adminSettings) {
-            console.log("⚙️ Creating default admin settings for PayPal");
+            logger.info("⚙️ Creating default admin settings for PayPal");
             // Create default settings if none exist
             adminSettings = await AdminSettings.create({
               paymentSettings: {
@@ -721,7 +722,7 @@ const handlePayPalPaymentCompleted = async (webhookEvent) => {
             adminFee + (originalAmount * adminPercentage) / 100;
           const instructorAmount = originalAmount - totalAdminProfit;
 
-          console.log("🧮 PayPal billing calculation:", {
+          logger.info("🧮 PayPal billing calculation:", {
             originalAmount,
             adminFee,
             adminPercentage,
@@ -729,7 +730,7 @@ const handlePayPalPaymentCompleted = async (webhookEvent) => {
             instructorAmount: instructorAmount.toFixed(2),
           });
 
-          console.log(
+          logger.info(
             "🔄 Calling createBillingTransactionForCoursePayment for PayPal"
           );
           await createBillingTransactionForCoursePayment({
@@ -744,29 +745,29 @@ const handlePayPalPaymentCompleted = async (webhookEvent) => {
             paymentId: payment._id,
             method: "paypal",
           });
-          console.log(
+          logger.info(
             `✅ Billing transaction created for PayPal payment: ${payment._id}`
           );
-          console.log(
+          logger.info(
             `💰 PayPal payment breakdown: Total: $${originalAmount}, Admin: $${totalAdminProfit.toFixed(
               2
             )}, Instructor: $${instructorAmount.toFixed(2)}`
           );
         } else {
-          console.log(
+          logger.info(
             "⚠️ Skipping PayPal billing transaction - missing instructor or payment amount"
           );
         }
       } catch (billingError) {
-        console.error(
+        logger.error(
           "❌ Error creating billing transaction for PayPal payment:",
           billingError
         );
-        console.error("❌ PayPal billing error stack:", billingError.stack);
+        logger.error("❌ PayPal billing error stack:", billingError.stack);
         // Don't fail the enrollment if billing fails
       }
     } else {
-      console.log("⚠️ Student already enrolled in course or course not found");
+      logger.info("⚠️ Student already enrolled in course or course not found");
     }
 
     // Update user's bills
@@ -783,7 +784,7 @@ const handlePayPalPaymentCompleted = async (webhookEvent) => {
       await user.save();
     }
   } catch (error) {
-    console.error("Error handling PayPal payment completion:", error);
+    logger.error("Error handling PayPal payment completion:", error);
   }
 };
 
@@ -794,7 +795,7 @@ const handlePayPalPaymentFailed = async (webhookEvent) => {
     const customId = resource.custom_id;
 
     if (!customId) {
-      console.error("No custom_id found in PayPal webhook");
+      logger.error("No custom_id found in PayPal webhook");
       return;
     }
 
@@ -802,7 +803,7 @@ const handlePayPalPaymentFailed = async (webhookEvent) => {
     const payment = await Payment.findById(customId);
 
     if (!payment) {
-      console.error("Payment not found for PayPal webhook:", customId);
+      logger.error("Payment not found for PayPal webhook:", customId);
       return;
     }
 
@@ -813,7 +814,7 @@ const handlePayPalPaymentFailed = async (webhookEvent) => {
     }`;
     await payment.save();
   } catch (error) {
-    console.error("Error handling PayPal payment failure:", error);
+    logger.error("Error handling PayPal payment failure:", error);
   }
 };
 

@@ -175,24 +175,14 @@ const AdminPayments = () => {
     { id: 'analytics', label: 'Analytics', icon: PieChart }
   ];
 
-  // Debug logging
-  console.log('🔍 Payment stats:', paymentStats);
-  console.log('🔍 Course transfers:', courseTransfers);
-  console.log('🔍 Billing transfers:', billingTransfers);
-  console.log('🔍 All pending transfers:', allPendingTransfers);
-  console.log('🔍 Combined pending transfers:', allPendingTransfers);
-  
   // Log any errors
   if (statsError) {
-    console.log('❌ Stats error:', statsError);
     toast.error('Failed to load payment statistics');
   }
   if (courseTransfersError) {
-    console.log('❌ Course transfers error:', courseTransfersError);
     toast.error('Failed to load course transfers');
   }
   if (billingTransfersError) {
-    console.log('❌ Billing transfers error:', billingTransfersError);
     toast.error('Failed to load billing transfers - Server error (500)');
   }
 

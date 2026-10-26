@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 /**
  * Zoom Controller
  *
@@ -91,7 +92,7 @@ const generateZoomSignature = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error generating Zoom signature:", error);
+    logger.error("Error generating Zoom signature:", error);
     res.status(500).json({
       success: false,
       message: "Error generating meeting signature",
@@ -151,7 +152,7 @@ const getZoomMeetingDetails = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error getting Zoom meeting details:", error);
+    logger.error("Error getting Zoom meeting details:", error);
     res.status(500).json({
       success: false,
       message: "Error retrieving meeting details",
@@ -191,7 +192,7 @@ const handleZoomWebhook = async (req, res) => {
 
     res.status(200).json({ success: true });
   } catch (error) {
-    console.error("Error handling Zoom webhook:", error);
+    logger.error("Error handling Zoom webhook:", error);
     res.status(500).json({
       success: false,
       message: "Error processing webhook",
@@ -213,7 +214,7 @@ const handleMeetingStarted = async (payload) => {
       await session.startSession();
     }
   } catch (error) {
-    console.error("Error handling meeting started:", error);
+    logger.error("Error handling meeting started:", error);
   }
 };
 
@@ -230,7 +231,7 @@ const handleMeetingEnded = async (payload) => {
       await session.endSession();
     }
   } catch (error) {
-    console.error("Error handling meeting ended:", error);
+    logger.error("Error handling meeting ended:", error);
   }
 };
 
@@ -255,7 +256,7 @@ const handleParticipantJoined = async (payload) => {
       }
     }
   } catch (error) {
-    console.error("Error handling participant joined:", error);
+    logger.error("Error handling participant joined:", error);
   }
 };
 
@@ -280,7 +281,7 @@ const handleParticipantLeft = async (payload) => {
       }
     }
   } catch (error) {
-    console.error("Error handling participant left:", error);
+    logger.error("Error handling participant left:", error);
   }
 };
 

@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 const Certificate = require("../models/Certificate");
 const Course = require("../models/Course");
 const User = require("../models/User");
@@ -228,7 +229,7 @@ The Mentora Team
 
      } catch (emailError) {
        // Don't fail the request if email fails
-       console.error("Error sending email:", emailError);
+       logger.error("Error sending email:", emailError);
     }
 
     res.status(201).json({

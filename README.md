@@ -1,4 +1,4 @@
-# 🎓 Mentora - Enterprise Learning Management Platform
+﻿# 🎓 Mentora - Enterprise Learning Management Platform
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](https://nodejs.org/)
@@ -360,7 +360,7 @@ npm run dev
 ## 📁 Project Structure
 
 ```
-LearnTrack/
+Mentora/
 ├── client/                 # React Frontend Application
 │   ├── public/            # Static assets
 │   ├── src/
@@ -413,7 +413,7 @@ npm run lint       # Run ESLint
 
 ## 🤝 Contributing
 
-We welcome contributions to LearnTrack! Please follow these steps:
+We welcome contributions to Mentora! Please follow these steps:
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
@@ -432,9 +432,9 @@ We welcome contributions to LearnTrack! Please follow these steps:
 
 If you encounter any issues or have questions:
 
-- 📧 Email: support@learntrack.com
-- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/learntrack/issues)
-- 📖 Documentation: [Wiki](https://github.com/yourusername/learntrack/wiki)
+- 📧 Email: support@Mentora.com
+- 🐛 Issues: [GitHub Issues](https://github.com/yourusername/Mentora/issues)
+- 📖 Documentation: [Wiki](https://github.com/yourusername/Mentora/wiki)
 
 ## 📄 License
 
@@ -449,4 +449,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Built with ❤️ by the LearnTrack Team**
+**Built with ❤️ by the Mentora Team**

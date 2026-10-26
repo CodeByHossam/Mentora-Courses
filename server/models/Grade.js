@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 const mongoose = require("mongoose");
 
 const gradeSchema = new mongoose.Schema(
@@ -218,7 +219,7 @@ gradeSchema.pre("save", function (next) {
 
   // Calculate percentage for test grades
   if (this.gradeType === "test_grade") {
-    console.log("Pre-save middleware - testGrade data:", {
+    logger.info("Pre-save middleware - testGrade data:", {
       totalPoints: this.testGrade.totalPoints,
       earnedPoints: this.testGrade.earnedPoints,
       totalPointsType: typeof this.testGrade.totalPoints,
@@ -230,9 +231,9 @@ gradeSchema.pre("save", function (next) {
         Math.round(
           (this.testGrade.earnedPoints / this.testGrade.totalPoints) * 100 * 100
         ) / 100;
-      console.log("Calculated percentage:", this.testGrade.percentage);
+      logger.info("Calculated percentage:", this.testGrade.percentage);
     } else {
-      console.log(
+      logger.info(
         "Cannot calculate percentage - totalPoints is 0 or undefined"
       );
     }

@@ -1,4 +1,4 @@
-# 🚀 Mentora Deployment Guide
+﻿# 🚀 Mentora Deployment Guide
 
 [![Deployment Status](https://img.shields.io/badge/Deployment-Ready-green.svg)]()
 [![Docker](https://img.shields.io/badge/Docker-Supported-blue.svg)]()
@@ -69,8 +69,8 @@ API_URL=https://api.mentora.com
 # ==========================================
 # DATABASE CONFIGURATION
 # ==========================================
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/learntrack?retryWrites=true&w=majority
-MONGO_DB_NAME=learntrack_production
+MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/Mentora?retryWrites=true&w=majority
+MONGO_DB_NAME=Mentora_production
 DB_CONNECTION_TIMEOUT=30000
 DB_MAX_POOL_SIZE=10
 DB_MIN_POOL_SIZE=5
@@ -111,7 +111,7 @@ REDIS_TTL=3600
 # ==========================================
 RATE_LIMIT_WINDOW_MS=900000  # 15 minutes
 RATE_LIMIT_MAX_REQUESTS=100
-CORS_ORIGIN=https://learntrack.com,https://app.learntrack.com
+CORS_ORIGIN=https://Mentora.com,https://app.Mentora.com
 TRUSTED_PROXIES=cloudflare
 SECURE_COOKIES=true
 SAME_SITE_COOKIES=strict
@@ -140,7 +140,7 @@ SENTRY_DSN=your-sentry-dsn-url
 CACHE_ENABLED=true
 CACHE_TTL=3600
 COMPRESSION_ENABLED=true
-CDN_URL=https://cdn.learntrack.com
+CDN_URL=https://cdn.Mentora.com
 
 # ==========================================
 # FEATURE FLAGS
@@ -216,7 +216,7 @@ npm install -g pm2
 ```javascript
 module.exports = {
   apps: [{
-    name: 'learntrack-api',
+    name: 'Mentora-api',
     script: './server/server.js',
     instances: 'max',
     exec_mode: 'cluster',
@@ -318,7 +318,7 @@ volumes:
 ```bash
 # Install Heroku CLI
 # Create Heroku app
-heroku create learntrack-app
+heroku create Mentora-app
 
 # Set environment variables
 heroku config:set NODE_ENV=production
@@ -463,13 +463,13 @@ const logger = winston.createLogger({
 ### Debug Commands
 ```bash
 # Check application logs
-pm2 logs learntrack-api
+pm2 logs Mentora-api
 
 # Monitor system resources
 pm2 monit
 
 # Restart application
-pm2 restart learntrack-api
+pm2 restart Mentora-api
 
 # Check database connection
 mongo $MONGO_URI --eval "db.adminCommand('ismaster')"
@@ -480,9 +480,9 @@ mongo $MONGO_URI --eval "db.adminCommand('ismaster')"
 ### Application Rollback
 ```bash
 # Using PM2
-pm2 stop learntrack-api
+pm2 stop Mentora-api
 # Deploy previous version
-pm2 start learntrack-api
+pm2 start Mentora-api
 
 # Using Docker
 docker-compose down
@@ -515,9 +515,9 @@ node migrations/videoMigration.js rollback
 
 | Role | Contact | Availability | Purpose |
 |------|---------|--------------|----------|
-| **DevOps Lead** | devops@learntrack.com | 24/7 | Infrastructure issues |
-| **Development Team** | dev@learntrack.com | Business hours | Application bugs |
-| **Security Team** | security@learntrack.com | 24/7 | Security incidents |
+| **DevOps Lead** | devops@Mentora.com | 24/7 | Infrastructure issues |
+| **Development Team** | dev@Mentora.com | Business hours | Application bugs |
+| **Security Team** | security@Mentora.com | 24/7 | Security incidents |
 | **Emergency Hotline** | +1-555-DEPLOY-1 | 24/7 | Critical system failures |
 
 ### 🚨 Escalation Matrix
@@ -529,10 +529,10 @@ node migrations/videoMigration.js rollback
 
 ### 📚 Additional Resources
 
-- **Documentation Wiki**: [https://wiki.learntrack.com](https://wiki.learntrack.com)
-- **Status Page**: [https://status.learntrack.com](https://status.learntrack.com)
-- **Deployment Logs**: [https://logs.learntrack.com](https://logs.learntrack.com)
-- **Monitoring Dashboard**: [https://monitoring.learntrack.com](https://monitoring.learntrack.com)
+- **Documentation Wiki**: [https://wiki.Mentora.com](https://wiki.Mentora.com)
+- **Status Page**: [https://status.Mentora.com](https://status.Mentora.com)
+- **Deployment Logs**: [https://logs.Mentora.com](https://logs.Mentora.com)
+- **Monitoring Dashboard**: [https://monitoring.Mentora.com](https://monitoring.Mentora.com)
 
 ---
 
@@ -542,3 +542,61 @@ node migrations/videoMigration.js rollback
 **Maintained By**: DevOps Team  
 
 *For urgent deployment issues, please use the emergency hotline or contact the on-call engineer directly.*
+
+
+---
+
+# Rollback Plan (consolidated)
+
+
+# Rollback Plan
+
+## Scope
+Rollback guidance for Mentora optimization phases (0-5).
+
+## Triggers
+- Health check `/api/health` fails or DB disconnected.
+- Payment/checkout flows return 5xx.
+- Client build/runtime errors.
+
+## Steps
+1. Revert application code to previous release tag/commit.
+2. Restore environment variables from backup (`.env`).
+3. Restart server: `npm start` (port 5000).
+4. Rebuild client: `npm run build` in `client/`.
+5. Verify health: `GET /api/health` returns 200.
+6. Run smoke tests: login, course list, payment initiation, certificate.
+
+## Database
+- No destructive migrations were applied; collections remain compatible.
+- If needed, restore MongoDB from backup snapshot.
+
+## Cache
+- In-memory cache clears on process restart; no persistent cache to invalidate.
+
+## Notes
+- Keep `AUTO_COMPLETE_PAYMENTS` disabled in production.
+- Monitor logs for 30 minutes after rollback.
+
+
+---
+
+# Performance Notes (consolidated)
+
+
+# Mentora-Courses — Performance Report
+
+## Build (Vite)
+- Main JS: ~1,229 kB (gzip ~283 kB)
+- Multiple route chunks split (good)
+- CSS included in build
+
+## Findings
+- Large main chunk; consider manualChunks for vendor libs (React, Redux, Stripe, Zoom).
+- Route-level splitting exists but vendor bundling is heavy.
+
+## Recommendations
+- Configure `rollupOptions.output.manualChunks` to split vendors
+- Lazy-load Zoom/WebSDK and Stripe components
+- Optimize images/assets, use compression
+- Add preconnect/prefetch for critical resources

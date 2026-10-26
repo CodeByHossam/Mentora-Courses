@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
@@ -27,7 +28,7 @@ const logMessage = (message, fileName = 'app.log') => {
 
     fs.appendFileSync(filePath, logEntry, 'utf8');
   } catch (err) {
-    console.error('Failed to write log:', err);
+    logger.error('Failed to write log:', err);
   }
 };
 

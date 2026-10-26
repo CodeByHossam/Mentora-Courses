@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 const Grade = require("../models/Grade");
 const User = require("../models/User");
 const Course = require("../models/Course");
@@ -100,7 +101,7 @@ const createFinalGrade = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Create final grade error:", error);
+    logger.error("Create final grade error:", error);
     res.status(500).json({
       success: false,
       message: "Failed to save final grade",
@@ -138,7 +139,7 @@ const createTestGrade = async (req, res) => {
     const instructorId = req.user.id;
 
     // Debug logging
-    console.log("Create test grade request body:", {
+    logger.info("Create test grade request body:", {
       studentId,
       courseId,
       testId,
@@ -233,7 +234,7 @@ const createTestGrade = async (req, res) => {
           ? Math.round((earnedPointsNum / totalPointsNum) * 100 * 100) / 100
           : 0;
 
-      console.log("Manually calculated percentage:", percentage);
+      logger.info("Manually calculated percentage:", percentage);
 
       // Create new test grade
       grade = new Grade({
@@ -271,7 +272,7 @@ const createTestGrade = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Create test grade error:", error);
+    logger.error("Create test grade error:", error);
     res.status(500).json({
       success: false,
       message: "Failed to save test grade",
@@ -290,7 +291,7 @@ const getCourseGrades = async (req, res) => {
   try {
     const { courseId } = req.params;
     const instructorId = req.user.id;
-    console.log(
+    logger.info(
       "Getting grades for course:",
       courseId,
       "instructor:",
@@ -311,7 +312,7 @@ const getCourseGrades = async (req, res) => {
 
     // Get all enrolled students for this course
     const enrolledStudents = course.enrolledStudents || [];
-    console.log("Enrolled students:", enrolledStudents.length);
+    logger.info("Enrolled students:", enrolledStudents.length);
 
     // Get all grades for the course
     const grades = await Grade.find({ courseId, status: "published" })
@@ -319,7 +320,7 @@ const getCourseGrades = async (req, res) => {
       .populate("courseId", "title")
       .sort({ "studentId.name": 1, gradeType: 1 });
 
-    console.log("Found grades:", grades.length);
+    logger.info("Found grades:", grades.length);
 
     // Group grades by student
     const studentGrades = {};
@@ -368,7 +369,7 @@ const getCourseGrades = async (req, res) => {
         );
         studentGrades[studentId].summary = summary;
       } catch (summaryError) {
-        console.error(
+        logger.error(
           "Error calculating summary for student:",
           studentId,
           summaryError
@@ -387,7 +388,7 @@ const getCourseGrades = async (req, res) => {
     try {
       statistics = await Grade.getCourseStatistics(courseId);
     } catch (statsError) {
-      console.error("Error getting course statistics:", statsError);
+      logger.error("Error getting course statistics:", statsError);
       statistics = [];
     }
 
@@ -404,7 +405,7 @@ const getCourseGrades = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Get course grades error:", error);
+    logger.error("Get course grades error:", error);
     res.status(500).json({
       success: false,
       message: "Failed to retrieve course grades",
@@ -464,7 +465,7 @@ const getStudentGrades = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Get student grades error:", error);
+    logger.error("Get student grades error:", error);
     res.status(500).json({
       success: false,
       message: "Failed to retrieve grades",
@@ -544,7 +545,7 @@ const getAllStudentGrades = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Get all student grades error:", error);
+    logger.error("Get all student grades error:", error);
     res.status(500).json({
       success: false,
       message: "Failed to retrieve grades",
@@ -588,7 +589,7 @@ const deleteGrade = async (req, res) => {
       message: "Grade deleted successfully",
     });
   } catch (error) {
-    console.error("Delete grade error:", error);
+    logger.error("Delete grade error:", error);
     res.status(500).json({
       success: false,
       message: "Failed to delete grade",
@@ -648,7 +649,7 @@ const getCourseTests = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Get course tests error:", error);
+    logger.error("Get course tests error:", error);
     res.status(500).json({
       success: false,
       message: "Failed to retrieve course tests",

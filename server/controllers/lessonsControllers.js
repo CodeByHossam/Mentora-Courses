@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 const Course = require("../models/Course");
 const Lesson = require("../models/lessonModel");
 const {
@@ -16,7 +17,7 @@ const extractCloudinaryFileInfo = (url) => {
 
   const match = url.match(/upload\/(?:v\d+\/)?(.+)\.([a-z0-9]+)$/i);
   if (!match) {
-    console.warn("❌ Could not extract file info from Cloudinary URL:", url);
+    logger.warn("❌ Could not extract file info from Cloudinary URL:", url);
     return null;
   }
 
@@ -44,7 +45,7 @@ const getLessons = async (req, res) => {
       data: lessons,
     });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -68,7 +69,7 @@ const getLesson = async (req, res) => {
       data: lesson,
     });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -94,7 +95,7 @@ const getCourseLessons = async (req, res) => {
       data: lessons,
     });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -179,7 +180,7 @@ const addLesson = async (req, res) => {
       data: newLesson,
     });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -248,7 +249,7 @@ const updateLesson = async (req, res) => {
       data: updatedLesson,
     });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -290,7 +291,7 @@ const deleteLesson = async (req, res) => {
       message: "Lesson and its media deleted successfully",
     });
   } catch (error) {
-    console.error("❌ Delete lesson error:", error);
+    logger.error("❌ Delete lesson error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

@@ -1,3 +1,4 @@
+const logger = require('./logger');
 /**
  * Password Reset Utility
  *
@@ -28,7 +29,7 @@ const resetPasswords = async () => {
   try {
     // Connect to MongoDB
     await mongoose.connect(process.env.MONGO_URI);
-    console.log("✅ Connected to MongoDB");
+    logger.info("✅ Connected to MongoDB");
 
     // Define correct passwords
     const passwords = {
@@ -40,7 +41,7 @@ const resetPasswords = async () => {
     const hashedAdminPassword = await hashPassword(passwords.admin);
     const hashedInstructorPassword = await hashPassword(passwords.instructor);
 
-    console.log("🔐 Hashing passwords...");
+    logger.info("🔐 Hashing passwords...");
 
     // Update admin password
     const adminResult = await User.updateMany(
@@ -62,13 +63,13 @@ const resetPasswords = async () => {
       }
     );
 
-    console.log(`✅ Updated ${adminResult.modifiedCount} admin account(s)`);
-    console.log(
+    logger.info(`✅ Updated ${adminResult.modifiedCount} admin account(s)`);
+    logger.info(
       `✅ Updated ${instructorResult.modifiedCount} instructor account(s)`
     );
 
     // Verify the passwords work
-    console.log("\n🔍 Verifying passwords...");
+    logger.info("\n🔍 Verifying passwords...");
 
     const adminUser = await User.findOne({ role: "admin" });
     if (adminUser) {
@@ -76,7 +77,7 @@ const resetPasswords = async () => {
         passwords.admin,
         adminUser.password
       );
-      console.log(
+      logger.info(
         `Admin password validation: ${
           adminPasswordValid ? "✅ VALID" : "❌ INVALID"
         }`
@@ -89,23 +90,23 @@ const resetPasswords = async () => {
         passwords.instructor,
         instructorUser.password
       );
-      console.log(
+      logger.info(
         `Instructor password validation: ${
           instructorPasswordValid ? "✅ VALID" : "❌ INVALID"
         }`
       );
     }
 
-    console.log("\n🎉 Password reset completed successfully!");
-    console.log("📋 Login credentials:");
-    console.log("   Admin: email + password '123456'");
-    console.log("   Instructor: email + password '123456'");
+    logger.info("\n🎉 Password reset completed successfully!");
+    logger.info("📋 Login credentials:");
+    logger.info("   Admin: email + password '123456'");
+    logger.info("   Instructor: email + password '123456'");
   } catch (error) {
-    console.error("❌ Error resetting passwords:", error);
+    logger.error("❌ Error resetting passwords:", error);
   } finally {
     // Close MongoDB connection
     await mongoose.connection.close();
-    console.log("🔌 Disconnected from MongoDB");
+    logger.info("🔌 Disconnected from MongoDB");
     process.exit(0);
   }
 };

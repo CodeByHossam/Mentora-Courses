@@ -1,3 +1,4 @@
+const logger = require('./logger');
 /**
  * Zoom Authentication Utility
  * 
@@ -16,7 +17,7 @@ const getZoomAccessToken = async () => {
 
 
     if (!ZOOM_API_KEY || !ZOOM_API_SECRET || !ZOOM_ACCOUNT_ID) {
-      console.error("❌ Missing Zoom credentials in environment variables");
+      logger.error("❌ Missing Zoom credentials in environment variables");
       return null;
     }
 
@@ -37,10 +38,10 @@ const getZoomAccessToken = async () => {
     return response.data.access_token;
     
   } catch (error) {
-    console.error("❌ Error getting Zoom access token:");
-    console.error("Status:", error.response?.status);
-    console.error("Data:", error.response?.data);
-    console.error("Message:", error.message);
+    logger.error("❌ Error getting Zoom access token:");
+    logger.error("Status:", error.response?.status);
+    logger.error("Data:", error.response?.data);
+    logger.error("Message:", error.message);
     return null;
   }
 };

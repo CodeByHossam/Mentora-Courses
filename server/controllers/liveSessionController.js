@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 /**
  * Live Session Controller
  *
@@ -144,7 +145,7 @@ Mentora Team
 
     await Promise.all(emailPromises);
   } catch (error) {
-    console.error("Error sending session reminder:", error);
+    logger.error("Error sending session reminder:", error);
   }
 };
 
@@ -304,7 +305,7 @@ const createLiveSession = async (req, res) => {
         zoomStartUrl = zoomResponse.data.start_url;
         zoomPassword = zoomResponse.data.password;
       } catch (zoomError) {
-        console.error(
+        logger.error(
           "Zoom API Error:",
           zoomError.response?.data || zoomError.message
         );
@@ -356,7 +357,7 @@ const createLiveSession = async (req, res) => {
       data: populatedSession,
     });
   } catch (error) {
-    console.error(
+    logger.error(
       " Create LiveSession Error:",
       error.response?.data || error.message
     );
@@ -438,7 +439,7 @@ const getSessionsByCourse = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching sessions by course:", error);
+    logger.error("Error fetching sessions by course:", error);
     res.status(500).json({
       success: false,
       message: "Error fetching sessions",
@@ -494,7 +495,7 @@ const getInstructorSessions = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching instructor sessions:", error);
+    logger.error("Error fetching instructor sessions:", error);
     res.status(500).json({
       success: false,
       message: "Error fetching sessions",
@@ -552,7 +553,7 @@ const getStudentSessions = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching student sessions:", error);
+    logger.error("Error fetching student sessions:", error);
     res.status(500).json({
       success: false,
       message: "Error fetching sessions",
@@ -600,7 +601,7 @@ const getLiveSession = async (req, res) => {
       data: session,
     });
   } catch (error) {
-    console.error("Error fetching live session:", error);
+    logger.error("Error fetching live session:", error);
     res.status(500).json({
       success: false,
       message: "Error fetching session",
@@ -757,7 +758,7 @@ const updateLiveSession = async (req, res) => {
       data: updatedSession,
     });
   } catch (error) {
-    console.error("Error updating live session:", error);
+    logger.error("Error updating live session:", error);
     res.status(500).json({
       success: false,
       message: "Error updating session",
@@ -827,7 +828,7 @@ const deleteLiveSession = async (req, res) => {
       message: "Live session deleted successfully",
     });
   } catch (error) {
-    console.error("Error deleting live session:", error);
+    logger.error("Error deleting live session:", error);
     res.status(500).json({
       success: false,
       message: "Error deleting session",
@@ -891,7 +892,7 @@ const joinLiveSession = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error joining live session:", error);
+    logger.error("Error joining live session:", error);
     res.status(500).json({
       success: false,
       message: "Error joining session",
@@ -924,7 +925,7 @@ const leaveLiveSession = async (req, res) => {
       message: "Successfully left the session",
     });
   } catch (error) {
-    console.error("Error leaving live session:", error);
+    logger.error("Error leaving live session:", error);
     res.status(500).json({
       success: false,
       message: "Error leaving session",
@@ -985,7 +986,7 @@ const startLiveSession = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error starting live session:", error);
+    logger.error("Error starting live session:", error);
     res.status(500).json({
       success: false,
       message: "Error starting session",
@@ -1038,7 +1039,7 @@ const endLiveSession = async (req, res) => {
       data: session,
     });
   } catch (error) {
-    console.error("Error ending live session:", error);
+    logger.error("Error ending live session:", error);
     res.status(500).json({
       success: false,
       message: "Error ending session",
@@ -1102,7 +1103,7 @@ const uploadSessionRecording = async (req, res) => {
       data: session,
     });
   } catch (error) {
-    console.error("Error uploading session recording:", error);
+    logger.error("Error uploading session recording:", error);
     res.status(500).json({
       success: false,
       message: "Error uploading recording",
@@ -1192,7 +1193,7 @@ const getAllLiveSessions = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching all live sessions:", error);
+    logger.error("Error fetching all live sessions:", error);
     res.status(500).json({
       success: false,
       message: "Error fetching live sessions",
@@ -1246,7 +1247,7 @@ const cancelLiveSession = async (req, res) => {
       data: session,
     });
   } catch (error) {
-    console.error("Error cancelling session:", error);
+    logger.error("Error cancelling session:", error);
     res.status(500).json({
       success: false,
       message: "Error cancelling session",
@@ -1288,7 +1289,7 @@ const testZoomCredentials = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error(
+    logger.error(
       "❌ Zoom test failed:",
       error.response?.data || error.message
     );

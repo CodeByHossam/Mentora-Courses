@@ -1,5 +1,14 @@
 // utils/createError.js
-const createError = (message, statusCode = 500, details = {}) => {
+const createError = (first, second = 500, details = {}) => {
+  let message;
+  let statusCode;
+  if (typeof first === "number" && typeof second === "string") {
+    statusCode = first;
+    message = second;
+  } else {
+    message = first;
+    statusCode = typeof second === "number" ? second : 500;
+  }
   const error = new Error(message);
   error.statusCode = statusCode;
   error.details = details;

@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 // models/StudentBillingAccount.js
 /**
  * StudentBillingAccount
@@ -176,8 +177,8 @@ studentBillingAccountSchema.methods.addCoursePurchase = function (purchaseData =
   const now = new Date();
   const prevLastPurchase = this.statistics.lastPurchaseDate;
 
-  console.log(`📊 [STUDENT] Adding purchase - Amount: $${purchaseData.purchaseAmount || 0}`);
-  console.log(`   Before: totalCoursePurchases=$${this.totalCoursePurchases}`);
+  logger.info(`📊 [STUDENT] Adding purchase - Amount: $${purchaseData.purchaseAmount || 0}`);
+  logger.info(`   Before: totalCoursePurchases=$${this.totalCoursePurchases}`);
 
   // Add to purchase history
   this.coursePurchases.push(Object.assign({ purchaseDate: now }, purchaseData));
@@ -185,7 +186,7 @@ studentBillingAccountSchema.methods.addCoursePurchase = function (purchaseData =
   // 📦 ADD TO PERMANENT BOX
   this.totalCoursePurchases += (purchaseData.purchaseAmount || 0);
   
-  console.log(`   After: totalCoursePurchases=$${this.totalCoursePurchases}`);
+  logger.info(`   After: totalCoursePurchases=$${this.totalCoursePurchases}`);
   
   // Update statistics
   this.statistics.totalCoursesEnrolled = (this.statistics.totalCoursesEnrolled || 0) + 1;

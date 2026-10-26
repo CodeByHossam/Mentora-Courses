@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 const User = require("../models/User");
 const Course = require("../models/Course");
 const asyncHandler = require("express-async-handler");
@@ -68,7 +69,7 @@ const createUser = asyncHandler(async (req, res) => {
       text: `Hello ${user.name},\n\nWelcome! Please verify your email by clicking the link below:\n\n${verificationLink}\n\nThis link is valid for 30 minutes.`,
     });
   } catch (err) {
-    console.error("Error sending verification email:", err);
+    logger.error("Error sending verification email:", err);
   }
 
   res.status(201).json({
@@ -203,10 +204,10 @@ const deleteUser = asyncHandler(async (req, res) => {
       const imageMatch = user.profilePicture.match(/\/upload\/(?:v\d+\/)?(.+?)\.([a-z0-9]+)/i);
       if (imageMatch && imageMatch[1]) {
         await deleteFromCloudinary(imageMatch[1], 'image');
-        console.log(`✅ Deleted profile picture for user: ${user.name}`);
+        logger.info(`✅ Deleted profile picture for user: ${user.name}`);
       }
     } catch (error) {
-      console.error(`Failed to delete user profile picture: ${error.message}`);
+      logger.error(`Failed to delete user profile picture: ${error.message}`);
     }
   }
 
@@ -386,7 +387,7 @@ const resendVerificationEmail = asyncHandler(async (req, res) => {
       message: "Verification link resent to your email",
     });
   } catch (err) {
-    console.error("Error resending verification email:", err);
+    logger.error("Error resending verification email:", err);
     res.status(500);
     throw new Error("Failed to resend verification email");
   }
@@ -424,7 +425,7 @@ const getAdminBankDetails = asyncHandler(async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching admin bank details:", error);
+    logger.error("Error fetching admin bank details:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch admin bank details",

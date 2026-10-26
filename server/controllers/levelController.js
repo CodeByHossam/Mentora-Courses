@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 const Level = require("../models/Level");
 const Course = require("../models/Course");
 const User = require("../models/User");
@@ -25,11 +26,11 @@ const ensureGeneralLevel = async () => {
           isActive: true,
           createdBy: adminUser._id,
         });
-        console.log("✅ Created default General level");
+        logger.info("✅ Created default General level");
       }
     }
   } catch (error) {
-    console.error("❌ Error ensuring General level:", error);
+    logger.error("❌ Error ensuring General level:", error);
   }
 };
 
@@ -96,7 +97,7 @@ const getLevels = async (req, res) => {
     const totalLevels = await Level.countDocuments(filter);
     const totalPages = Math.ceil(totalLevels / parseInt(limit));
 
-    console.log(
+    logger.info(
       `📊 Retrieved ${levels.length} levels (page ${page}/${totalPages})`
     );
 
@@ -116,7 +117,7 @@ const getLevels = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Error getting levels:", error);
+    logger.error("❌ Error getting levels:", error);
     res.status(500).json({
       success: false,
       message: "Failed to retrieve levels",
@@ -163,7 +164,7 @@ const getLevel = async (req, res) => {
       recentCourses: courses,
     };
 
-    console.log(
+    logger.info(
       `📖 Retrieved level: ${level.name} with ${stats.courseCount} courses`
     );
 
@@ -173,7 +174,7 @@ const getLevel = async (req, res) => {
       data: levelWithDetails,
     });
   } catch (error) {
-    console.error("❌ Error getting level:", error);
+    logger.error("❌ Error getting level:", error);
     res.status(500).json({
       success: false,
       message: "Failed to retrieve level",
@@ -190,14 +191,14 @@ const getLevel = async (req, res) => {
  */
 const createLevel = async (req, res) => {
   try {
-    console.log("🔍 CREATE LEVEL - Request received");
-    console.log("🔍 User:", req.user?.name, "Role:", req.user?.role);
-    console.log("🔍 Request body:", req.body);
+    logger.info("🔍 CREATE LEVEL - Request received");
+    logger.info("🔍 User:", req.user?.name, "Role:", req.user?.role);
+    logger.info("🔍 Request body:", req.body);
 
     // Check validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      console.log("❌ Validation errors:", errors.array());
+      logger.info("❌ Validation errors:", errors.array());
       return res.status(400).json({
         success: false,
         message: "Validation failed",
@@ -247,7 +248,7 @@ const createLevel = async (req, res) => {
     await level.populate("createdBy", "name email role");
     await level.populate("prerequisites", "name difficulty color");
 
-    console.log(`✅ Level created: ${level.name} by ${req.user.name}`);
+    logger.info(`✅ Level created: ${level.name} by ${req.user.name}`);
 
     res.status(201).json({
       success: true,
@@ -255,7 +256,7 @@ const createLevel = async (req, res) => {
       data: level,
     });
   } catch (error) {
-    console.error("❌ Error creating level:", error);
+    logger.error("❌ Error creating level:", error);
 
     if (error.code === 11000) {
       return res.status(400).json({
@@ -355,7 +356,7 @@ const updateLevel = async (req, res) => {
     await level.populate("updatedBy", "name email role");
     await level.populate("prerequisites", "name difficulty color");
 
-    console.log(`✅ Level updated: ${level.name} by ${req.user.name}`);
+    logger.info(`✅ Level updated: ${level.name} by ${req.user.name}`);
 
     res.status(200).json({
       success: true,
@@ -363,7 +364,7 @@ const updateLevel = async (req, res) => {
       data: level,
     });
   } catch (error) {
-    console.error("❌ Error updating level:", error);
+    logger.error("❌ Error updating level:", error);
 
     if (error.code === 11000) {
       return res.status(400).json({
@@ -411,14 +412,14 @@ const deleteLevel = async (req, res) => {
 
     await Level.findByIdAndDelete(id);
 
-    console.log(`🗑️ Level deleted: ${level.name} by ${req.user.name}`);
+    logger.info(`🗑️ Level deleted: ${level.name} by ${req.user.name}`);
 
     res.status(200).json({
       success: true,
       message: "Level deleted successfully",
     });
   } catch (error) {
-    console.error("❌ Error deleting level:", error);
+    logger.error("❌ Error deleting level:", error);
     res.status(500).json({
       success: false,
       message: "Failed to delete level",
@@ -448,7 +449,7 @@ const getLevelStatistics = async (req, res) => {
 
     const stats = await Level.getLevelStatistics(id);
 
-    console.log(`📊 Retrieved statistics for level: ${level.name}`);
+    logger.info(`📊 Retrieved statistics for level: ${level.name}`);
 
     res.status(200).json({
       success: true,
@@ -460,7 +461,7 @@ const getLevelStatistics = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Error getting level statistics:", error);
+    logger.error("❌ Error getting level statistics:", error);
     res.status(500).json({
       success: false,
       message: "Failed to retrieve level statistics",
@@ -493,14 +494,14 @@ const reorderLevels = async (req, res) => {
 
     await Promise.all(updatePromises);
 
-    console.log(`🔄 Level order updated by ${req.user.name}`);
+    logger.info(`🔄 Level order updated by ${req.user.name}`);
 
     res.status(200).json({
       success: true,
       message: "Level order updated successfully",
     });
   } catch (error) {
-    console.error("❌ Error reordering levels:", error);
+    logger.error("❌ Error reordering levels:", error);
     res.status(500).json({
       success: false,
       message: "Failed to reorder levels",
@@ -561,7 +562,7 @@ const getLevelsDashboard = async (req, res) => {
       recentLevels,
     };
 
-    console.log(`📊 Retrieved levels dashboard data`);
+    logger.info(`📊 Retrieved levels dashboard data`);
 
     res.status(200).json({
       success: true,
@@ -569,7 +570,7 @@ const getLevelsDashboard = async (req, res) => {
       data: dashboardData,
     });
   } catch (error) {
-    console.error("❌ Error getting levels dashboard:", error);
+    logger.error("❌ Error getting levels dashboard:", error);
     res.status(500).json({
       success: false,
       message: "Failed to retrieve levels dashboard data",

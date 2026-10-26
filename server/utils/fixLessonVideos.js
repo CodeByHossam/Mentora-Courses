@@ -1,3 +1,4 @@
+const logger = require('./logger');
 const mongoose = require('mongoose');
 const Lesson = require('../models/lessonModel');
 require('dotenv').config();
@@ -10,36 +11,36 @@ require('dotenv').config();
 const fixLessonVideos = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    console.log('📊 Connected to MongoDB');
+    logger.info('📊 Connected to MongoDB');
 
     // Find lessons that might have video issues
     const lessons = await Lesson.find({});
-    console.log(`🔍 Found ${lessons.length} lessons to check`);
+    logger.info(`🔍 Found ${lessons.length} lessons to check`);
 
     let fixedCount = 0;
     let issuesFound = 0;
 
     for (const lesson of lessons) {
-      console.log(`\n📝 Checking lesson: ${lesson.title} (ID: ${lesson._id})`);
+      logger.info(`\n📝 Checking lesson: ${lesson.title} (ID: ${lesson._id})`);
       
       // Check if lesson has any video-related fields
       const hasVideoUrl = lesson.video || lesson.videoUrl;
       const hasVideoRef = lesson.videoRef?.publicId;
       
-      console.log(`  - Has video URL: ${!!hasVideoUrl}`);
-      console.log(`  - Has videoRef.publicId: ${!!hasVideoRef}`);
-      console.log(`  - VideoRef structure:`, lesson.videoRef);
+      logger.info(`  - Has video URL: ${!!hasVideoUrl}`);
+      logger.info(`  - Has videoRef.publicId: ${!!hasVideoRef}`);
+      logger.info(`  - VideoRef structure:`, lesson.videoRef);
 
       // Case 1: Has old video URL but no videoRef
       if (hasVideoUrl && !hasVideoRef) {
-        console.log(`  ⚠️  Issue found: Lesson has video URL but no videoRef.publicId`);
-        console.log(`  📹 Video URL: ${hasVideoUrl}`);
+        logger.info(`  ⚠️  Issue found: Lesson has video URL but no videoRef.publicId`);
+        logger.info(`  📹 Video URL: ${hasVideoUrl}`);
         
         // Try to extract Cloudinary public ID from URL
         const publicIdMatch = hasVideoUrl.match(/\/upload\/(?:v\d+\/)?(.+?)(?:\.[^.]+)?$/);
         if (publicIdMatch) {
           const publicId = publicIdMatch[1];
-          console.log(`  🔧 Extracted publicId: ${publicId}`);
+          logger.info(`  🔧 Extracted publicId: ${publicId}`);
           
           // Update lesson with proper videoRef structure
           await Lesson.findByIdAndUpdate(lesson._id, {
@@ -50,43 +51,43 @@ const fixLessonVideos = async () => {
             }
           });
           
-          console.log(`  ✅ Fixed lesson videoRef`);
+          logger.info(`  ✅ Fixed lesson videoRef`);
           fixedCount++;
         } else {
-          console.log(`  ❌ Could not extract publicId from URL`);
+          logger.info(`  ❌ Could not extract publicId from URL`);
           issuesFound++;
         }
       }
       
       // Case 2: No video at all
       else if (!hasVideoUrl && !hasVideoRef) {
-        console.log(`  ℹ️  No video content found (this is normal for text-only lessons)`);
+        logger.info(`  ℹ️  No video content found (this is normal for text-only lessons)`);
       }
       
       // Case 3: Already has proper videoRef
       else if (hasVideoRef) {
-        console.log(`  ✅ Lesson already has proper videoRef structure`);
+        logger.info(`  ✅ Lesson already has proper videoRef structure`);
       }
     }
 
-    console.log(`\n📊 Summary:`);
-    console.log(`  - Total lessons checked: ${lessons.length}`);
-    console.log(`  - Lessons fixed: ${fixedCount}`);
-    console.log(`  - Issues that need manual attention: ${issuesFound}`);
+    logger.info(`\n📊 Summary:`);
+    logger.info(`  - Total lessons checked: ${lessons.length}`);
+    logger.info(`  - Lessons fixed: ${fixedCount}`);
+    logger.info(`  - Issues that need manual attention: ${issuesFound}`);
     
     if (fixedCount > 0) {
-      console.log(`\n🎉 Successfully fixed ${fixedCount} lessons!`);
+      logger.info(`\n🎉 Successfully fixed ${fixedCount} lessons!`);
     }
     
     if (issuesFound > 0) {
-      console.log(`\n⚠️  ${issuesFound} lessons need manual attention. Check the logs above.`);
+      logger.info(`\n⚠️  ${issuesFound} lessons need manual attention. Check the logs above.`);
     }
 
   } catch (error) {
-    console.error('❌ Error fixing lesson videos:', error);
+    logger.error('❌ Error fixing lesson videos:', error);
   } finally {
     await mongoose.disconnect();
-    console.log('📊 Disconnected from MongoDB');
+    logger.info('📊 Disconnected from MongoDB');
   }
 };
 

@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 // models/BillingTransaction.js
 /**
  * BILLING TRANSACTION MODEL - IMMUTABLE AUDIT SYSTEM
@@ -167,7 +168,7 @@ billingTransactionSchema.methods.markCompleted = async function (adminId = null)
     }
   } catch (err) {
     // best-effort: don't throw to avoid breaking flow, but log in real app
-    // console.error("BillingTransaction.markCompleted: account update failed", err);
+    // logger.error("BillingTransaction.markCompleted: account update failed", err);
   }
 
   return this;

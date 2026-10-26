@@ -1,3 +1,4 @@
+const logger = require('./logger');
 /**
  * PAYOUT UTILITIES
  * 
@@ -153,7 +154,7 @@ const processDirectTransferPayment = async (payment, instructor) => {
     };
 
   } catch (error) {
-    console.error('Error processing direct transfer:', error);
+    logger.error('Error processing direct transfer:', error);
     throw error;
   }
 };
@@ -234,7 +235,7 @@ const processCardPayment = async (payment, instructor) => {
     };
 
   } catch (error) {
-    console.error('Error processing card payment:', error);
+    logger.error('Error processing card payment:', error);
     throw error;
   }
 };
@@ -303,7 +304,7 @@ const processAdminFeePayment = async (instructorId, amount, description = 'Admin
     };
 
   } catch (error) {
-    console.error('Error processing admin fee payment:', error);
+    logger.error('Error processing admin fee payment:', error);
     throw error;
   }
 };
@@ -352,7 +353,7 @@ const checkAccountStatus = async (instructorId) => {
     };
 
   } catch (error) {
-    console.error('Error checking account status:', error);
+    logger.error('Error checking account status:', error);
     throw error;
   }
 };

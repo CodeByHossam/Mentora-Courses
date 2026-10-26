@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 // controllers/adminFeePaymentController.js
 /**
  * Admin Fee Payment Controller
@@ -97,7 +98,7 @@ const submitAdminFeePayment = async (req, res) => {
 
     await adminFeePayment.save();
 
-    console.log("✅ Admin fee payment submitted:", {
+    logger.info("✅ Admin fee payment submitted:", {
       paymentId: adminFeePayment._id,
       instructorId,
       amount: paymentAmount,
@@ -118,7 +119,7 @@ const submitAdminFeePayment = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Error submitting admin fee payment:", error);
+    logger.error("❌ Error submitting admin fee payment:", error);
     res.status(500).json({
       success: false,
       message: "Failed to submit admin fee payment",
@@ -157,7 +158,7 @@ const getInstructorPayments = async (req, res) => {
               paymentObj.receiptUrl
             );
           } catch (error) {
-            console.error(
+            logger.error(
               "Error generating signed URL for payment:",
               paymentObj._id,
               error
@@ -188,7 +189,7 @@ const getInstructorPayments = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Error fetching instructor payments:", error);
+    logger.error("❌ Error fetching instructor payments:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch admin fee payments",
@@ -230,7 +231,7 @@ const getOutstandingAdminFees = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Error fetching outstanding admin fees:", error);
+    logger.error("❌ Error fetching outstanding admin fees:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch outstanding admin fees",
@@ -267,7 +268,7 @@ const cancelAdminFeePayment = async (req, res) => {
     );
     await payment.save();
 
-    console.log("✅ Admin fee payment cancelled:", {
+    logger.info("✅ Admin fee payment cancelled:", {
       paymentId,
       instructorId,
       amount: payment.paymentAmount,
@@ -279,7 +280,7 @@ const cancelAdminFeePayment = async (req, res) => {
       data: { payment },
     });
   } catch (error) {
-    console.error("❌ Error cancelling admin fee payment:", error);
+    logger.error("❌ Error cancelling admin fee payment:", error);
     res.status(500).json({
       success: false,
       message: "Failed to cancel admin fee payment",
@@ -296,9 +297,9 @@ const cancelAdminFeePayment = async (req, res) => {
  */
 const getPendingPayments = async (req, res) => {
   try {
-    console.log("🔍 ADMIN FEE PAYMENT - getPendingPayments called");
-    console.log("🔍 Request URL:", req.originalUrl);
-    console.log("🔍 Request Method:", req.method);
+    logger.info("🔍 ADMIN FEE PAYMENT - getPendingPayments called");
+    logger.info("🔍 Request URL:", req.originalUrl);
+    logger.info("🔍 Request Method:", req.method);
 
     const { page = 1, limit = 20, instructorId, paymentMethod } = req.query;
 
@@ -307,7 +308,7 @@ const getPendingPayments = async (req, res) => {
     if (paymentMethod) query.paymentMethod = paymentMethod;
 
     // Debug logging
-    console.log("🔍 Pending Payments Query:", query);
+    logger.info("🔍 Pending Payments Query:", query);
 
     const payments = await AdminFeePayment.find(query)
       .populate("instructorId", "firstName lastName email")
@@ -344,7 +345,7 @@ const getPendingPayments = async (req, res) => {
               paymentObj.receiptUrl
             );
           } catch (error) {
-            console.error(
+            logger.error(
               "Error generating signed URL for payment:",
               paymentObj._id,
               error
@@ -359,7 +360,7 @@ const getPendingPayments = async (req, res) => {
     const total = await AdminFeePayment.countDocuments(query);
 
     // Debug logging
-    console.log("🔍 Pending Payments Found:", payments.length, "Total:", total);
+    logger.info("🔍 Pending Payments Found:", payments.length, "Total:", total);
 
     res.json({
       success: true,
@@ -376,7 +377,7 @@ const getPendingPayments = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Error fetching pending payments:", error);
+    logger.error("❌ Error fetching pending payments:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch pending payments",
@@ -415,7 +416,7 @@ const verifyPayment = async (req, res) => {
     payment.verify(adminId, verificationNotes);
     await payment.save();
 
-    console.log("✅ Admin fee payment verified:", {
+    logger.info("✅ Admin fee payment verified:", {
       paymentId,
       instructorId: payment.instructorId._id,
       amount: payment.paymentAmount,
@@ -427,7 +428,7 @@ const verifyPayment = async (req, res) => {
       data: { payment },
     });
   } catch (error) {
-    console.error("❌ Error verifying payment:", error);
+    logger.error("❌ Error verifying payment:", error);
     res.status(500).json({
       success: false,
       message: "Failed to verify payment",
@@ -476,7 +477,7 @@ const approvePayment = async (req, res) => {
       data: result,
     });
   } catch (error) {
-    console.error("❌ Error approving admin fee payment:", error);
+    logger.error("❌ Error approving admin fee payment:", error);
     res.status(500).json({
       success: false,
       message: "Failed to approve admin fee payment",
@@ -522,7 +523,7 @@ const rejectPayment = async (req, res) => {
     payment.reject(adminId, rejectionReason);
     await payment.save();
 
-    console.log("✅ Admin fee payment rejected:", {
+    logger.info("✅ Admin fee payment rejected:", {
       paymentId,
       instructorId: payment.instructorId,
       amount: payment.paymentAmount,
@@ -534,7 +535,7 @@ const rejectPayment = async (req, res) => {
       data: { payment },
     });
   } catch (error) {
-    console.error("❌ Error rejecting payment:", error);
+    logger.error("❌ Error rejecting payment:", error);
     res.status(500).json({
       success: false,
       message: "Failed to reject payment",
@@ -553,7 +554,7 @@ const getReceiptSignedUrl = async (receiptKey) => {
   try {
     return await getFile(receiptKey, 3600); // 1 hour expiration
   } catch (error) {
-    console.error("Error generating signed URL:", error);
+    logger.error("Error generating signed URL:", error);
     throw new Error("Failed to generate receipt URL");
   }
 };
@@ -667,7 +668,7 @@ const processAdminFeePaymentApproval = async (
   payment.markProcessed(adminId, billingTransaction._id, actualPayment);
   await payment.save();
 
-  console.log("✅ Admin fee payment processed:", {
+  logger.info("✅ Admin fee payment processed:", {
     paymentId: payment._id,
     instructorId,
     paymentAmount,
@@ -727,7 +728,7 @@ const getAdminFeePaymentStats = async (req, res) => {
     ]);
 
     // Debug logging
-    console.log("🔍 Admin Fee Payment Status Counts:", statusCounts);
+    logger.info("🔍 Admin Fee Payment Status Counts:", statusCounts);
 
     // Get recent period stats
     const recentStats = await AdminFeePayment.aggregate([
@@ -783,14 +784,14 @@ const getAdminFeePaymentStats = async (req, res) => {
     });
 
     // Debug final stats
-    console.log("🔍 Final Admin Fee Payment Stats:", stats);
+    logger.info("🔍 Final Admin Fee Payment Stats:", stats);
 
     res.json({
       success: true,
       data: stats,
     });
   } catch (error) {
-    console.error("❌ Error fetching admin fee payment stats:", error);
+    logger.error("❌ Error fetching admin fee payment stats:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch payment statistics",
@@ -869,7 +870,7 @@ const getAllAdminFeePayments = async (req, res) => {
               paymentObj.receiptUrl
             );
           } catch (error) {
-            console.error(
+            logger.error(
               "Error generating signed URL for payment:",
               paymentObj._id,
               error
@@ -895,7 +896,7 @@ const getAllAdminFeePayments = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Error fetching all admin fee payments:", error);
+    logger.error("❌ Error fetching all admin fee payments:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch admin fee payments",

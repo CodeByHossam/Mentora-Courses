@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 const mongoose = require("mongoose");
 
 // Import billing models
@@ -243,7 +244,7 @@ paymentSchema.methods.calculateShares = function () {
       this.transactionType = "billing_payment";
     }
 
-    console.log(`💰 Payment shares calculated:`, {
+    logger.info(`💰 Payment shares calculated:`, {
       finalAmount: this.finalAmount,
       adminFee: this.adminFee,
       instructorAmount: this.instructorAmount,
@@ -252,7 +253,7 @@ paymentSchema.methods.calculateShares = function () {
 
     return { adminFee: this.adminFee, instructorAmount: this.instructorAmount };
   } catch (error) {
-    console.error("❌ Error calculating payment shares:", error);
+    logger.error("❌ Error calculating payment shares:", error);
     throw new Error(`Payment calculation failed: ${error.message}`);
   }
 };
@@ -290,8 +291,8 @@ paymentSchema.methods.calculateShares = function () {
 paymentSchema.methods.completePayment = async function (
   processedByAdminId = null
 ) {
-  console.log(`🔵 [PAYMENT] completePayment called for payment ${this._id}`);
-  console.log(`   Status: ${this.status}, Amount: $${this.finalAmount}`);
+  logger.info(`🔵 [PAYMENT] completePayment called for payment ${this._id}`);
+  logger.info(`   Status: ${this.status}, Amount: $${this.finalAmount}`);
   
   // 🛡️ CRITICAL: Prevent duplicate processing by checking if billing was already done
   // Check if courseSales already exist in instructor account (better than status check)
@@ -300,7 +301,7 @@ paymentSchema.methods.completePayment = async function (
   });
   
   if (existingInstructorSale) {
-    console.log(`   ⚠️ Payment already processed (found in instructor billing), skipping`);
+    logger.info(`   ⚠️ Payment already processed (found in instructor billing), skipping`);
     return this;
   }
   
@@ -310,7 +311,7 @@ paymentSchema.methods.completePayment = async function (
   });
   
   if (existingStudentPurchase) {
-    console.log(`   ⚠️ Payment already processed (found in student billing), skipping`);
+    logger.info(`   ⚠️ Payment already processed (found in student billing), skipping`);
     return this;
   }
 
@@ -327,10 +328,10 @@ paymentSchema.methods.completePayment = async function (
   }
 
   try {
-    console.log(`   📊 Calculating shares...`);
+    logger.info(`   📊 Calculating shares...`);
     // 1) compute shares
     this.calculateShares();
-    console.log(`   💰 Admin Fee: $${this.adminFee}, Instructor: $${this.instructorAmount}`);
+    logger.info(`   💰 Admin Fee: $${this.adminFee}, Instructor: $${this.instructorAmount}`);
 
     // 2) Set status depending on paymentSource & adminApproval
     if (this.paymentSource === "electronic") {
@@ -403,7 +404,7 @@ paymentSchema.methods.completePayment = async function (
     // 2. Instructor → Admin (fees) [PENDING SETTLEMENT]
 
     // 📦 SIMPLIFIED: Update permanent boxes directly
-    console.log(`   📦 Updating billing accounts...`);
+    logger.info(`   📦 Updating billing accounts...`);
     
     // Get course to find instructor if recipientId is not set
     let instructorId = this.recipientId;
@@ -415,7 +416,7 @@ paymentSchema.methods.completePayment = async function (
     
     // 3a) Student: Add to totalCoursePurchases box
     if (studentAccount) {
-      console.log(`   👨‍🎓 Updating student account ${this.userId}`);
+      logger.info(`   👨‍🎓 Updating student account ${this.userId}`);
       studentAccount.addCoursePurchase({
         courseId: this.course,
         instructorId: instructorId,
@@ -428,9 +429,9 @@ paymentSchema.methods.completePayment = async function (
         status: "completed",
       });
       await studentAccount.save(session ? { session } : {});
-      console.log(`   ✅ Student account saved`);
+      logger.info(`   ✅ Student account saved`);
     } else {
-      console.log(`   ⚠️ No student account found for ${this.userId}`);
+      logger.info(`   ⚠️ No student account found for ${this.userId}`);
     }
 
     // Create student transaction for audit
@@ -482,17 +483,17 @@ paymentSchema.methods.completePayment = async function (
 
     // 3c) Instructor: Add commission to totalCommissionEarned box
     if (instructorId) {
-      console.log(`   🔍 Looking for instructor account: ${instructorId}`);
+      logger.info(`   🔍 Looking for instructor account: ${instructorId}`);
       
       // Get or create instructor account
       if (!instructorAccount) {
         instructorAccount = await InstructorBillingAccount.findOne({ instructorId });
-        console.log(`   📊 Instructor account found:`, instructorAccount ? 'YES' : 'NO');
+        logger.info(`   📊 Instructor account found:`, instructorAccount ? 'YES' : 'NO');
       }
       
       // Create instructor account if it doesn't exist
       if (!instructorAccount) {
-        console.log(`   🆕 Creating new instructor billing account for ${instructorId}`);
+        logger.info(`   🆕 Creating new instructor billing account for ${instructorId}`);
         instructorAccount = await InstructorBillingAccount.create({
           instructorId: instructorId,
           totalCommissionEarned: 0,
@@ -502,11 +503,11 @@ paymentSchema.methods.completePayment = async function (
           annualFees: 10,
           status: 'active'
         });
-        console.log(`   ✅ Instructor account created`);
+        logger.info(`   ✅ Instructor account created`);
       }
       
       if (instructorAccount && this.instructorAmount > 0) {
-        console.log(`   👨‍🏫 Updating instructor account ${instructorId} with commission $${this.instructorAmount}`);
+        logger.info(`   👨‍🏫 Updating instructor account ${instructorId} with commission $${this.instructorAmount}`);
         instructorAccount.addCourseSale({
           courseId: this.course,
           studentId: this.userId,
@@ -518,14 +519,14 @@ paymentSchema.methods.completePayment = async function (
           paymentId: this._id,
         });
         await instructorAccount.save(session ? { session } : {});
-        console.log(`   ✅ Instructor account saved - New balance: $${instructorAccount.pendingCommissions}`);
+        logger.info(`   ✅ Instructor account saved - New balance: $${instructorAccount.pendingCommissions}`);
       } else if (this.instructorAmount === 0) {
-        console.log(`   ⚠️ Commission is $0, skipping instructor update`);
+        logger.info(`   ⚠️ Commission is $0, skipping instructor update`);
       } else {
-        console.log(`   ❌ ERROR: Could not create/find instructor account for ${instructorId}`);
+        logger.info(`   ❌ ERROR: Could not create/find instructor account for ${instructorId}`);
       }
     } else {
-      console.log(`   ❌ ERROR: No instructorId found!`);
+      logger.info(`   ❌ ERROR: No instructorId found!`);
     }
 
     // Create instructor transaction for audit
@@ -554,16 +555,16 @@ paymentSchema.methods.completePayment = async function (
     this.paidAt = this.paidAt || new Date();
     await this.save(session ? { session } : {});
 
-    console.log(`   ✅ Transaction committed successfully`);
+    logger.info(`   ✅ Transaction committed successfully`);
     if (session) {
       await session.commitTransaction();
       session.endSession();
     }
     
-    console.log(`🎉 [PAYMENT] Payment ${this._id} completed successfully!`);
+    logger.info(`🎉 [PAYMENT] Payment ${this._id} completed successfully!`);
     return this;
   } catch (err) {
-    console.error(`❌ [PAYMENT] Error completing payment ${this._id}:`, err.message);
+    logger.error(`❌ [PAYMENT] Error completing payment ${this._id}:`, err.message);
     if (session) {
       await session.abortTransaction();
       session.endSession();

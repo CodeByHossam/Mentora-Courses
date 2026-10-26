@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 const Notification = require("../models/Notification");
 const { validationResult } = require("express-validator");
 
@@ -41,7 +42,7 @@ const getNotifications = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching notifications:", error);
+    logger.error("Error fetching notifications:", error);
     res.status(500).json({
       success: false,
       message: "Error fetching notifications",
@@ -60,8 +61,8 @@ const getUnreadCount = async (req, res) => {
     const userId = req.user.id;
 
     // Debug: Log user info and check notifications
-    console.log("🔔 getUnreadCount - userId:", userId);
-    console.log("🔔 getUnreadCount - user role:", req.user.role);
+    logger.info("🔔 getUnreadCount - userId:", userId);
+    logger.info("🔔 getUnreadCount - user role:", req.user.role);
 
     // Get all notifications for this user to debug
     const allNotifications = await Notification.find({ recipient: userId });
@@ -70,12 +71,12 @@ const getUnreadCount = async (req, res) => {
       isRead: false,
     });
 
-    console.log("🔔 Total notifications for user:", allNotifications.length);
-    console.log(
+    logger.info("🔔 Total notifications for user:", allNotifications.length);
+    logger.info(
       "🔔 Unread notifications for user:",
       unreadNotifications.length
     );
-    console.log(
+    logger.info(
       "🔔 Unread notifications:",
       unreadNotifications.map((n) => ({
         title: n.title,
@@ -87,14 +88,14 @@ const getUnreadCount = async (req, res) => {
 
     const unreadCount = await Notification.getUnreadCount(userId);
 
-    console.log("🔔 Final unreadCount:", unreadCount);
+    logger.info("🔔 Final unreadCount:", unreadCount);
 
     res.status(200).json({
       success: true,
       data: { unreadCount },
     });
   } catch (error) {
-    console.error("Error getting unread count:", error);
+    logger.error("Error getting unread count:", error);
     res.status(500).json({
       success: false,
       message: "Error getting unread count",
@@ -136,7 +137,7 @@ const markAsRead = async (req, res) => {
       message: "Notification marked as read",
     });
   } catch (error) {
-    console.error("Error marking notification as read:", error);
+    logger.error("Error marking notification as read:", error);
     res.status(500).json({
       success: false,
       message: "Error marking notification as read",
@@ -164,7 +165,7 @@ const markAllAsRead = async (req, res) => {
       message: "All notifications marked as read",
     });
   } catch (error) {
-    console.error("Error marking all notifications as read:", error);
+    logger.error("Error marking all notifications as read:", error);
     res.status(500).json({
       success: false,
       message: "Error marking all notifications as read",
@@ -206,7 +207,7 @@ const deleteNotification = async (req, res) => {
       message: "Notification deleted successfully",
     });
   } catch (error) {
-    console.error("Error deleting notification:", error);
+    logger.error("Error deleting notification:", error);
     res.status(500).json({
       success: false,
       message: "Error deleting notification",

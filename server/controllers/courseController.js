@@ -31,6 +31,8 @@ const {
   uploadToCloudinary,
   getResourceType,
 } = require("../utils/cloudinary");
+const { sendSuccess, sendError } = require("../utils/apiResponse");
+const logger = require("../utils/logger");
 
 /* =========================================================
    HELPER FUNCTIONS
@@ -120,7 +122,7 @@ const extractCloudinaryPublicId = (url) => {
     const match = url.match(cloudinaryPattern);
     return match ? match[1] : null;
   } catch (error) {
-    console.error("Error extracting public ID from URL:", url, error.message);
+    logger.error("Error extracting public ID from URL:", url, error.message);
     return null;
   }
 };
@@ -226,28 +228,19 @@ const getCourses = asyncHandler(async (req, res) => {
     ]);
 
     // Return formatted response
-    res.json({
-      success: true,
-      message: "Courses retrieved successfully",
-      data: courses,
-      meta: {
-        total: totalCount,
-        page: paginationOptions.page,
-        pages: Math.ceil(totalCount / paginationOptions.limit),
-        limit: paginationOptions.limit,
-        hasNextPage:
-          paginationOptions.page <
-          Math.ceil(totalCount / paginationOptions.limit),
-        hasPrevPage: paginationOptions.page > 1,
-      },
+    return sendSuccess(res, courses, "Courses retrieved successfully", 200, {
+      total: totalCount,
+      page: paginationOptions.page,
+      pages: Math.ceil(totalCount / paginationOptions.limit),
+      limit: paginationOptions.limit,
+      hasNextPage:
+        paginationOptions.page <
+        Math.ceil(totalCount / paginationOptions.limit),
+      hasPrevPage: paginationOptions.page > 1,
     });
   } catch (error) {
-    console.error("Error fetching courses:", error);
-    res.status(500).json({
-      success: false,
-      message: "Failed to retrieve courses",
-      error: process.env.NODE_ENV === "development" ? error.message : undefined,
-    });
+    logger.error("Error fetching courses", { error: error.message });
+    return sendError(res, "Failed to retrieve courses", 500, error.message);
   }
 });
 
@@ -440,7 +433,7 @@ const getCourse = asyncHandler(async (req, res) => {
       data: { ...course, ratingInfo },
     });
   } catch (err) {
-    console.error("getCourse error:", err);
+    logger.error("getCourse error:", err);
     res
       .status(500)
       .json({ success: false, message: "Server error while fetching course" });
@@ -574,7 +567,7 @@ const createCourse = asyncHandler(async (req, res) => {
       data: populated,
     });
   } catch (err) {
-    console.error("createCourse error:", err);
+    logger.error("createCourse error:", err);
     res.status(500).json({
       success: false,
       message: err.message || "Error creating course",
@@ -648,7 +641,7 @@ const updateCourse = asyncHandler(async (req, res) => {
         try {
           await deleteFromCloudinary(course.imagePublicId, "image");
         } catch (e) {
-          console.warn("Failed to delete old course image:", e?.message || e);
+          logger.warn("Failed to delete old course image:", e?.message || e);
         }
       }
 
@@ -662,7 +655,7 @@ const updateCourse = asyncHandler(async (req, res) => {
         try {
           await deleteFromCloudinary(course.imagePublicId, "image");
         } catch (e) {
-          console.warn("Failed to delete old course image:", e?.message || e);
+          logger.warn("Failed to delete old course image:", e?.message || e);
         }
         updates.imagePublicId = null;
       }
@@ -681,7 +674,7 @@ const updateCourse = asyncHandler(async (req, res) => {
       data: populated,
     });
   } catch (err) {
-    console.error("updateCourse error:", err);
+    logger.error("updateCourse error:", err);
     res.status(500).json({ success: false, message: "Error updating course" });
   }
 });
@@ -842,7 +835,7 @@ const deleteCourse = asyncHandler(async (req, res) => {
             await deleteFromCloudinary(imageMatch[1], 'image');
           }
         } catch (error) {
-          console.error(`Failed to delete lesson image: ${error.message}`);
+          logger.error(`Failed to delete lesson image: ${error.message}`);
         }
       }
       
@@ -851,7 +844,7 @@ const deleteCourse = asyncHandler(async (req, res) => {
         try {
           await videoService.deleteVideo(lesson.videoRef.publicId);
         } catch (error) {
-          console.error(`Failed to delete lesson video: ${error.message}`);
+          logger.error(`Failed to delete lesson video: ${error.message}`);
         }
       }
       
@@ -863,7 +856,7 @@ const deleteCourse = asyncHandler(async (req, res) => {
             await deleteFromCloudinary(pdfMatch[1], 'raw');
           }
         } catch (error) {
-          console.error(`Failed to delete lesson PDF: ${error.message}`);
+          logger.error(`Failed to delete lesson PDF: ${error.message}`);
         }
       }
     }
@@ -879,7 +872,7 @@ const deleteCourse = asyncHandler(async (req, res) => {
         try {
           await deleteFile(attachment.fileUrl);
         } catch (error) {
-          console.error(`Failed to delete attachment from S3: ${error.message}`);
+          logger.error(`Failed to delete attachment from S3: ${error.message}`);
         }
       }
     }
@@ -894,14 +887,14 @@ const deleteCourse = asyncHandler(async (req, res) => {
           await deleteFromCloudinary(imageMatch[1], 'image');
         }
       } catch (error) {
-        console.error(`Failed to delete course image: ${error.message}`);
+        logger.error(`Failed to delete course image: ${error.message}`);
       }
     }
 
     // Delete the course
     await Course.findByIdAndDelete(course._id);
 
-    console.log(
+    logger.info(
       `🗑️ Course "${course.title}" deleted by ${req.user.role} ${req.user.name}`
     );
 
@@ -915,7 +908,7 @@ const deleteCourse = asyncHandler(async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Course deletion error:", error);
+    logger.error("❌ Course deletion error:", error);
     res.status(500).json({
       success: false,
       message: "Failed to delete course",
@@ -975,7 +968,7 @@ const enrollInCourse = asyncHandler(async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("enrollInCourse error:", err);
+    logger.error("enrollInCourse error:", err);
     res.status(500).json({
       success: false,
       message: err.message || "Error enrolling in course",
@@ -1037,7 +1030,7 @@ const getCourseStats = asyncHandler(async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("getCourseStats error:", err);
+    logger.error("getCourseStats error:", err);
     res
       .status(500)
       .json({ success: false, message: "Error fetching course statistics" });
@@ -1074,7 +1067,7 @@ const getInstructorCourses = asyncHandler(async (req, res) => {
 
     res.json({ success: true, data: courses });
   } catch (err) {
-    console.error("getInstructorCourses error:", err);
+    logger.error("getInstructorCourses error:", err);
     res
       .status(500)
       .json({ success: false, message: "Error fetching instructor courses" });
@@ -1100,7 +1093,7 @@ const getEnrolledCourses = asyncHandler(async (req, res) => {
 
     res.json({ success: true, data: courses });
   } catch (err) {
-    console.error("getEnrolledCourses error:", err);
+    logger.error("getEnrolledCourses error:", err);
     res
       .status(500)
       .json({ success: false, message: "Error fetching enrolled courses" });
@@ -1161,7 +1154,7 @@ const rateCourse = asyncHandler(async (req, res) => {
       userRating: ratingVal,
     });
   } catch (err) {
-    console.error("rateCourse error:", err);
+    logger.error("rateCourse error:", err);
     res.status(500).json({ success: false, message: "Error rating course" });
   }
 });
@@ -1214,7 +1207,7 @@ const likeCourse = asyncHandler(async (req, res) => {
 
     res.json({ success: true, likesCount: course.likesCount, liked });
   } catch (err) {
-    console.error("likeCourse error:", err);
+    logger.error("likeCourse error:", err);
     res.status(500).json({ success: false, message: "Error liking course" });
   }
 });
@@ -1267,7 +1260,7 @@ const getCourseRatingInfo = asyncHandler(async (req, res) => {
       data: ratingInfo,
     });
   } catch (err) {
-    console.error("getCourseRatingInfo error:", err);
+    logger.error("getCourseRatingInfo error:", err);
     res.status(500).json({
       success: false,
       message: "Error fetching rating info",
@@ -1330,7 +1323,7 @@ const updateCourseStatus = asyncHandler(async (req, res) => {
       data: populated,
     });
   } catch (err) {
-    console.error("updateCourseStatus error:", err);
+    logger.error("updateCourseStatus error:", err);
     res
       .status(500)
       .json({ success: false, message: "Error updating course status" });
@@ -1339,13 +1332,11 @@ const updateCourseStatus = asyncHandler(async (req, res) => {
 // get all course for admin even unpublished one
 const getAllCourses = asyncHandler(async (req, res) => {
   try {
-    const courses = await Course.find().populate("instructor", "name email");
-    res.json({ success: true, data: courses });
+    const courses = await Course.find().populate("instructor", "name email").lean();
+    return sendSuccess(res, courses, "All courses retrieved");
   } catch (err) {
-    console.error("getAllCourses error:", err);
-    res
-      .status(500)
-      .json({ success: false, message: "Error fetching all courses" });
+    logger.error("getAllCourses error", { error: err.message });
+    return sendError(res, "Error fetching all courses", 500);
   }
 });
 
@@ -1360,10 +1351,7 @@ const getCourseStudents = asyncHandler(async (req, res) => {
     const { courseId } = req.params;
 
     if (!mongoose.isValidObjectId(courseId)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid course ID format",
-      });
+      return sendError(res, "Invalid course ID format", 400);
     }
 
     const course = await Course.findById(courseId)
@@ -1376,7 +1364,8 @@ const getCourseStudents = asyncHandler(async (req, res) => {
       .populate("category", "name")
       .select(
         "title description status createdAt enrolledStudents instructor category"
-      );
+      )
+      .lean();
 
     if (!course) {
       return res.status(404).json({
@@ -1409,27 +1398,21 @@ const getCourseStudents = asyncHandler(async (req, res) => {
       })
     );
 
-    res.json({
-      success: true,
-      data: {
-        course: {
-          _id: course._id,
-          title: course.title,
-          description: course.description,
-          status: course.status,
-          createdAt: course.createdAt,
-          instructor: course.instructor,
-          category: course.category,
-        },
-        students: studentsWithEnrollmentDate,
+    return sendSuccess(res, {
+      course: {
+        _id: course._id,
+        title: course.title,
+        description: course.description,
+        status: course.status,
+        createdAt: course.createdAt,
+        instructor: course.instructor,
+        category: course.category,
       },
-    });
+      students: studentsWithEnrollmentDate,
+    }, "Course students retrieved");
   } catch (err) {
-    console.error("getCourseStudents error:", err);
-    res.status(500).json({
-      success: false,
-      message: "Error fetching course students",
-    });
+    logger.error("getCourseStudents error", { error: err.message });
+    return sendError(res, "Error fetching course students", 500);
   }
 });
 

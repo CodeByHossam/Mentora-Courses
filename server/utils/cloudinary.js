@@ -1,3 +1,4 @@
+const logger = require('./logger');
 /**
  * Cloudinary Utility Module
  * 
@@ -54,7 +55,7 @@ cloudinary.config({
  */
 const getResourceType = (mimetype) => {
   if (!mimetype || typeof mimetype !== 'string') {
-    console.warn('Invalid MIME type provided, defaulting to raw resource type');
+    logger.warn('Invalid MIME type provided, defaulting to raw resource type');
     return "raw";
   }
 
@@ -140,7 +141,7 @@ const uploadToCloudinary = async (fileInput, folder = 'uploads', resourceType = 
           baseUploadOptions,
           (error, result) => {
             if (error) {
-              console.error('Cloudinary buffer upload error:', {
+              logger.error('Cloudinary buffer upload error:', {
                 error: error.message,
                 folder,
                 resourceType,
@@ -164,7 +165,7 @@ const uploadToCloudinary = async (fileInput, folder = 'uploads', resourceType = 
           baseUploadOptions,
           (error, result) => {
             if (error) {
-              console.error('Cloudinary file upload error:', {
+              logger.error('Cloudinary file upload error:', {
                 error: error.message,
                 filePath: fileInput,
                 folder,
@@ -184,7 +185,7 @@ const uploadToCloudinary = async (fileInput, folder = 'uploads', resourceType = 
       reject(new Error('Invalid file input. Expected Buffer or file path string.'));
 
     } catch (error) {
-      console.error('Cloudinary upload setup error:', error);
+      logger.error('Cloudinary upload setup error:', error);
       reject(new Error(`Upload setup failed: ${error.message}`));
     }
   });
@@ -229,7 +230,7 @@ const deleteFromCloudinary = async (publicId, resourceType = "raw") => {
         },
         (error, result) => {
           if (error) {
-            console.error('Cloudinary deletion error:', {
+            logger.error('Cloudinary deletion error:', {
               error: error.message,
               publicId,
               resourceType,
@@ -241,14 +242,14 @@ const deleteFromCloudinary = async (publicId, resourceType = "raw") => {
           if (result.result === 'ok') {
             resolve(result);
           } else if (result.result === 'not found') {
-            console.warn('Cloudinary deletion - file not found:', {
+            logger.warn('Cloudinary deletion - file not found:', {
               publicId,
               resourceType,
             });
             // Resolve anyway since the file doesn't exist (desired state achieved)
             resolve(result);
           } else {
-            console.error('Cloudinary deletion failed:', {
+            logger.error('Cloudinary deletion failed:', {
               publicId,
               resourceType,
               result: result.result,
@@ -259,7 +260,7 @@ const deleteFromCloudinary = async (publicId, resourceType = "raw") => {
         }
       );
     } catch (error) {
-      console.error('Cloudinary deletion setup error:', error);
+      logger.error('Cloudinary deletion setup error:', error);
       reject(new Error(`Deletion setup failed: ${error.message}`));
     }
   });

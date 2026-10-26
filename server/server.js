@@ -1,11 +1,15 @@
+const path = require("path");
 const express = require("express");
 const dotenv = require("dotenv");
+const logger = require("./utils/logger");
 const cors = require("cors");
 const morgan = require("morgan");
 const colors = require("colors");
 const connectDB = require("./config/db");
 const { errorHandler, notFound } = require("./middleware/errorMiddleware");
-const path = require("path");
+const { cache, cacheMiddleware, invalidateCache } = require("./middleware/cacheMiddleware");
+const monitoringMiddleware = require("./middleware/monitoringMiddleware");
+const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 
 // Import security middleware and configurations
@@ -31,19 +35,9 @@ dotenv.config();
 // Validate security configuration
 validateSecurityConfig();
 
-// Connect to MongoDB
-connectDB();
 
-// Start reminder service for live sessions
-const reminderService = require('./services/reminderService');
-reminderService.start();
-
-// Initialize billing cron jobs
-const { initializeBillingCronJobs } = require('./utils/cronJobs');
-initializeBillingCronJobs();
 
 const app = express();
-
 
 // Apply security middleware in correct order all of them are used publicly
 // except the input sanitizer which is used for only routs that accept user input
@@ -73,9 +67,19 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
+// Monitoring and cache invalidation
+app.use(monitoringMiddleware);
+app.use(invalidateCache);
+
 // Import Routes
 const authRoutes = require("./routes/authRoutes");
 const courseRoutes = require("./routes/courseRoutes");
+const reviewRoutes = require("./routes/reviewRoutes");
+const wishlistRoutes = require("./routes/wishlistRoutes");
+const cartRoutes = require("./routes/cartRoutes");
+const progressRoutes = require("./routes/progressRoutes");
+const couponRoutes = require("./routes/couponRoutes");
+const qaRoutes = require("./routes/qaRoutes");
 const userRoutes = require("./routes/userRoutes");
 const categoryRoutes = require("./routes/categoryRoutes");
 const adminRoutes = require("./routes/adminRoutes");
@@ -114,8 +118,14 @@ app.use(addBillingWarning);
 
 // Read-heavy endpoints (GET requests mostly)
 app.use("/api/courses", courseRoutes); // Rate limiting handled in individual routes
+app.use("/api/reviews", reviewRoutes); // Course reviews
+app.use("/api/wishlist", wishlistRoutes); // Wishlist
+app.use("/api/cart", cartRoutes); // Cart
+app.use("/api/progress", progressRoutes); // Progress tracking
+app.use("/api/coupons", couponRoutes); // Coupons
+app.use("/api/qa", qaRoutes); // Q&A
 
-app.use("/api/categories", (req, res, next) => {
+app.use("/api/categories", cacheMiddleware(120), (req, res, next) => {
   if (req.method === 'GET') {
     return generalReadLimiter(req, res, next);
   }
@@ -152,7 +162,7 @@ app.use("/api/billing", (req, res, next) => {
   }
   return billingLimiter(req, res, next);
 }, billingRoutes);
-app.use("/api/levels", generalReadLimiter, levelRoutes);
+app.use("/api/levels", cacheMiddleware(120), generalReadLimiter, levelRoutes);
 app.use("/api/payouts", (req, res, next) => {
   if (req.method === 'GET') {
     return billingLimiter(req, res, next);
@@ -203,23 +213,56 @@ app.get("/error/500", (req, res) => {
   res.status(500).render("error500", { errorCode: "500" });
 });
 
+// Health check endpoint
+app.get("/api/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Mentora API is healthy",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    database: mongoose.connection.readyState === 1 ? "connected" : "disconnected",
+    cache: cache.getStats(),
+    memory: process.memoryUsage(),
+  });
+});
+
 // Error handling middleware
 app.use(notFound);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
-const server = app.listen(PORT, () => {
-  console.log(
-    `Server running in ${process.env.NODE_ENV} mode on port ${PORT}`.yellow
-      .bold +
-      `\n You can Visit the main page on ` +
-      `${process.env.SERVER_URL}`.cyan.underline
-  );
-});
 
-// Handle unhandled promise rejections
-process.on("unhandledRejection", (err, promise) => {
-  console.error(`Unhandled Promise Rejection: ${err.message}`);
-  // Close server & exit process
-  server.close(() => process.exit(1));
-});
+const startServer = async () => {
+  await connectDB();
+
+  if (process.env.NODE_ENV !== "test") {
+    const reminderService = require("./services/reminderService");
+    reminderService.start();
+
+    const { initializeBillingCronJobs } = require("./utils/cronJobs");
+    initializeBillingCronJobs();
+  }
+
+  const server = app.listen(PORT, () => {
+    logger.info(`Server running in ${process.env.NODE_ENV || "development"} mode on port ${PORT}`);
+    logger.info(`Main page: ${process.env.SERVER_URL || `http://localhost:${PORT}`}`);
+  });
+
+  process.on("unhandledRejection", (err, promise) => {
+    logger.error(`Unhandled Promise Rejection: ${err.message}`);
+    server.close(() => process.exit(1));
+  });
+};
+
+if (process.env.NODE_ENV === "test") {
+  // In test mode, connect to an in-memory database but do not bind a port.
+  connectDB();
+} else if (require.main === module) {
+  startServer();
+}
+
+// Allow tests to start the server explicitly when needed, but do not
+// auto-listen when the module is required (e.g. by Supertest).
+module.exports = app;
+module.exports.startServer = startServer;
+module.exports.connectDB = connectDB;

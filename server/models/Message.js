@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 const mongoose = require("mongoose");
 
 const MessageSchema = new mongoose.Schema(
@@ -140,14 +141,14 @@ MessageSchema.statics.getConversation = function(user1Id, user2Id, courseId = nu
 
 // Static method to get user's conversations
 MessageSchema.statics.getUserConversations = function(userId) {
-  console.log("🔍 getUserConversations called with userId:", userId);
-  console.log("🔍 userId type:", typeof userId);
+  logger.info("🔍 getUserConversations called with userId:", userId);
+  logger.info("🔍 userId type:", typeof userId);
   
   // Convert userId to ObjectId if it's a string
   const mongoose = require('mongoose');
   const userObjectId = mongoose.Types.ObjectId.isValid(userId) ? new mongoose.Types.ObjectId(userId) : userId;
   
-  console.log("🔍 userObjectId:", userObjectId);
+  logger.info("🔍 userObjectId:", userObjectId);
   
   return this.aggregate([
     {

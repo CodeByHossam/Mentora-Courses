@@ -42,6 +42,12 @@ const adminSettingsSchema = new mongoose.Schema(
         default: true,
       },
 
+      // Enabled payment methods (scalable registry)
+      enabledMethods: {
+        type: [String],
+        default: ["direct_transfer"],
+      },
+
       // Minimum payment amounts
       minimumPaymentAmount: {
         type: Number,

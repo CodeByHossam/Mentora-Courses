@@ -1,3 +1,4 @@
+const logger = require('./logger');
 const BillingAccount = require('../models/BillingAccount');
 const AdminBillingAccount = require('../models/AdminBillingAccount');
 const InstructorBillingAccount = require('../models/InstructorBillingAccount');
@@ -15,11 +16,11 @@ const User = require('../models/User');
  */
 async function migrateLegacyAccounts() {
   try {
-    console.log('🔄 Starting billing account migration...');
+    logger.info('🔄 Starting billing account migration...');
     
     // Get all legacy billing accounts
     const legacyAccounts = await BillingAccount.find({}).populate('userId');
-    console.log(`📊 Found ${legacyAccounts.length} legacy billing accounts`);
+    logger.info(`📊 Found ${legacyAccounts.length} legacy billing accounts`);
     
     let migrated = {
       admin: 0,
@@ -31,14 +32,14 @@ async function migrateLegacyAccounts() {
     for (const legacyAccount of legacyAccounts) {
       try {
         if (!legacyAccount.userId) {
-          console.log('⚠️ Skipping account with no userId:', legacyAccount._id);
+          logger.info('⚠️ Skipping account with no userId:', legacyAccount._id);
           continue;
         }
         
         const user = legacyAccount.userId;
         const userRole = user.role;
         
-        console.log(`🔄 Migrating ${userRole} account for user: ${user.name} (${user._id})`);
+        logger.info(`🔄 Migrating ${userRole} account for user: ${user.name} (${user._id})`);
         
         switch (userRole) {
           case 'admin':
@@ -57,13 +58,13 @@ async function migrateLegacyAccounts() {
             break;
             
           default:
-            console.log(`⚠️ Unknown user role: ${userRole}, treating as student`);
+            logger.info(`⚠️ Unknown user role: ${userRole}, treating as student`);
             await migrateStudentAccount(legacyAccount, user);
             migrated.student++;
         }
         
       } catch (error) {
-        console.error(`❌ Error migrating account ${legacyAccount._id}:`, error);
+        logger.error(`❌ Error migrating account ${legacyAccount._id}:`, error);
         migrated.errors.push({
           accountId: legacyAccount._id,
           userId: legacyAccount.userId?._id,
@@ -72,11 +73,11 @@ async function migrateLegacyAccounts() {
       }
     }
     
-    console.log('✅ Migration completed:', migrated);
+    logger.info('✅ Migration completed:', migrated);
     return migrated;
     
   } catch (error) {
-    console.error('❌ Migration failed:', error);
+    logger.error('❌ Migration failed:', error);
     throw error;
   }
 }
@@ -89,7 +90,7 @@ async function migrateAdminAccount(legacyAccount, user) {
     // Check if admin account already exists
     const existingAdmin = await AdminBillingAccount.findOne({ adminId: user._id });
     if (existingAdmin) {
-      console.log('⚠️ Admin account already exists, skipping');
+      logger.info('⚠️ Admin account already exists, skipping');
       return existingAdmin;
     }
     
@@ -106,11 +107,11 @@ async function migrateAdminAccount(legacyAccount, user) {
       status: legacyAccount.status || 'active'
     });
     
-    console.log('✅ Created admin billing account:', adminAccount._id);
+    logger.info('✅ Created admin billing account:', adminAccount._id);
     return adminAccount;
     
   } catch (error) {
-    console.error('❌ Error migrating admin account:', error);
+    logger.error('❌ Error migrating admin account:', error);
     throw error;
   }
 }
@@ -123,7 +124,7 @@ async function migrateInstructorAccount(legacyAccount, user) {
     // Check if instructor account already exists
     const existingInstructor = await InstructorBillingAccount.findOne({ instructorId: user._id });
     if (existingInstructor) {
-      console.log('⚠️ Instructor account already exists, skipping');
+      logger.info('⚠️ Instructor account already exists, skipping');
       return existingInstructor;
     }
     
@@ -161,11 +162,11 @@ async function migrateInstructorAccount(legacyAccount, user) {
     
     await instructorAccount.save();
     
-    console.log('✅ Created instructor billing account:', instructorAccount._id);
+    logger.info('✅ Created instructor billing account:', instructorAccount._id);
     return instructorAccount;
     
   } catch (error) {
-    console.error('❌ Error migrating instructor account:', error);
+    logger.error('❌ Error migrating instructor account:', error);
     throw error;
   }
 }
@@ -178,7 +179,7 @@ async function migrateStudentAccount(legacyAccount, user) {
     // Check if student account already exists
     const existingStudent = await StudentBillingAccount.findOne({ studentId: user._id });
     if (existingStudent) {
-      console.log('⚠️ Student account already exists, skipping');
+      logger.info('⚠️ Student account already exists, skipping');
       return existingStudent;
     }
     
@@ -219,11 +220,11 @@ async function migrateStudentAccount(legacyAccount, user) {
     
     await studentAccount.save();
     
-    console.log('✅ Created student billing account:', studentAccount._id);
+    logger.info('✅ Created student billing account:', studentAccount._id);
     return studentAccount;
     
   } catch (error) {
-    console.error('❌ Error migrating student account:', error);
+    logger.error('❌ Error migrating student account:', error);
     throw error;
   }
 }
@@ -233,7 +234,7 @@ async function migrateStudentAccount(legacyAccount, user) {
  */
 async function rollbackMigration() {
   try {
-    console.log('🔄 Rolling back migration...');
+    logger.info('🔄 Rolling back migration...');
     
     const results = await Promise.all([
       AdminBillingAccount.deleteMany({}),
@@ -241,7 +242,7 @@ async function rollbackMigration() {
       StudentBillingAccount.deleteMany({})
     ]);
     
-    console.log('✅ Rollback completed:', {
+    logger.info('✅ Rollback completed:', {
       adminDeleted: results[0].deletedCount,
       instructorDeleted: results[1].deletedCount,
       studentDeleted: results[2].deletedCount
@@ -250,7 +251,7 @@ async function rollbackMigration() {
     return results;
     
   } catch (error) {
-    console.error('❌ Rollback failed:', error);
+    logger.error('❌ Rollback failed:', error);
     throw error;
   }
 }
@@ -260,7 +261,7 @@ async function rollbackMigration() {
  */
 async function validateMigration() {
   try {
-    console.log('🔍 Validating migration...');
+    logger.info('🔍 Validating migration...');
     
     const [
       legacyCount,
@@ -288,11 +289,11 @@ async function validateMigration() {
       difference: legacyCount - specializedTotal
     };
     
-    console.log('📊 Migration validation:', validation);
+    logger.info('📊 Migration validation:', validation);
     return validation;
     
   } catch (error) {
-    console.error('❌ Validation failed:', error);
+    logger.error('❌ Validation failed:', error);
     throw error;
   }
 }

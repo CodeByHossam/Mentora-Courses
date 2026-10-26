@@ -276,8 +276,6 @@ const validateObjectIdParam = [
 
 module.exports = {
   validatePaymentInitiation,
-  validateStripeConfirmation,
-  validatePayPalConfirmation,
   validateDirectTransfer,
   validatePaymentApproval,
   validateLegacyPaymentCreation,

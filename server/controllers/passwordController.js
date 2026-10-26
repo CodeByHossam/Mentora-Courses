@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 // controllers/passwordController.js
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
@@ -49,7 +50,7 @@ If you didn't request this, ignore this email.`;
         message: "Reset password link sent to your email.",
       });
   } catch (error) {
-    console.error("Error sending reset link:", error);
+    logger.error("Error sending reset link:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -72,7 +73,7 @@ const handlePasswordReset = async (req, res) => {
     // Render the reset password form, pass userId and token
     res.render("resetPasswordForm", { userId, token });
   } catch (err) {
-    console.error("Token verification error:", err);
+    logger.error("Token verification error:", err);
     res.status(401).render("tokenExpired");
   }
 };
@@ -103,7 +104,7 @@ const handlePasswordUpdate = async (req, res) => {
 
     res.render("passwordResetSuccess");
   } catch (err) {
-    console.error("Password reset error:", err);
+    logger.error("Password reset error:", err);
     res.status(401).render("tokenExpired");
   }
 };

@@ -38,11 +38,6 @@ const StudentPayments = () => {
   } = useGetPaymentHistoryQuery();
 
   const payments = paymentData?.data || [];
-  
-  // Debug logging
-  console.log('🔍 Payment API Response:', paymentData);
-  console.log('📊 Payments array:', payments);
-  console.log('👤 Current user:', user);
 
   const getStatusBadge = (status) => {
     const badges = {

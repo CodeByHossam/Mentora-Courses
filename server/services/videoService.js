@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const { uploadToCloudinary, deleteFromCloudinary } = require('../utils/cloudinary');
@@ -50,16 +51,16 @@ class VideoService {
    * @returns {string} - Temporary streaming URL with security features
    */
   generateTempVideoUrl(publicId, userId, lessonId, expiryHours = 1, securityOptions = {}) {
-    console.log('🎬 Generating video URL:', { publicId, userId, lessonId, expiryHours });
+    logger.info('🎬 Generating video URL:', { publicId, userId, lessonId, expiryHours });
     
     if (!publicId || !userId || !lessonId) {
-      console.error('❌ Missing required parameters:', { publicId: !!publicId, userId: !!userId, lessonId: !!lessonId });
+      logger.error('❌ Missing required parameters:', { publicId: !!publicId, userId: !!userId, lessonId: !!lessonId });
       throw new Error('Missing required parameters for video URL generation');
     }
 
     // Validate Cloudinary environment variables
     if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
-      console.error('❌ Missing Cloudinary environment variables');
+      logger.error('❌ Missing Cloudinary environment variables');
       throw new Error('Cloudinary configuration is incomplete');
     }
 
@@ -99,7 +100,7 @@ class VideoService {
 
     const cloudinaryUrl = `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/video/upload/${transformation}/v${timestamp}/${publicId}.mp4?signature=${signature}&api_key=${process.env.CLOUDINARY_API_KEY}&timestamp=${timestamp}`;
     
-    console.log('✅ Generated video URL successfully');
+    logger.info('✅ Generated video URL successfully');
     
     return {
       streamingUrl: cloudinaryUrl,

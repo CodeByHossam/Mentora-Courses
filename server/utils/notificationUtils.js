@@ -1,3 +1,4 @@
+const logger = require('./logger');
 const Notification = require("../models/Notification");
 const User = require("../models/User");
 
@@ -31,7 +32,7 @@ const createNotification = async (options) => {
 
     // Validate required fields
     if (!recipientId || !title || !message) {
-      console.error(
+      logger.error(
         "❌ Notification creation failed: Missing required fields (recipientId, title, message)"
       );
       return null;
@@ -49,10 +50,10 @@ const createNotification = async (options) => {
       isRead: false,
     });
 
-    console.log(`✅ Notification created: "${title}" for user ${recipientId}`);
+    logger.info(`✅ Notification created: "${title}" for user ${recipientId}`);
     return notification;
   } catch (error) {
-    console.error("❌ Error creating notification:", error);
+    logger.error("❌ Error creating notification:", error);
     return null;
   }
 };

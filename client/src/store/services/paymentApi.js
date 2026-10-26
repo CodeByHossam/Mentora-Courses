@@ -32,26 +32,6 @@ export const paymentApi = apiSlice.injectEndpoints({
       invalidatesTags: ["Payment"],
     }),
 
-    // Confirm Stripe payment
-    confirmStripePayment: builder.mutation({
-      query: ({ paymentIntentId }) => ({
-        url: "/payments/stripe/confirm",
-        method: "POST",
-        body: { paymentIntentId },
-      }),
-      invalidatesTags: ["Payment"],
-    }),
-
-    // Confirm PayPal payment
-    confirmPayPalPayment: builder.mutation({
-      query: ({ orderId, paymentId }) => ({
-        url: "/payments/paypal/confirm",
-        method: "POST",
-        body: { orderId, paymentId },
-      }),
-      invalidatesTags: ["Payment"],
-    }),
-
     // Submit direct transfer payment 
     submitDirectTransfer: builder.mutation({
       query: ({ paymentId, formData }) => ({
@@ -175,8 +155,6 @@ export const {
   useGetPaymentDetailsQuery,
   useUpdatePaymentDetailsMutation,
   useInitiatePaymentMutation,
-  useConfirmStripePaymentMutation,
-  useConfirmPayPalPaymentMutation,
   useSubmitDirectTransferMutation,
   useGetPaymentHistoryQuery,
   useGetPaymentQuery,

@@ -12,14 +12,6 @@ const PayFromCredits = ({
   const [paymentAmount, setPaymentAmount] = useState(maxPayableAmount > 0 ? maxPayableAmount : 10);
   const [loading, setLoading] = useState(false);
 
-  // Debug logging
-  console.log('PayFromCredits Debug:', {
-    availableCredits,
-    outstandingBalance,
-    maxPayableAmount,
-    paymentAmount
-  });
-
   const handlePayFromCredits = async () => {
     if (paymentAmount <= 0) {
       toast.error('Please enter a valid payment amount');

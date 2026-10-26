@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 const asyncHandler = require("express-async-handler");
 const User = require("../models/User");
 const Course = require("../models/Course");
@@ -307,7 +308,7 @@ const getDeletionStatistics = asyncHandler(async (req, res) => {
       data: stats,
     });
   } catch (error) {
-    console.error("❌ Error getting deletion statistics:", error);
+    logger.error("❌ Error getting deletion statistics:", error);
     res.status(500).json({
       success: false,
       message: "Failed to get deletion statistics",
@@ -337,7 +338,7 @@ const bulkDeleteComment = asyncHandler(async (req, res) => {
     await Comment.deleteMany({});
 
     // Log the action
-    console.log(
+    logger.info(
       `🗑️ Admin ${req.user.name} (${req.user.email}) deleted ${deletedCount} Comment`
     );
 
@@ -347,7 +348,7 @@ const bulkDeleteComment = asyncHandler(async (req, res) => {
       deletedCount,
     });
   } catch (error) {
-    console.error("❌ Error bulk deleting Comment:", error);
+    logger.error("❌ Error bulk deleting Comment:", error);
     res.status(500).json({
       success: false,
       message: "Failed to delete Comment",
@@ -379,7 +380,7 @@ const bulkDeleteTests = asyncHandler(async (req, res) => {
     await Test.deleteMany({});
     await Grade.deleteMany({});
 
-    console.log(
+    logger.info(
       `🗑️ Admin ${req.user.name} deleted ${testsCount} tests and ${gradesCount} grades`
     );
 
@@ -389,7 +390,7 @@ const bulkDeleteTests = asyncHandler(async (req, res) => {
       deletedCounts: { tests: testsCount, grades: gradesCount },
     });
   } catch (error) {
-    console.error("❌ Error bulk deleting tests:", error);
+    logger.error("❌ Error bulk deleting tests:", error);
     res.status(500).json({
       success: false,
       message: "Failed to delete tests",

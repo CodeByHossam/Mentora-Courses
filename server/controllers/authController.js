@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 /**
  * Authentication Controller
  *
@@ -37,7 +38,7 @@ const InstructorRequestsModel = require("../models/InstructorRequestModel");
  */
 const createUserPayload = (user) => {
   if (!user) {
-    throw createError("User object is required for payload creation",400);
+    throw createError(400, "User object is required for payload creation");
   }
 
   return {
@@ -198,12 +199,12 @@ const registerUser = asyncHandler(async (req, res) => {
 
   // Check if terms are accepted
   if (!termsAccepted || termsAccepted === "false") {
-    throw createError("You must accept the Terms and Conditions to register",400);
+    throw createError(400, "You must accept the Terms and Conditions to register");
   }
 
   const userExists = await User.findOne({ email });
   if (userExists) {
-    throw createError("User already exists",400);
+    throw createError(400, "User already exists");
   }
 
   let avatar = "";
@@ -212,7 +213,7 @@ const registerUser = asyncHandler(async (req, res) => {
       const result = await uploadToCloudinary(req.file.buffer, "users");
       avatar = result.secure_url;
     } catch {
-      throw createError("Failed to upload photo",500);
+      throw createError(500, "Failed to upload photo");
     }
   }
 
@@ -269,7 +270,7 @@ const resendVerificationEmail = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
   if (!email) {
-    throw createError("Email is required",400);
+    throw createError(400, "Email is required");
   }
 
   const user = await User.findOne({ email });
@@ -279,7 +280,7 @@ const resendVerificationEmail = asyncHandler(async (req, res) => {
   }
 
   if (user.isVerified) {
-    throw createError("Email is already verified",400);
+    throw createError(400, "Email is already verified");
   }
 
   // Generate verification token
@@ -314,7 +315,7 @@ const verifyUserEmail = asyncHandler(async (req, res) => {
   const { userId, token } = req.params;
   const user = await User.findById(userId);
   if (!user) {
-    throw createError("User not found",404);
+    throw createError(404, "User not found");
   }
 
   const secret = process.env.JWT_SECRET + user.email;
@@ -335,7 +336,7 @@ const verifyUserEmail = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const instructor = InstructorRequestsModel.findOne({ email });
-  console.log(instructor)
+  
     const user = await User.findOne({ email });
   if (!user) {
     const errorMessage= instructor?"Please verify your email before logging in or contact the admin":"Invalid email or password"
@@ -348,7 +349,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   if (!passwordMatch) {
     // better way to send error with its code
-   throw createError("Invalid email or password", 401);
+   throw createError(401, "Invalid email or password");
 
   }
 
@@ -359,14 +360,12 @@ const loginUser = asyncHandler(async (req, res) => {
       user.isActive = true;
       await user.save();
     } else {
-      throw createError("Please verify your email before logging in.",403);
+      throw createError(403, "Please verify your email before logging in.");
     }
   }
 
   if (!user.isActive) {
-    throw createError(
-      "Your account has been deactivated. Please contact support.",403
-    );
+    throw createError(403, "Your account has been deactivated. Please contact support.");
   }
 
   const accessToken = generateAccessToken(user);
@@ -412,7 +411,7 @@ const refreshToken = asyncHandler(async (req, res) => {
     });
   } catch {
     res.status(401);
-    throw createError("Invalid or expired refresh token",401);
+    throw createError(401, "Invalid or expired refresh token");
   }
 });
 
@@ -435,7 +434,7 @@ const logout = asyncHandler(async (req, res) => {
 const getMe = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id).select("-password");
   if (!user) {
-    throw createError("User not found",404);
+    throw createError(404, "User not found");
   }
   res.status(200).json({
     success: true,
@@ -449,7 +448,7 @@ const getMe = asyncHandler(async (req, res) => {
 const updateProfile = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id);
   if (!user) {
-    throw createError("User not found",404);
+    throw createError(404, "User not found");
   }
 
   user.name = req.body.name || user.name;
@@ -462,7 +461,7 @@ const updateProfile = asyncHandler(async (req, res) => {
       user.avatar = result.secure_url;
     } catch {
       res.status(500);
-      throw createError("Failed to upload avatar",500);
+      throw createError(500, "Failed to upload avatar");
     }
   } else if (req.body.avatar) {
     user.avatar = req.body.avatar;
@@ -490,7 +489,7 @@ const updatePaymentDetails = asyncHandler(async (req, res) => {
   const user = await User.findById(req.user.id);
   if (!user) {
     res.status(404);
-    throw createError("User not found",404);
+    throw createError(404, "User not found");
   }
 
   const {

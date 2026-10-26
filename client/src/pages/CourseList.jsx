@@ -16,23 +16,17 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-//fall back data
-import {
-  courses as fallbackCourses,
-  categories as fallbackCategories,
-} from "../data/hardcodedData";
+// API-only data: no hardcoded fallbacks
 
 const CourseList = memo(({ limit }) => {
   const user = useSelector(selectCurrentUser);
-  const [useFallback, setUseFallback] = useState(false);
+// API-only data: fallback state removed
 
   // Fetch categories for dynamic dropdown
   // const { data: categories = [] } = useGetCategoriesQuery();
   const { data: categoriesData, error: categoriesError } =
     useGetCategoriesQuery();
-  const categories = categoriesData?.data?.length
-    ? categoriesData.data
-    : fallbackCategories;
+  const categories = categoriesData?.data ?? [];
 
   // Backend pagination state (fetch from backend page by page)
   const [currentPage, setCurrentPage] = useState(1);
@@ -112,29 +106,18 @@ const CourseList = memo(({ limit }) => {
     refetchOnMountOrArgChange: true,
   });
 
-  // const allCourses = response?.data ?? [];
-  let allCourses =
-    response?.data?.length > 0 || useFallback || error
-      ? fallbackCourses
-      : response?.data;
-
-  if (!Array.isArray(allCourses)) {
-    allCourses = [allCourses];
-  }
+const allCourses = response?.data ?? [];
 
   const meta = response?.meta ?? { page: 1, pages: 1, total: 0 };
 
+  // API-only: no fallback data; errors are surfaced by RTK Query
   useEffect(() => {
     if (error) {
-      console.warn(
-        `⚠️ Using fallback course data (API failed) with error ${error?.error}`
-      );
-      console.log(error)
-    } else {
-      console.log(`📊 ${allCourses.length} courses fetched`);
+      console.error("Course list failed to load", error);
     }
-    if (categoriesError)
-      console.warn("⚠️ Using fallback category data (API failed)");
+    if (categoriesError) {
+      console.error("Categories failed to load", categoriesError);
+    }
   }, [error, categoriesError]);
 
   // Handle home page vs course list page differently
@@ -220,23 +203,7 @@ const CourseList = memo(({ limit }) => {
 
   const [viewMode, setViewMode] = useState("grid");
 
-  +(
-    // Track if loading exceeds 5 seconds
-
-    useEffect(() => {
-      if (isLoading) {
-        const timeout = setTimeout(() => {
-          setUseFallback(true);
-          console.warn(
-            `⚠️ Using fallback course data (API failed) with long loading`
-          );
-        }, 5000);
-        return () => clearTimeout(timeout);
-      } else {
-        setUseFallback(false);
-      }
-    }, [isLoading])
-  );
+// API-only: no fallback loading behavior
 
   if (isLoading)
     return (
@@ -245,7 +212,7 @@ const CourseList = memo(({ limit }) => {
       </div>
     );
 
-  if (error && !fallbackCourses.length)
+  if (error)
     return (
       <Card className="container-app section-padding">
         <div className="text-center text-red-600" role="alert">

@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 /**
  * Reminder Service
  *
@@ -20,11 +21,11 @@ class ReminderService {
    */
   start() {
     if (this.isRunning) {
-      console.log("Reminder service is already running");
+      logger.info("Reminder service is already running");
       return;
     }
 
-    console.log("🔔 Starting Live Session Reminder Service...");
+    logger.info("🔔 Starting Live Session Reminder Service...");
 
     // Check for sessions starting in 24 hours (daily at 9 AM)
     cron.schedule("0 9 * * *", async () => {
@@ -52,7 +53,7 @@ class ReminderService {
     });
 
     this.isRunning = true;
-    console.log("✅ Live Session Reminder Service started successfully");
+    logger.info("✅ Live Session Reminder Service started successfully");
   }
 
   /**
@@ -60,14 +61,14 @@ class ReminderService {
    */
   stop() {
     if (!this.isRunning) {
-      console.log("Reminder service is not running");
+      logger.info("Reminder service is not running");
       return;
     }
 
     // Note: node-cron doesn't provide a direct way to stop all tasks
     // In a production environment, you might want to keep track of task references
     this.isRunning = false;
-    console.log("🛑 Live Session Reminder Service stopped");
+    logger.info("🛑 Live Session Reminder Service stopped");
   }
 
   /**
@@ -90,13 +91,13 @@ class ReminderService {
         .populate("course", "title enrolledStudents")
         .populate("instructor", "name email");
 
-      console.log(`📅 Found ${sessions.length} sessions for 24-hour reminders`);
+      logger.info(`📅 Found ${sessions.length} sessions for 24-hour reminders`);
 
       for (const session of sessions) {
         await this.sendSessionReminder(session, "24hour");
       }
     } catch (error) {
-      console.error("Error sending 24-hour reminders:", error);
+      logger.error("Error sending 24-hour reminders:", error);
     }
   }
 
@@ -119,13 +120,13 @@ class ReminderService {
         .populate("course", "title enrolledStudents")
         .populate("instructor", "name email");
 
-      console.log(`⏰ Found ${sessions.length} sessions for 1-hour reminders`);
+      logger.info(`⏰ Found ${sessions.length} sessions for 1-hour reminders`);
 
       for (const session of sessions) {
         await this.sendSessionReminder(session, "1hour");
       }
     } catch (error) {
-      console.error("Error sending 1-hour reminders:", error);
+      logger.error("Error sending 1-hour reminders:", error);
     }
   }
 
@@ -150,7 +151,7 @@ class ReminderService {
         .populate("course", "title enrolledStudents")
         .populate("instructor", "name email");
 
-      console.log(
+      logger.info(
         `🚨 Found ${sessions.length} sessions for 15-minute reminders`
       );
 
@@ -158,7 +159,7 @@ class ReminderService {
         await this.sendSessionReminder(session, "15minute");
       }
     } catch (error) {
-      console.error("Error sending 15-minute reminders:", error);
+      logger.error("Error sending 15-minute reminders:", error);
     }
   }
 
@@ -180,13 +181,13 @@ class ReminderService {
         .populate("course", "title enrolledStudents")
         .populate("instructor", "name email");
 
-      console.log(`🔴 Found ${sessions.length} sessions starting now`);
+      logger.info(`🔴 Found ${sessions.length} sessions starting now`);
 
       for (const session of sessions) {
         await this.sendSessionReminder(session, "starting");
       }
     } catch (error) {
-      console.error("Error sending starting now reminders:", error);
+      logger.error("Error sending starting now reminders:", error);
     }
   }
 
@@ -196,7 +197,7 @@ class ReminderService {
   async sendSessionReminder(session, reminderType) {
     try {
       if (!session.course || !session.course.enrolledStudents) {
-        console.log(
+        logger.info(
           `Skipping reminder for session ${session.title} - no enrolled students`
         );
         return;
@@ -208,7 +209,7 @@ class ReminderService {
       }).select("email name");
 
       if (students.length === 0) {
-        console.log(`No students found for session ${session.title}`);
+        logger.info(`No students found for session ${session.title}`);
         return;
       }
 
@@ -345,7 +346,7 @@ Mentora Team
             subject,
             text: emailText,
           }).catch((error) => {
-            console.error(`Failed to send reminder to ${student.email}:`, error);
+            logger.error(`Failed to send reminder to ${student.email}:`, error);
           })
         );
       });
@@ -377,7 +378,7 @@ Mentora Team
             subject: instructorSubject,
             text: instructorEmailText,
           }).catch((error) => {
-            console.error(`Failed to send reminder to instructor ${session.instructor.email}:`, error);
+            logger.error(`Failed to send reminder to instructor ${session.instructor.email}:`, error);
           })
         );
       }
@@ -391,11 +392,11 @@ Mentora Team
         await session.save();
       }
 
-      console.log(
+      logger.info(
         `✅ Sent ${reminderType} reminder for session: ${session.title} to ${students.length} students and instructor ${session.instructor.name}`
       );
     } catch (error) {
-      console.error(
+      logger.error(
         `Error sending ${reminderType} reminder for session ${session.title}:`,
         error
       );
@@ -419,11 +420,11 @@ Mentora Team
         }
       );
 
-      console.log(
+      logger.info(
         `🧹 Cleaned up reminder flags for ${result.modifiedCount} old sessions`
       );
     } catch (error) {
-      console.error("Error cleaning up old reminders:", error);
+      logger.error("Error cleaning up old reminders:", error);
     }
   }
 }

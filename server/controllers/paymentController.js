@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 /**
  * PAYMENT CONTROLLER - COMPREHENSIVE PAYMENT PROCESSING SYSTEM
  *
@@ -66,14 +67,18 @@ const asyncHandler = require("express-async-handler");
 
 let stripe = null;
 if (process.env.STRIPE_SECRET_KEY) {
-  stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+  try {
+    stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+  } catch (e) {
+    stripe = null;
+  }
 }
 
-// PayPal SDK
-const paypal = require("@paypal/checkout-server-sdk");
 
 const Payment = require("../models/Payment");
 const Course = require("../models/Course");
+const { getMethod } = require("../services/paymentMethods");
+
 const User = require("../models/User");
 const EnrollmentRequest = require("../models/EnrollmentRequest");
 const AdminSettings = require("../models/AdminSettings");
@@ -92,7 +97,7 @@ const {
 const processInstructorCommission = async (payment) => {
   try {
     if (!payment.course || !payment.userId) {
-      console.log(
+      logger.info(
         "Skipping commission processing - missing course or user data"
       );
       return;
@@ -101,7 +106,7 @@ const processInstructorCommission = async (payment) => {
     // Get course details to find instructor
     const course = await Course.findById(payment.course).populate("instructor");
     if (!course || !course.instructor) {
-      console.log(
+      logger.info(
         "Skipping commission processing - course or instructor not found"
       );
       return;
@@ -119,11 +124,11 @@ const processInstructorCommission = async (payment) => {
       paymentMethod: payment.method || "unknown",
     });
 
-    console.log(
+    logger.info(
       `✅ Instructor commission processed for payment ${payment._id}`
     );
   } catch (error) {
-    console.error("Error processing instructor commission:", error);
+    logger.error("Error processing instructor commission:", error);
     // Don't throw error to avoid breaking payment flow
   }
 };
@@ -140,19 +145,8 @@ const {
   createCreditPaymentMiddleware,
 } = require("../utils/billingUtils");
 
-// PayPal Environment Setup
-const paypalEnvironment =
-  process.env.PAYPAL_ENVIRONMENT === "live"
-    ? new paypal.core.LiveEnvironment(
-        process.env.PAYPAL_CLIENT_ID,
-        process.env.PAYPAL_CLIENT_SECRET
-      )
-    : new paypal.core.SandboxEnvironment(
-        process.env.PAYPAL_CLIENT_ID,
-        process.env.PAYPAL_CLIENT_SECRET
-      );
+// PayPal integration removed; direct transfer only. PayPal environment/client no longer initialized.
 
-const paypalClient = new paypal.core.PayPalHttpClient(paypalEnvironment);
 
 /**
  * CREATE PAYMENT RECORD
@@ -228,7 +222,7 @@ const createPayment = asyncHandler(async (req, res) => {
     $addToSet: { payments: payment._id },
   });
 
-  console.log("🎆 Payment created successfully:", {
+  logger.info("🎆 Payment created successfully:", {
     paymentId: payment._id,
     amount: payment.finalAmount,
     method: payment.method,
@@ -257,7 +251,7 @@ const createPayment = asyncHandler(async (req, res) => {
       );
     }
   } catch (notificationError) {
-    console.error("Error creating payment notification:", notificationError);
+    logger.error("Error creating payment notification:", notificationError);
     // Don't fail the payment creation if notification fails
   }
 
@@ -346,7 +340,7 @@ const updatePayment = asyncHandler(async (req, res) => {
 // @access  Admin
 const getPaymentReports = asyncHandler(async (req, res) => {
   try {
-    console.log(
+    logger.info(
       "🔍 getPaymentReports called by user:",
       req.user.id,
       req.user.role
@@ -356,12 +350,12 @@ const getPaymentReports = asyncHandler(async (req, res) => {
     let adminSettings;
     try {
       adminSettings = await AdminSettings.getSettings();
-      console.log(
+      logger.info(
         "✅ Admin settings loaded:",
         adminSettings ? "success" : "null"
       );
     } catch (settingsError) {
-      console.error("❌ Failed to load admin settings:", settingsError);
+      logger.error("❌ Failed to load admin settings:", settingsError);
       // Use default settings if admin settings fail
       adminSettings = {
         paymentSettings: {
@@ -375,7 +369,7 @@ const getPaymentReports = asyncHandler(async (req, res) => {
 
     const globalDeductionPercentage =
       adminSettings.paymentSettings?.globalDeductionPercentage || 0;
-    console.log(
+    logger.info(
       "🔍 Using globalDeductionPercentage:",
       globalDeductionPercentage
     );
@@ -388,25 +382,25 @@ const getPaymentReports = asyncHandler(async (req, res) => {
         .populate("course", "title price instructor")
         .populate("recipientId", "name email") // FIXED: Use recipientId instead of admin
         .sort({ createdAt: -1 });
-      console.log("✅ Payments loaded:", payments.length, "records");
+      logger.info("✅ Payments loaded:", payments.length, "records");
 
       // Log any payments with missing data
       const paymentsWithMissingData = payments.filter(
         (p) => !p.course || !p.userId
       );
       if (paymentsWithMissingData.length > 0) {
-        console.log(
+        logger.info(
           "⚠️ Found payments with missing course/userId data:",
           paymentsWithMissingData.length
         );
         paymentsWithMissingData.forEach((p) => {
-          console.log(
+          logger.info(
             `Payment ${p._id}: course=${!!p.course}, userId=${!!p.userId}`
           );
         });
       }
     } catch (paymentError) {
-      console.error("❌ Failed to load payments:", paymentError);
+      logger.error("❌ Failed to load payments:", paymentError);
       payments = []; // Use empty array if payments fail to load
     }
 
@@ -475,7 +469,7 @@ const getPaymentReports = asyncHandler(async (req, res) => {
     paidPayments.forEach((payment) => {
       // Skip payments without valid course data
       if (!payment.course || !payment.course._id) {
-        console.log(
+        logger.info(
           "⚠️ Skipping payment with missing course data:",
           payment._id
         );
@@ -528,13 +522,13 @@ const getPaymentReports = asyncHandler(async (req, res) => {
           },
         },
       ]);
-      console.log(
+      logger.info(
         "✅ User fee data loaded:",
         userFeeData.length,
         "role groups"
       );
     } catch (userError) {
-      console.error("❌ Failed to load user fee data:", userError);
+      logger.error("❌ Failed to load user fee data:", userError);
       userFeeData = []; // Use empty array if user data fails to load
     }
 
@@ -549,7 +543,7 @@ const getPaymentReports = asyncHandler(async (req, res) => {
       return acc;
     }, {});
 
-    console.log("✅ Payment reports generated successfully");
+    logger.info("✅ Payment reports generated successfully");
 
     res.json({
       success: true,
@@ -606,8 +600,8 @@ const getPaymentReports = asyncHandler(async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Payment reports error:", error);
-    console.error("Error stack:", error.stack);
+    logger.error("❌ Payment reports error:", error);
+    logger.error("Error stack:", error.stack);
 
     return res.status(500).json({
       success: false,
@@ -720,7 +714,7 @@ const getPaymentBreakdown = asyncHandler(async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error calculating payment breakdown:", error);
+    logger.error("Error calculating payment breakdown:", error);
     res.status(500).json({
       success: false,
       message: "Error calculating payment breakdown",
@@ -752,7 +746,7 @@ const autoEnrollStudent = async (studentId, courseId, paymentId) => {
 
     return { success: true, message: "Auto-enrolled successfully" };
   } catch (error) {
-    console.error("Auto-enrollment error:", error);
+    logger.error("Auto-enrollment error:", error);
     return { success: false, message: "Auto-enrollment failed" };
   }
 };
@@ -763,7 +757,7 @@ const autoEnrollStudent = async (studentId, courseId, paymentId) => {
 const initiatePayment = asyncHandler(async (req, res) => {
   // Sanitize inputs
   const courseId = sanitizeObjectId(req.body.courseId);
-  const method = sanitizeText(req.body.method || "stripe", 20);
+  const method = sanitizeText(req.body.method || "direct_transfer", 20);
 
   if (!courseId) {
     res.status(400);
@@ -790,7 +784,7 @@ const initiatePayment = asyncHandler(async (req, res) => {
   try {
     adminSettings = await AdminSettings.getSettings();
   } catch (settingsError) {
-    console.error("Failed to get admin settings:", settingsError);
+    logger.error("Failed to get admin settings:", settingsError);
     // Use default values if admin settings fail
     adminSettings = {
       paymentSettings: {
@@ -809,6 +803,18 @@ const initiatePayment = asyncHandler(async (req, res) => {
   const adminFeeTotal = adminFee + (amount * adminPercentage) / 100;
   const instructorAmount = amount - (amount * adminPercentage) / 100;
 
+  // Guard: card/PayPal/gift-card course payments are no longer available
+  const unavailableMethods = new Set(["stripe", "paypal", "card", "gift_card"]);
+  if (unavailableMethods.has(method)) {
+    const msg =
+      method === "gift_card"
+        ? "Gift card payment is not available. Please contact your instructor."
+        : "Card/PayPal payment is not available. Please contact your instructor.";
+    res.status(410);
+    throw new Error(msg);
+  }
+
+
   try {
     // Create payment record first
     const payment = await Payment.create({
@@ -820,104 +826,11 @@ const initiatePayment = asyncHandler(async (req, res) => {
       adminFee: adminFeeTotal,
       adminPercentage,
       instructorAmount,
-      method: method || "stripe",
+      method: method || "direct_transfer",
       status: "pending",
     });
 
-    if (method === "stripe") {
-      if (!stripe) {
-        res.status(503);
-        throw new Error("Stripe payment service is not configured");
-      }
-
-      // Create Stripe checkout session
-      const session = await stripe.checkout.sessions.create({
-        payment_method_types: ["card"],
-        line_items: [
-          {
-            price_data: {
-              currency: adminSettings.paymentSettings?.currency || "usd",
-              product_data: {
-                name: course.title,
-                description: course.description,
-              },
-              unit_amount: Math.round(totalAmount * 100), // Convert to cents
-            },
-            quantity: 1,
-          },
-        ],
-        mode: "payment",
-        success_url: `${process.env.CLIENT_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.CLIENT_URL}/payment/cancel`,
-        metadata: {
-          courseId: courseId,
-          studentId: req.user._id.toString(),
-          paymentId: payment._id.toString(),
-        },
-      });
-
-      // Store session ID mapping in database (critical for webhook processing)
-      payment.stripeSessionId = session.id;
-      payment.stripePaymentIntentId = session.payment_intent;
-      await payment.save();
-
-      // NEVER return session object or any secrets to client
-      res.status(200).json({
-        success: true,
-        message: "Payment session created successfully",
-        data: {
-          sessionId: session.id, // Only return session ID, not full session object
-          url: session.url,
-          paymentId: payment._id,
-        },
-      });
-    } else if (method === "paypal") {
-      // Create PayPal order
-      const request = new paypal.orders.OrdersCreateRequest();
-      request.prefer("return=representation");
-      request.requestBody({
-        intent: "CAPTURE",
-        purchase_units: [
-          {
-            amount: {
-              currency_code: adminSettings.paymentSettings.currency || "USD",
-              value: totalAmount.toFixed(2),
-            },
-            description: `Course enrollment: ${course.title}`,
-            custom_id: payment._id.toString(),
-          },
-        ],
-        application_context: {
-          // PayPal appends ?token=<orderId> to return_url; we include our paymentId
-          return_url: `${process.env.CLIENT_URL}/payment/success?paymentId=${payment._id}`,
-          cancel_url: `${process.env.CLIENT_URL}/payment/cancel?paymentId=${payment._id}`,
-          brand_name: "Mentora",
-          landing_page: "BILLING",
-          user_action: "PAY_NOW",
-        },
-      });
-
-      const order = await paypalClient.execute(request);
-
-      // Store PayPal order ID
-      payment.paypalOrderId = order.result.id;
-      await payment.save();
-
-      // Find approval URL
-      const approvalUrl = order.result.links.find(
-        (link) => link.rel === "approve"
-      ).href;
-
-      res.status(200).json({
-        success: true,
-        message: "PayPal payment initiated",
-        data: {
-          paymentId: payment._id,
-          orderId: order.result.id,
-          approvalUrl: approvalUrl,
-        },
-      });
-    } else if (method === "direct") {
+    if (method === "direct" || method === "direct_transfer") {
       // For direct transfer, the student pays the Admin (unified flow)
       const adminUser = await User.findOne({ role: "admin" });
       if (!adminUser) {
@@ -958,7 +871,7 @@ const initiatePayment = asyncHandler(async (req, res) => {
       throw new Error("Invalid payment method");
     }
   } catch (error) {
-    console.error("Payment initiation error:", error);
+    logger.error("Payment initiation error:", error);
     res.status(500);
     throw new Error("Failed to initiate payment");
   }
@@ -1055,7 +968,7 @@ const confirmStripePayment = asyncHandler(async (req, res) => {
       });
     }
   } catch (error) {
-    console.error("Stripe confirmation error:", error);
+    logger.error("Stripe confirmation error:", error);
     res.status(500);
     throw new Error("Failed to confirm Stripe payment");
   }
@@ -1183,7 +1096,7 @@ const handleDirectTransfer = asyncHandler(async (req, res) => {
       });
     }
   } catch (error) {
-    console.error("Direct transfer error:", error);
+    logger.error("Direct transfer error:", error);
     res.status(500);
     throw new Error("Failed to process direct transfer payment");
   }
@@ -1201,7 +1114,7 @@ const approveDirectTransferPayment = asyncHandler(async (req, res) => {
   const approved = action === "approve" || Boolean(req.body.approved);
   const adminNote = sanitizeText(adminNotes || req.body.adminNote, 500);
 
-  console.log("🔍 Course payment approval request:", {
+  logger.info("🔍 Course payment approval request:", {
     paymentId: id,
     action,
     approved,
@@ -1235,9 +1148,9 @@ const approveDirectTransferPayment = asyncHandler(async (req, res) => {
         payment.finalAmount = payment.amount;
       }
 
-      console.log("💳 Saving payment with status:", payment.status);
+      logger.info("💳 Saving payment with status:", payment.status);
       await payment.save();
-      console.log("✅ Payment saved successfully");
+      logger.info("✅ Payment saved successfully");
 
       // Update user bill
       const user = await User.findById(payment.userId._id);
@@ -1277,7 +1190,7 @@ const approveDirectTransferPayment = asyncHandler(async (req, res) => {
       try {
         await payment.completePayment(req.user._id);
       } catch (error) {
-        console.error("❌ completePayment error:", error);
+        logger.error("❌ completePayment error:", error);
       }
 
       res.status(200).json({
@@ -1320,9 +1233,9 @@ const approveDirectTransferPayment = asyncHandler(async (req, res) => {
       });
     }
   } catch (error) {
-    console.error("❌ Payment approval error:", error);
-    console.error("❌ Error stack:", error.stack);
-    console.error("❌ Error message:", error.message);
+    logger.error("❌ Payment approval error:", error);
+    logger.error("❌ Error stack:", error.stack);
+    logger.error("❌ Error message:", error.message);
     res.status(500).json({
       success: false,
       message: "Payment approval failed",
@@ -1353,7 +1266,7 @@ const confirmPayPalPayment = asyncHandler(async (req, res) => {
     const getReq = new paypal.orders.OrdersGetRequest(orderId);
     order = await paypalClient.execute(getReq);
   } catch (err) {
-    console.error("PayPal OrdersGetRequest failed:", err?.result || err);
+    logger.error("PayPal OrdersGetRequest failed:", err?.result || err);
     res.status(404);
     throw new Error("PayPal order not found");
   }
@@ -1525,7 +1438,7 @@ const confirmPayPalPayment = asyncHandler(async (req, res) => {
         }
       } catch (_) {}
     }
-    console.error("PayPal capture error:", err?.result || err);
+    logger.error("PayPal capture error:", err?.result || err);
     res.status(500);
     throw new Error("Failed to confirm PayPal payment");
   }
@@ -1618,17 +1531,17 @@ const finalizeEnrollmentAndBills = async (payment) => {
           paymentId: payment._id,
           method: payment.method,
         });
-        console.log(
+        logger.info(
           `✅ Billing transaction created for ${payment.method} payment: ${payment._id}`
         );
-        console.log(
+        logger.info(
           `💰 Payment breakdown: Total: $${originalAmount}, Admin: $${totalAdminProfit.toFixed(
             2
           )}, Instructor: $${instructorAmount.toFixed(2)}`
         );
       }
     } catch (billingError) {
-      console.error("❌ Error creating billing transaction:", billingError);
+      logger.error("❌ Error creating billing transaction:", billingError);
       // Don't fail the enrollment if billing fails, but log it
     }
 
@@ -1660,7 +1573,7 @@ const finalizeEnrollmentAndBills = async (payment) => {
   } else if (payment.type === "credit_addition") {
     // Handle credit addition payments
     await addCreditsToUser(
-      payment.student._id || payment.student,
+      payment.userId,
       payment.amount,
       payment._id,
       payment.method
@@ -1707,7 +1620,7 @@ const getAllPayments = asyncHandler(async (req, res) => {
 // @route   GET /api/payments/my-payments
 // @access  Private
 const getUserPayments = asyncHandler(async (req, res) => {
-  console.log("🔍 getUserPayments called for user:", req.user._id);
+  logger.info("🔍 getUserPayments called for user:", req.user._id);
 
   const payments = await Payment.find({ userId: req.user._id })
     .populate({
@@ -1720,11 +1633,11 @@ const getUserPayments = asyncHandler(async (req, res) => {
     })
     .sort({ createdAt: -1 });
 
-  console.log("📊 Found payments:", payments.length);
+  logger.info("📊 Found payments:", payments.length);
 
   // Debug: Log payment details to see what fields are available
   payments.forEach((payment) => {
-    console.log("💳 Payment debug:", {
+    logger.info("💳 Payment debug:", {
       id: payment._id,
       method: payment.method,
       status: payment.status,
@@ -1912,12 +1825,12 @@ const instructorApproveDirectTransfer = asyncHandler(async (req, res) => {
         approvedAt: new Date(),
       };
       await enrollmentRequest.save();
-      console.log(
+      logger.info(
         `Auto-approved related enrollment request: ${enrollmentRequest._id}`
       );
     }
   } catch (enrollmentError) {
-    console.error("Error auto-approving enrollment request:", enrollmentError);
+    logger.error("Error auto-approving enrollment request:", enrollmentError);
     // Don't fail the payment approval if enrollment request update fails
   }
 
@@ -1931,11 +1844,11 @@ const instructorApproveDirectTransfer = asyncHandler(async (req, res) => {
       paymentId: payment._id,
       method: "direct_transfer",
     });
-    console.log(
+    logger.info(
       `Billing transaction created for instructor-approved payment: ${payment._id}`
     );
   } catch (billingError) {
-    console.error(
+    logger.error(
       "Error creating billing transaction for instructor approval:",
       billingError
     );
@@ -1953,7 +1866,7 @@ const instructorApproveDirectTransfer = asyncHandler(async (req, res) => {
       );
     }
   } catch (notificationError) {
-    console.error(
+    logger.error(
       "Error creating payment approval notification:",
       notificationError
     );
@@ -1996,7 +1909,8 @@ const submitDirectTransfer = asyncHandler(async (req, res) => {
   }
 
   // Check if user owns this payment
-  if (payment.student.toString() !== req.user._id.toString()) {
+  const paymentOwnerId = payment.userId ? payment.userId.toString() : (payment.student ? payment.student.toString() : null);
+  if (paymentOwnerId !== req.user._id.toString()) {
     res.status(403);
     throw new Error("Not authorized to update this payment");
   }
@@ -2054,8 +1968,9 @@ const verifyPayment = asyncHandler(async (req, res) => {
   }
 
   // Check if user owns this payment or is admin
+  const ownerId = payment.userId ? payment.userId.toString() : (payment.student ? payment.student.toString() : null);
   if (
-    payment.student._id.toString() !== req.user._id.toString() &&
+    ownerId !== req.user._id.toString() &&
     req.user.role !== "admin"
   ) {
     res.status(403);
@@ -2164,7 +2079,7 @@ const rejectDirectTransfer = asyncHandler(async (req, res) => {
 const initiateCreditPayment = asyncHandler(async (req, res) => {
   // Sanitize inputs
   const amount = sanitizeNumber(req.body.amount, { min: 1, max: 10000 });
-  const method = sanitizeText(req.body.method || "stripe", 20);
+  const method = sanitizeText(req.body.method || "direct_transfer", 20);
 
   if (!amount) {
     res.status(400);
@@ -2176,13 +2091,21 @@ const initiateCreditPayment = asyncHandler(async (req, res) => {
   try {
     adminSettings = await AdminSettings.getSettings();
   } catch (settingsError) {
-    console.error("Failed to get admin settings:", settingsError);
+    logger.error("Failed to get admin settings:", settingsError);
     adminSettings = {
       paymentSettings: {
         currency: "usd",
       },
     };
   }
+
+  // Guard: card/PayPal credit payments are no longer available
+  const unavailableCreditMethods = new Set(["stripe", "paypal", "card", "gift_card"]);
+  if (unavailableCreditMethods.has(method)) {
+    res.status(410);
+    throw new Error("Card/PayPal payment is not available. Please contact your instructor.");
+  }
+
 
   try {
     // Create payment record for credit addition
@@ -2195,103 +2118,12 @@ const initiateCreditPayment = asyncHandler(async (req, res) => {
       adminFee: 0, // No admin fee for credit additions
       adminPercentage: 0,
       instructorAmount: 0,
-      method: method || "stripe",
+      method: method || "direct_transfer",
       status: "pending",
       type: "credit_addition",
     });
 
-    if (method === "stripe") {
-      if (!stripe) {
-        res.status(503);
-        throw new Error("Stripe payment service is not configured");
-      }
-
-      // Create Stripe checkout session
-      const session = await stripe.checkout.sessions.create({
-        payment_method_types: ["card"],
-        line_items: [
-          {
-            price_data: {
-              currency: adminSettings.paymentSettings?.currency || "usd",
-              product_data: {
-                name: "Account Credit Addition",
-                description: `Add $${amount} to your account balance`,
-              },
-              unit_amount: Math.round(amount * 100), // Convert to cents
-            },
-            quantity: 1,
-          },
-        ],
-        mode: "payment",
-        success_url: `${process.env.CLIENT_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.CLIENT_URL}/payment/cancel`,
-        metadata: {
-          studentId: req.user._id.toString(),
-          paymentId: payment._id.toString(),
-          paymentType: "credit_addition",
-        },
-      });
-
-      // Store session ID mapping in database
-      payment.stripeSessionId = session.id;
-      payment.stripePaymentIntentId = session.payment_intent;
-      await payment.save();
-
-      res.status(200).json({
-        success: true,
-        message: "Credit payment session created successfully",
-        data: {
-          sessionId: session.id,
-          url: session.url,
-          paymentId: payment._id,
-        },
-      });
-    } else if (method === "paypal") {
-      // Create PayPal order for credit addition
-      const request = new paypal.orders.OrdersCreateRequest();
-      request.prefer("return=representation");
-      request.requestBody({
-        intent: "CAPTURE",
-        purchase_units: [
-          {
-            amount: {
-              currency_code: adminSettings.paymentSettings.currency || "USD",
-              value: amount.toFixed(2),
-            },
-            description: `Account credit addition: $${amount}`,
-            custom_id: payment._id.toString(),
-          },
-        ],
-        application_context: {
-          return_url: `${process.env.CLIENT_URL}/payment/success?paymentId=${payment._id}`,
-          cancel_url: `${process.env.CLIENT_URL}/payment/cancel?paymentId=${payment._id}`,
-          brand_name: "Mentora",
-          landing_page: "BILLING",
-          user_action: "PAY_NOW",
-        },
-      });
-
-      const order = await paypalClient.execute(request);
-
-      // Store PayPal order ID
-      payment.paypalOrderId = order.result.id;
-      await payment.save();
-
-      // Find approval URL
-      const approvalUrl = order.result.links.find(
-        (link) => link.rel === "approve"
-      ).href;
-
-      res.status(200).json({
-        success: true,
-        message: "PayPal credit payment initiated",
-        data: {
-          paymentId: payment._id,
-          orderId: order.result.id,
-          approvalUrl: approvalUrl,
-        },
-      });
-    } else if (method === "direct") {
+    if (method === "direct" || method === "direct_transfer") {
       // For direct transfer credit addition
       res.status(200).json({
         success: true,
@@ -2319,7 +2151,7 @@ const initiateCreditPayment = asyncHandler(async (req, res) => {
       throw new Error("Invalid payment method");
     }
   } catch (error) {
-    console.error("Credit payment initiation error:", error);
+    logger.error("Credit payment initiation error:", error);
     res.status(500);
     throw new Error("Failed to initiate credit payment");
   }
@@ -2339,7 +2171,7 @@ const getUserBillingSummary = asyncHandler(async (req, res) => {
       data: billingSummary,
     });
   } catch (error) {
-    console.error("Error getting billing summary:", error);
+    logger.error("Error getting billing summary:", error);
     res.status(500);
     throw new Error("Failed to get billing summary");
   }
@@ -2367,7 +2199,7 @@ const processAnnualFeesEndpoint = asyncHandler(async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error processing annual fees:", error);
+    logger.error("Error processing annual fees:", error);
     res.status(500);
     throw new Error("Failed to process annual fees");
   }
@@ -2419,7 +2251,7 @@ const checkPaymentStatus = asyncHandler(async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Check payment status error:", error);
+    logger.error("Check payment status error:", error);
     res.status(500);
     throw new Error("Failed to check payment status");
   }
@@ -2429,9 +2261,9 @@ const checkPaymentStatus = asyncHandler(async (req, res) => {
 // @route   POST /api/payments/:id/check-stripe-status
 // @access  Private (User must own the payment or be admin)
 const checkStripePaymentStatus = asyncHandler(async (req, res) => {
-  console.log("🔍 Manual Stripe payment status check requested");
-  console.log("🆔 Payment ID:", req.params.id);
-  console.log("👤 User:", req.user._id, req.user.role);
+  logger.info("🔍 Manual Stripe payment status check requested");
+  logger.info("🆔 Payment ID:", req.params.id);
+  logger.info("👤 User:", req.user._id, req.user.role);
 
   try {
     // Find the payment
@@ -2440,7 +2272,7 @@ const checkStripePaymentStatus = asyncHandler(async (req, res) => {
       .populate("course", "title instructor enrolledStudents");
 
     if (!payment) {
-      console.error("❌ Payment not found:", req.params.id);
+      logger.error("❌ Payment not found:", req.params.id);
       res.status(404);
       throw new Error("Payment not found");
     }
@@ -2450,12 +2282,12 @@ const checkStripePaymentStatus = asyncHandler(async (req, res) => {
       payment.userId._id.toString() !== req.user._id.toString() &&
       req.user.role !== "admin"
     ) {
-      console.error("❌ Access denied for payment:", req.params.id);
+      logger.error("❌ Access denied for payment:", req.params.id);
       res.status(403);
       throw new Error("Access denied");
     }
 
-    console.log("💾 Payment found:", {
+    logger.info("💾 Payment found:", {
       id: payment._id,
       status: payment.status,
       method: payment.method,
@@ -2464,14 +2296,14 @@ const checkStripePaymentStatus = asyncHandler(async (req, res) => {
 
     // Only process Stripe payments
     if (payment.method !== "stripe") {
-      console.error("❌ Not a Stripe payment:", payment.method);
+      logger.error("❌ Not a Stripe payment:", payment.method);
       res.status(400);
       throw new Error("This endpoint only handles Stripe payments");
     }
 
     // Check if payment is already processed
     if (payment.status === "paid") {
-      console.log("✅ Payment already processed");
+      logger.info("✅ Payment already processed");
       return res.status(200).json({
         success: true,
         message: "Payment already processed",
@@ -2485,14 +2317,14 @@ const checkStripePaymentStatus = asyncHandler(async (req, res) => {
 
     // Check if we have a Stripe payment intent ID
     if (!payment.stripePaymentIntentId) {
-      console.error("❌ No Stripe payment intent ID found");
+      logger.error("❌ No Stripe payment intent ID found");
       res.status(400);
       throw new Error("No Stripe payment intent ID found");
     }
 
     // Initialize Stripe
     if (!process.env.STRIPE_SECRET_KEY) {
-      console.error("❌ Stripe not configured");
+      logger.error("❌ Stripe not configured");
       res.status(503);
       throw new Error("Stripe service not configured");
     }
@@ -2500,7 +2332,7 @@ const checkStripePaymentStatus = asyncHandler(async (req, res) => {
     const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
     // Query Stripe directly for payment status
-    console.log(
+    logger.info(
       "🔍 Querying Stripe for payment intent:",
       payment.stripePaymentIntentId
     );
@@ -2508,11 +2340,11 @@ const checkStripePaymentStatus = asyncHandler(async (req, res) => {
       payment.stripePaymentIntentId
     );
 
-    console.log("📊 Stripe payment intent status:", paymentIntent.status);
-    console.log("💰 Stripe payment intent amount:", paymentIntent.amount);
+    logger.info("📊 Stripe payment intent status:", paymentIntent.status);
+    logger.info("💰 Stripe payment intent amount:", paymentIntent.amount);
 
     if (paymentIntent.status === "succeeded") {
-      console.log("✅ Payment succeeded in Stripe, processing...");
+      logger.info("✅ Payment succeeded in Stripe, processing...");
 
       // Update payment status
       payment.status = "paid";
@@ -2526,10 +2358,10 @@ const checkStripePaymentStatus = asyncHandler(async (req, res) => {
       };
 
       await payment.save();
-      console.log("✅ Payment status updated to paid");
+      logger.info("✅ Payment status updated to paid");
 
       // Auto-enroll student
-      console.log("🎓 Starting auto-enrollment");
+      logger.info("🎓 Starting auto-enrollment");
       const course = payment.course;
       const student = payment.userId;
 
@@ -2538,7 +2370,7 @@ const checkStripePaymentStatus = asyncHandler(async (req, res) => {
         const alreadyEnrolled = course.enrolledStudents.includes(student._id);
 
         if (!alreadyEnrolled) {
-          console.log("➕ Enrolling student in course");
+          logger.info("➕ Enrolling student in course");
           course.enrolledStudents.push(student._id);
           await course.save();
 
@@ -2547,13 +2379,13 @@ const checkStripePaymentStatus = asyncHandler(async (req, res) => {
             student.enrolledCourses.push(course._id);
             await student.save();
           }
-          console.log("✅ Student enrolled successfully");
+          logger.info("✅ Student enrolled successfully");
         } else {
-          console.log("⚠️ Student already enrolled");
+          logger.info("⚠️ Student already enrolled");
         }
 
         // Create billing transaction
-        console.log("💰 Creating billing transaction");
+        logger.info("💰 Creating billing transaction");
         try {
           const {
             createBillingTransactionForCoursePayment,
@@ -2591,9 +2423,9 @@ const checkStripePaymentStatus = asyncHandler(async (req, res) => {
             method: "stripe",
           });
 
-          console.log("✅ Billing transaction created successfully");
+          logger.info("✅ Billing transaction created successfully");
         } catch (billingError) {
-          console.error("❌ Error creating billing transaction:", billingError);
+          logger.error("❌ Error creating billing transaction:", billingError);
           // Don't fail the whole process if billing fails
         }
       }
@@ -2612,7 +2444,7 @@ const checkStripePaymentStatus = asyncHandler(async (req, res) => {
       paymentIntent.status === "requires_payment_method" ||
       paymentIntent.status === "requires_confirmation"
     ) {
-      console.log("⚠️ Payment still pending in Stripe");
+      logger.info("⚠️ Payment still pending in Stripe");
       res.status(200).json({
         success: true,
         message: "Payment still pending",
@@ -2623,7 +2455,7 @@ const checkStripePaymentStatus = asyncHandler(async (req, res) => {
         },
       });
     } else if (paymentIntent.status === "canceled") {
-      console.log("❌ Payment was canceled in Stripe");
+      logger.info("❌ Payment was canceled in Stripe");
       payment.status = "failed";
       payment.failureReason = "Payment was canceled";
       await payment.save();
@@ -2638,7 +2470,7 @@ const checkStripePaymentStatus = asyncHandler(async (req, res) => {
         },
       });
     } else {
-      console.log("❓ Unknown payment status:", paymentIntent.status);
+      logger.info("❓ Unknown payment status:", paymentIntent.status);
       res.status(200).json({
         success: true,
         message: "Payment status unknown",
@@ -2650,7 +2482,7 @@ const checkStripePaymentStatus = asyncHandler(async (req, res) => {
       });
     }
   } catch (error) {
-    console.error("❌ Error checking Stripe payment status:", error);
+    logger.error("❌ Error checking Stripe payment status:", error);
     res.status(500);
     throw new Error("Failed to check payment status: " + error.message);
   }
@@ -2660,7 +2492,7 @@ const checkStripePaymentStatus = asyncHandler(async (req, res) => {
 // @route   GET /api/payments/debug/pending-stripe
 // @access  Private (Admin only)
 const getPendingStripePayments = asyncHandler(async (req, res) => {
-  console.log("🔍 Getting pending Stripe payments for debugging");
+  logger.info("🔍 Getting pending Stripe payments for debugging");
 
   try {
     // Find recent pending Stripe payments
@@ -2674,7 +2506,7 @@ const getPendingStripePayments = asyncHandler(async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(10);
 
-    console.log(`📊 Found ${pendingPayments.length} pending Stripe payments`);
+    logger.info(`📊 Found ${pendingPayments.length} pending Stripe payments`);
 
     const paymentData = pendingPayments.map((payment) => ({
       id: payment._id,
@@ -2697,7 +2529,7 @@ const getPendingStripePayments = asyncHandler(async (req, res) => {
       data: paymentData,
     });
   } catch (error) {
-    console.error("❌ Error getting pending Stripe payments:", error);
+    logger.error("❌ Error getting pending Stripe payments:", error);
     res.status(500);
     throw new Error("Failed to get pending payments: " + error.message);
   }
@@ -2707,7 +2539,7 @@ const getPendingStripePayments = asyncHandler(async (req, res) => {
 // @route   GET /api/payments/:id/receipt
 // @access  Private (Admin or Instructor only - Students can only view, not download)
 const getPaymentReceipt = asyncHandler(async (req, res) => {
-  console.log("📄 Payment receipt requested for:", req.params.id);
+  logger.info("📄 Payment receipt requested for:", req.params.id);
 
   try {
     // Find the payment
@@ -2716,7 +2548,7 @@ const getPaymentReceipt = asyncHandler(async (req, res) => {
       .populate("course", "title instructor");
 
     if (!payment) {
-      console.error("❌ Payment not found:", req.params.id);
+      logger.error("❌ Payment not found:", req.params.id);
       res.status(404);
       throw new Error("Payment not found");
     }
@@ -2724,7 +2556,7 @@ const getPaymentReceipt = asyncHandler(async (req, res) => {
     // Restrict download access - only admins and instructors can download receipts
     // Students can view payment details but cannot download receipts
     if (req.user.role === "student") {
-      console.error("❌ Students cannot download receipts:", req.params.id);
+      logger.error("❌ Students cannot download receipts:", req.params.id);
       res.status(403);
       throw new Error(
         "Receipt download is not available for students. You can view payment details in your payment history."
@@ -2738,7 +2570,7 @@ const getPaymentReceipt = asyncHandler(async (req, res) => {
       // Instructor can access receipts for payments related to their courses
       const course = await Course.findById(payment.course);
       if (course && course.instructor.toString() !== req.user._id.toString()) {
-        console.error(
+        logger.error(
           "❌ Instructor can only access receipts for their own courses:",
           req.params.id
         );
@@ -2748,7 +2580,7 @@ const getPaymentReceipt = asyncHandler(async (req, res) => {
         );
       }
     } else {
-      console.error("❌ Access denied for payment receipt:", req.params.id);
+      logger.error("❌ Access denied for payment receipt:", req.params.id);
       res.status(403);
       throw new Error("Access denied");
     }
@@ -2769,7 +2601,7 @@ const getPaymentReceipt = asyncHandler(async (req, res) => {
     const receiptUrl = payment.transfer?.receiptUrl || payment.receiptUrl;
 
     // Debug: Log all possible receipt-related fields
-    console.log("🔍 Payment receipt fields debug:", {
+    logger.info("🔍 Payment receipt fields debug:", {
       paymentId: payment._id,
       method: payment.method,
       status: payment.status,
@@ -2798,7 +2630,7 @@ const getPaymentReceipt = asyncHandler(async (req, res) => {
       signedUrl = receiptUrl;
     }
 
-    console.log("✅ Receipt URL generated for payment:", payment._id);
+    logger.info("✅ Receipt URL generated for payment:", payment._id);
 
     res.status(200).json({
       success: true,
@@ -2815,7 +2647,7 @@ const getPaymentReceipt = asyncHandler(async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Error generating payment receipt:", error);
+    logger.error("❌ Error generating payment receipt:", error);
     res.status(500);
     throw new Error("Failed to generate receipt: " + error.message);
   }
@@ -2829,7 +2661,7 @@ const processAdminFeePayment = asyncHandler(async (req, res) => {
     const { amount, method, description, receiptFile } = req.body;
     const instructorId = req.user._id;
 
-    console.log("🔄 Processing admin fee payment:", {
+    logger.info("🔄 Processing admin fee payment:", {
       instructorId,
       amount,
       method,
@@ -2921,11 +2753,11 @@ const processAdminFeePayment = asyncHandler(async (req, res) => {
         throw new Error("Invalid payment method");
     }
 
-    console.log("✅ Admin fee payment created:", payment._id);
+    logger.info("✅ Admin fee payment created:", payment._id);
 
     res.status(201).json(responseData);
   } catch (error) {
-    console.error("❌ Error processing admin fee payment:", error);
+    logger.error("❌ Error processing admin fee payment:", error);
     res.status(500);
     throw new Error("Failed to process admin fee payment: " + error.message);
   }
@@ -2975,7 +2807,7 @@ const uploadAdminFeeReceipt = asyncHandler(async (req, res) => {
     payment.status = "pending_admin_approval";
     await payment.save();
 
-    console.log("✅ Receipt uploaded for admin fee payment:", paymentId);
+    logger.info("✅ Receipt uploaded for admin fee payment:", paymentId);
 
     res.status(200).json({
       success: true,
@@ -2984,7 +2816,7 @@ const uploadAdminFeeReceipt = asyncHandler(async (req, res) => {
       payment,
     });
   } catch (error) {
-    console.error("❌ Error uploading admin fee receipt:", error);
+    logger.error("❌ Error uploading admin fee receipt:", error);
     res.status(500);
     throw new Error("Failed to upload receipt: " + error.message);
   }

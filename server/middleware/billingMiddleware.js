@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 const AdminBillingAccount = require("../models/AdminBillingAccount");
 const InstructorBillingAccount = require("../models/InstructorBillingAccount");
 const StudentBillingAccount = require("../models/StudentBillingAccount");
@@ -97,7 +98,7 @@ const checkBillingStatus = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error("Billing middleware error:", error);
+    logger.error("Billing middleware error:", error);
     next(); // Continue on error to avoid breaking the app
   }
 };
@@ -188,7 +189,7 @@ const checkPremiumAccess = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error("Premium access check error:", error);
+    logger.error("Premium access check error:", error);
     res.status(500).json({
       success: false,
       message: "Error checking premium access",
@@ -206,7 +207,7 @@ const logBillingActivity = (activityType) => {
     res.json = function (data) {
       // Log successful billing activities
       if (data && data.success && req.user) {
-        console.log(`Billing Activity: ${activityType}`, {
+        logger.info(`Billing Activity: ${activityType}`, {
           userId: req.user.id,
           userRole: req.user.role,
           timestamp: new Date().toISOString(),
@@ -245,22 +246,12 @@ const validatePaymentData = (req, res, next) => {
   }
 
   // Validate payment method
-  const validMethods = ["card", "paypal", "stripe"];
+  const validMethods = ["direct_transfer", "direct"];
   if (!paymentMethod || !validMethods.includes(paymentMethod)) {
     return res.status(400).json({
       success: false,
       message: "Invalid payment method",
     });
-  }
-
-  // Validate payment details based on method
-  if (paymentMethod === "card" || paymentMethod === "stripe") {
-    if (!paymentDetails || !paymentDetails.paymentMethodId) {
-      return res.status(400).json({
-        success: false,
-        message: "Payment method ID required for card payments",
-      });
-    }
   }
 
   next();

@@ -77,13 +77,13 @@ const securityLogger = (req, res, next) => {
 
   const requestData = JSON.stringify({ body: req.body, query: req.query, params: req.params });
   if (suspiciousPatterns.some(pattern => pattern.test(requestData))) {
-    console.warn(`Suspicious request detected from IP ${req.ip}:`, { method: req.method, path: req.path, body: req.body });
+    logger.warn(`Suspicious request detected from IP ${req.ip}:`, { method: req.method, path: req.path, body: req.body });
     logMessage('Suspicious request detected', { method: req.method, path: req.path, body: req.body });
   }
 
   res.on('finish', () => {
     const duration = Date.now() - startTime;
-    if (duration > 5000) console.warn(`Slow request detected: ${req.method} ${req.path} took ${duration}ms`);
+    if (duration > 5000) logger.warn(`Slow request detected: ${req.method} ${req.path} took ${duration}ms`);
   });
 
   next();

@@ -32,17 +32,6 @@ export const billingApi = apiSlice.injectEndpoints({
       transformResponse: (response) => response.data,
     }),
 
-    // Pay with gift card
-    payWithGiftCard: builder.mutation({
-      query: ({ courseId, amount, giftCardId, giftCardBalance, useCourseGiftCard, remainingBalance }) => ({
-        url: 'billing/pay-with-gift-card',
-        method: 'POST',
-        body: { courseId, amount, giftCardId, giftCardBalance, useCourseGiftCard, remainingBalance },
-      }),
-      invalidatesTags: ['BillingAccount', 'Course', 'GiftCards'],
-      transformResponse: (response) => response, // Return full response with success field
-    }),
-
     // Initiate billing payment (same as course payment structure)
     initiateBillingPayment: builder.mutation({
       query: ({ amount, method }) => ({
@@ -260,13 +249,6 @@ export const billingApi = apiSlice.injectEndpoints({
       providesTags: ['GiftCards'],
     }),
 
-    // Get course-specific gift card
-    getCourseGiftCard: builder.query({
-      query: (courseId) => `/billing/course-gift-card/${courseId}`,
-      providesTags: (result, error, courseId) => [{ type: 'GiftCards', id: courseId }],
-      transformResponse: (response) => response.data,
-    }),
-
     // Delete gift card (Admin only)
     deleteGiftCard: builder.mutation({
       query: (giftCardId) => ({
@@ -308,6 +290,28 @@ export const billingApi = apiSlice.injectEndpoints({
       query: ({ page = 1, limit = 50 } = {}) => 
         `/billing/transactions?page=${page}&limit=${limit}`,
       providesTags: ['BillingTransaction'],
+    // Financial summary aggregation (Phase 1 simplified reporting)
+    getAdminFinancialSummary: builder.query({
+      query: ({ from, to } = {}) => {
+        const params = new URLSearchParams();
+        if (from) params.set('from', from);
+        if (to) params.set('to', to);
+        const qs = params.toString();
+        return `/billing/summary/admin${qs ? `?${qs}` : ''}`;
+      },
+      providesTags: ['BillingAccount'],
+      transformResponse: (response) => response.data,
+    }),
+    getStudentFinancialSummary: builder.query({
+      query: () => '/billing/summary/student',
+      providesTags: ['BillingAccount'],
+      transformResponse: (response) => response.data,
+    }),
+    getInstructorFinancialSummary: builder.query({
+      query: () => '/billing/summary/instructor',
+      providesTags: ['BillingAccount'],
+      transformResponse: (response) => response.data,
+    }),
     }),
   }),
 });
@@ -318,7 +322,6 @@ export const {
   useGetBillingAccountQuery,
   useGetBillingTransactionsQuery,
   useGetGiftCardBalanceQuery,
-  usePayWithGiftCardMutation,
   useInitiateBillingPaymentMutation,
   useConfirmStripeBillingPaymentMutation,
   useProcessBillingPaymentMutation,
@@ -339,11 +342,13 @@ export const {
   useAddGiftCardMutation,
   useGetGiftCardHistoryQuery,
   useGetUserGiftCardsQuery,
-  useGetCourseGiftCardQuery,
   useDeleteGiftCardMutation,
   useClaimGiftCardMutation,
   // 🆕 Admin-specific hooks
   useGetAdminDashboardQuery,
   useGetAdminBillingAccountQuery,
   useGetAllPlatformTransactionsQuery,
+  useGetAdminFinancialSummaryQuery,
+  useGetStudentFinancialSummaryQuery,
+  useGetInstructorFinancialSummaryQuery,
 } = billingApi;

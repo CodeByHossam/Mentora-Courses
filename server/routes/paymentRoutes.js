@@ -11,8 +11,6 @@ const {
   getPaymentBreakdown,
   initiatePayment,
   verifyPayment,
-  confirmStripePayment,
-  confirmPayPalPayment,
   handleDirectTransfer,
   approveDirectTransferPayment,
   getAllPayments,
@@ -29,8 +27,6 @@ const {
   processAnnualFeesEndpoint,
   createCreditPaymentMiddleware,
   checkPaymentStatus,
-  checkStripePaymentStatus,
-  getPendingStripePayments,
   getPaymentReceipt
   // processAdminFeePayment,
   // uploadAdminFeeReceipt
@@ -38,8 +34,6 @@ const {
 const { protect, admin } = require("../middleware/authMiddleware");
 const {
   validatePaymentInitiation,
-  validateStripeConfirmation,
-  validatePayPalConfirmation,
   validateDirectTransfer,
   validatePaymentApproval,
   validateLegacyPaymentCreation,
@@ -56,7 +50,7 @@ const {
   fileUploadLimiter
 } = require("../middleware/advancedRateLimit");
 const { paymentErrorHandler, logPaymentOperation } = require("../middleware/paymentErrorHandler");
-const { paymentCSRFProtection, setCSRFToken } = require("../middleware/csrfProtection");
+const { paymentCSRFProtection, setCSRFToken, getCSRFToken } = require("../middleware/csrfProtection");
 
 // Configure multer for file uploads
 const upload = multer({
@@ -75,19 +69,20 @@ const upload = multer({
 });
 
 // CSRF token endpoint
-router.get("/csrf-token", protect, setCSRFToken, (req, res) => {
-  res.json({
-    success: true,
-    message: 'CSRF token set',
-    data: { csrfToken: req.cookies['csrf-token'] }
-  });
-});
+router.get("/csrf-token", protect, getCSRFToken);
 
 router.post("/initiate", protect, paymentCSRFProtection, logPaymentOperation('initiate'), paymentLimiter, validatePaymentInitiation, initiatePayment);
-router.post("/stripe/confirm", protect, paymentCSRFProtection, logPaymentOperation('stripe_confirm'), paymentLimiter, validateStripeConfirmation, confirmStripePayment);
-router.post("/paypal/confirm", protect, paymentCSRFProtection, logPaymentOperation('paypal_confirm'), paymentLimiter, validatePayPalConfirmation, confirmPayPalPayment);
-// router.post("/direct-transfer", protect, paymentCSRFProtection, logPaymentOperation('direct_transfer'));
+// Removed card/PayPal flows: keep backward-compatible 410 responses
+const gonePayment = (req, res) => res.status(410).json({
+  success: false,
+  message: "Card/PayPal payment is not available. Please contact your instructor.",
+});
+router.post("/stripe/confirm", protect, gonePayment);
+router.post("/paypal/confirm", protect, gonePayment);
+router.post("/:id/check-stripe-status", protect, gonePayment);
+router.get("/debug/pending-stripe", protect, admin, gonePayment);
 router.post('/direct-transfer', protect, upload.single('receipt'), handleDirectTransfer);
+
 router.post('/:id/approve', protect, admin, paymentCSRFProtection, logPaymentOperation('admin_approve'), adminLimiter, validatePaymentApproval, approveDirectTransferPayment);
 
 // User-specific routes with rate limiting
@@ -117,13 +112,11 @@ router.route("/breakdown/:courseId").get(protect, apiReadLimiter, validateObject
 
 // Payment status check routes
 router.post("/:id/check-status", protect, apiReadLimiter, validateObjectIdParam, checkPaymentStatus);
-router.post("/:id/check-stripe-status", protect, apiReadLimiter, validateObjectIdParam, checkStripePaymentStatus);
 
 // Payment receipt route
 router.get("/:id/receipt", protect, apiReadLimiter, validateObjectIdParam, getPaymentReceipt);
 
 // Debug route for finding pending Stripe payments
-router.get("/debug/pending-stripe", protect, admin, adminLimiter, getPendingStripePayments);
 
 // Admin billing management routes
 router.post("/process-annual-fees", protect, admin, adminLimiter, processAnnualFeesEndpoint);

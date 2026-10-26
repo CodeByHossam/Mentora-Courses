@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 /**
  * Security Configuration
  * 
@@ -72,7 +73,7 @@ const securityConfig = {
   mongoSanitize: {
     replaceWith: '_',
     onSanitize: ({ req, key }) => {
-      console.warn(`Sanitized key: ${key} in request to ${req.originalUrl}`);
+      logger.warn(`Sanitized key: ${key} in request to ${req.originalUrl}`);
     }
   },
 
@@ -180,21 +181,21 @@ const validateSecurityConfig = () => {
   const missingOptional = optionalEnvVars.filter(varName => !process.env[varName]);
   
   if (missingRequired.length > 0) {
-    console.error('Missing required environment variables for security:', missingRequired);
+    logger.error('Missing required environment variables for security:', missingRequired);
     process.exit(1);
   }
 
   if (missingOptional.length > 0) {
-    console.warn('⚠️  Missing optional environment variables (payment features may not work):', missingOptional);
-    console.warn('   Add these to .env file for full payment functionality');
+    logger.warn('⚠️  Missing optional environment variables (payment features may not work):', missingOptional);
+    logger.warn('   Add these to .env file for full payment functionality');
   }
 
   // Validate JWT secret strength
   if (process.env.JWT_SECRET && process.env.JWT_SECRET.length < 32) {
-    console.warn('JWT_SECRET should be at least 32 characters long for security');
+    logger.warn('JWT_SECRET should be at least 32 characters long for security');
   }
 
-  console.log('✅ Security configuration validated successfully');
+  logger.info('✅ Security configuration validated successfully');
 };
 
 

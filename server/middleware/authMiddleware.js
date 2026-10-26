@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 /**
  * Authentication Middleware
  *
@@ -51,7 +52,7 @@ const protect = asyncHandler(async (req, res, next) => {
       for (const cookieName of cookieNames) {
         if (req.cookies[cookieName]) {
           token = req.cookies[cookieName];
-          console.log(`   🍪 Token found in cookie: ${cookieName}`);
+          logger.info(`   🍪 Token found in cookie: ${cookieName}`);
           break;
         }
       }
@@ -59,7 +60,7 @@ const protect = asyncHandler(async (req, res, next) => {
 
     // If still no token found
     if (!token) {
-      console.log("   ❌ NO TOKEN FOUND - Returning 401");
+      logger.info("   ❌ NO TOKEN FOUND - Returning 401");
       return res.status(401).json({
         success: false,
         message:
@@ -73,8 +74,8 @@ const protect = asyncHandler(async (req, res, next) => {
     try {
       decoded = jwt.verify(token, process.env.JWT_SECRET);
     } catch (jwtError) {
-      console.log("   ❌ JWT verification failed:", jwtError.name);
-      console.log("   ❌ JWT error message:", jwtError.message);
+      logger.info("   ❌ JWT verification failed:", jwtError.name);
+      logger.info("   ❌ JWT error message:", jwtError.message);
 
       const errorResponse = {
         success: false,
@@ -132,7 +133,7 @@ const protect = asyncHandler(async (req, res, next) => {
     req.user = user;
     next();
   } catch (error) {
-    console.error("Authentication middleware error:", {
+    logger.error("Authentication middleware error:", {
       error: error.message,
       stack: error.stack,
       timestamp: new Date().toISOString(),
@@ -165,7 +166,7 @@ const authorize = (allowedRoles = []) => {
   return (req, res, next) => {
     // Ensure user is authenticated (should be set by protect middleware)
     if (!req.user) {
-      console.log("   ❌ NO USER - protect middleware failed");
+      logger.info("   ❌ NO USER - protect middleware failed");
       return res.status(401).json({
         success: false,
         message: "Authentication required. Please login first.",
@@ -175,7 +176,7 @@ const authorize = (allowedRoles = []) => {
 
     // Validate that allowedRoles is an array
     if (!Array.isArray(allowedRoles) || allowedRoles.length === 0) {
-      console.error("   ❌ INVALID ROLE CONFIG:", allowedRoles);
+      logger.error("   ❌ INVALID ROLE CONFIG:", allowedRoles);
       return res.status(500).json({
         success: false,
         message: "Server configuration error.",
@@ -190,7 +191,7 @@ const authorize = (allowedRoles = []) => {
     );
 
     if (!normalizedAllowedRoles.includes(userRole)) {
-      console.log("   ❌ ROLE NOT ALLOWED");
+      logger.info("   ❌ ROLE NOT ALLOWED");
       return res.status(403).json({
         success: false,
         message: `Access forbidden. Required role(s): ${allowedRoles.join(
@@ -200,7 +201,7 @@ const authorize = (allowedRoles = []) => {
       });
     }
 
-    console.log("   ✅ AUTHORIZATION PASSED");
+    logger.info("   ✅ AUTHORIZATION PASSED");
     next();
   };
 };
@@ -279,7 +280,7 @@ const verifyResourceOwnership = (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error("Resource ownership verification error:", {
+    logger.error("Resource ownership verification error:", {
       error: error.message,
       userId: req.user?._id,
       targetId: req.params.id || req.params.userId || req.params.instructorId,
@@ -340,7 +341,7 @@ const requireOwnershipOrAdmin = (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error("Ownership or admin verification error:", error);
+    logger.error("Ownership or admin verification error:", error);
     res.status(500).json({
       success: false,
       message: "Internal server error during access verification.",

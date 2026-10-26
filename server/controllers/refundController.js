@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 // controllers/refundController.js
 /**
  * Refund Request Controller
@@ -69,7 +70,7 @@ const createStudentRefund = async (req, res) => {
     // Handle supporting document uploads
     const supportingDocuments = [];
     if (req.files && req.files.length > 0) {
-      console.log(`📎 Processing ${req.files.length} supporting documents...`);
+      logger.info(`📎 Processing ${req.files.length} supporting documents...`);
 
       for (const file of req.files) {
         try {
@@ -82,9 +83,9 @@ const createStudentRefund = async (req, res) => {
             fileType: file.mimetype,
             fileSize: file.size,
           });
-          console.log(`✅ Uploaded: ${file.originalname}`);
+          logger.info(`✅ Uploaded: ${file.originalname}`);
         } catch (uploadError) {
-          console.error(
+          logger.error(
             `❌ Failed to upload ${file.originalname}:`,
             uploadError
           );
@@ -116,7 +117,7 @@ const createStudentRefund = async (req, res) => {
       { path: "relatedPayment", select: "finalAmount paymentMethod" },
     ]);
 
-    console.log("✅ Student refund request created:", {
+    logger.info("✅ Student refund request created:", {
       refundId: refundRequest._id,
       studentId,
       courseId,
@@ -129,7 +130,7 @@ const createStudentRefund = async (req, res) => {
       data: { refundRequest },
     });
   } catch (error) {
-    console.error("❌ Error creating student refund request:", error);
+    logger.error("❌ Error creating student refund request:", error);
     res.status(500).json({
       success: false,
       message: "Failed to create refund request",
@@ -175,7 +176,7 @@ const getStudentRefunds = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Error fetching student refunds:", error);
+    logger.error("❌ Error fetching student refunds:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch refund requests",
@@ -224,7 +225,7 @@ const createInstructorRefund = async (req, res) => {
     // Handle supporting document uploads
     const supportingDocuments = [];
     if (req.files && req.files.length > 0) {
-      console.log(`📎 Processing ${req.files.length} supporting documents...`);
+      logger.info(`📎 Processing ${req.files.length} supporting documents...`);
 
       for (const file of req.files) {
         try {
@@ -237,9 +238,9 @@ const createInstructorRefund = async (req, res) => {
             fileType: file.mimetype,
             fileSize: file.size,
           });
-          console.log(`✅ Uploaded: ${file.originalname}`);
+          logger.info(`✅ Uploaded: ${file.originalname}`);
         } catch (uploadError) {
-          console.error(
+          logger.error(
             `❌ Failed to upload ${file.originalname}:`,
             uploadError
           );
@@ -263,7 +264,7 @@ const createInstructorRefund = async (req, res) => {
 
     await refundRequest.save();
 
-    console.log("✅ Instructor refund request created:", {
+    logger.info("✅ Instructor refund request created:", {
       refundId: refundRequest._id,
       instructorId,
       amount: refundRequest.requestedAmount,
@@ -276,7 +277,7 @@ const createInstructorRefund = async (req, res) => {
       data: { refundRequest },
     });
   } catch (error) {
-    console.error("❌ Error creating instructor refund request:", error);
+    logger.error("❌ Error creating instructor refund request:", error);
     res.status(500).json({
       success: false,
       message: "Failed to create refund request",
@@ -320,7 +321,7 @@ const getInstructorRefunds = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Error fetching instructor refunds:", error);
+    logger.error("❌ Error fetching instructor refunds:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch refund requests",
@@ -371,7 +372,7 @@ const getPendingRefunds = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Error fetching pending refunds:", error);
+    logger.error("❌ Error fetching pending refunds:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch refund requests",
@@ -439,7 +440,7 @@ const approveRefund = async (req, res) => {
         }
       );
 
-      console.log("🎁 Gift card created for refund:", {
+      logger.info("🎁 Gift card created for refund:", {
         cardNumber: giftCard.cardNumber,
         amount: giftCard.amount,
         userId: giftCard.userId,
@@ -473,7 +474,7 @@ const approveRefund = async (req, res) => {
         actionUrl: `/${refundRequest.requesterType}/gift-cards`,
       });
 
-      console.log("📢 Notifications created for gift card issuance");
+      logger.info("📢 Notifications created for gift card issuance");
     } else {
       // Process traditional refund
       if (refundRequest.requesterType === "student") {
@@ -502,7 +503,7 @@ const approveRefund = async (req, res) => {
     }
     await refundRequest.save();
 
-    console.log("✅ Refund request approved:", {
+    logger.info("✅ Refund request approved:", {
       refundId,
       requesterType: refundRequest.requesterType,
       amount: refundRequest.requestedAmount,
@@ -525,7 +526,7 @@ const approveRefund = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("❌ Error approving refund request:", error);
+    logger.error("❌ Error approving refund request:", error);
     res.status(500).json({
       success: false,
       message: "Failed to approve refund request",
@@ -574,7 +575,7 @@ const rejectRefund = async (req, res) => {
     refundRequest.reject(adminId, adminNotes);
     await refundRequest.save();
 
-    console.log("✅ Refund request rejected:", {
+    logger.info("✅ Refund request rejected:", {
       refundId,
       requesterType: refundRequest.requesterType,
       amount: refundRequest.requestedAmount,
@@ -586,7 +587,7 @@ const rejectRefund = async (req, res) => {
       data: { refundRequest },
     });
   } catch (error) {
-    console.error("❌ Error rejecting refund request:", error);
+    logger.error("❌ Error rejecting refund request:", error);
     res.status(500).json({
       success: false,
       message: "Failed to reject refund request",
@@ -753,7 +754,7 @@ const getAllRefunds = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching all refunds:", error);
+    logger.error("Error fetching all refunds:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch refund requests",
@@ -846,7 +847,7 @@ const getRefundStats = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching refund stats:", error);
+    logger.error("Error fetching refund stats:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch refund statistics",
@@ -890,7 +891,7 @@ const getRefundDetails = async (req, res) => {
       data: refund,
     });
   } catch (error) {
-    console.error("Error fetching refund details:", error);
+    logger.error("Error fetching refund details:", error);
     res.status(500).json({
       success: false,
       message: "Failed to fetch refund details",
@@ -947,7 +948,7 @@ const cancelRefund = async (req, res) => {
       data: refund,
     });
   } catch (error) {
-    console.error("Error cancelling refund:", error);
+    logger.error("Error cancelling refund:", error);
     res.status(500).json({
       success: false,
       message: "Failed to cancel refund request",

@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 const mongoose = require('mongoose');
 
 const levelSchema = new mongoose.Schema({
@@ -147,7 +148,7 @@ levelSchema.statics.getLevelStatistics = async function(levelId) {
         courses.reduce((sum, course) => sum + (course.rating || 0), 0) / courses.length : 0
     };
   } catch (error) {
-    console.error('Error calculating level statistics:', error);
+    logger.error('Error calculating level statistics:', error);
     return {
       courseCount: 0,
       studentCount: 0,

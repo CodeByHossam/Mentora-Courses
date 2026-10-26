@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 const Comment = require("../models/Comment");
 const Test = require("../models/Test");
 const TestAnswer = require("../models/TestAnswer");
@@ -43,7 +44,7 @@ exports.getCourseInteractions = async (req, res, next) => {
           try {
             signedUrl = await getFile(test.fileUrl, 300);
           } catch (err) {
-            console.error(
+            logger.error(
               "Failed to generate signed URL for test:",
               test._id,
               err
@@ -55,7 +56,7 @@ exports.getCourseInteractions = async (req, res, next) => {
           try {
             answerKeySignedUrl = await getFile(test.answerKey, 300);
           } catch (err) {
-            console.error(
+            logger.error(
               "Failed to generate signed URL for answer key:",
               test._id,
               err
@@ -81,7 +82,7 @@ exports.getCourseInteractions = async (req, res, next) => {
               try {
                 signedUrl = await getFile(sub.answerFileUrl, 300);
               } catch (err) {
-                console.error(
+                logger.error(
                   "Failed to generate signed URL for submission:",
                   sub._id,
                   err
@@ -109,7 +110,7 @@ exports.getCourseInteractions = async (req, res, next) => {
           try {
             signedUrl = await getFile(attachment.fileUrl, 300);
           } catch (err) {
-            console.error(
+            logger.error(
               "Failed to generate signed URL for attachment:",
               attachment._id,
               err
@@ -363,9 +364,9 @@ exports.addTest = async (req, res, next) => {
     try {
       const { key } = await uploadFile(req.file, "tests"); // uploadFile returns { key }
       fileKey = key;
-      console.log("S3 fileKey:", fileKey);
+      logger.info("S3 fileKey:", fileKey);
     } catch (err) {
-      console.error("S3 upload failed:", err);
+      logger.error("S3 upload failed:", err);
       throw new ValidationError("Failed to upload test file");
     }
 
@@ -430,7 +431,7 @@ exports.editTest = async (req, res, next) => {
           try {
             await deleteFile(test.fileUrl);
           } catch (err) {
-            console.error("Failed to delete old test file from S3:", err);
+            logger.error("Failed to delete old test file from S3:", err);
           }
         }
 
@@ -493,7 +494,7 @@ exports.deleteTest = async (req, res, next) => {
       try {
         await deleteFile(test.fileUrl); // your util handles extracting the key + deleting
       } catch (err) {
-        console.error("Failed to delete test file from S3:", err);
+        logger.error("Failed to delete test file from S3:", err);
       }
     }
 
@@ -546,7 +547,7 @@ exports.uploadAnswerKey = async (req, res, next) => {
       try {
         await deleteFile(test.answerKey);
       } catch (err) {
-        console.error("Failed to delete old answer key from S3:", err);
+        logger.error("Failed to delete old answer key from S3:", err);
       }
     }
 
@@ -554,9 +555,9 @@ exports.uploadAnswerKey = async (req, res, next) => {
     try {
       const { key } = await uploadFile(req.file, "answer-keys");
       fileKey = key;
-      console.log("Answer key S3 fileKey:", fileKey);
+      logger.info("Answer key S3 fileKey:", fileKey);
     } catch (err) {
-      console.error("S3 upload failed:", err);
+      logger.error("S3 upload failed:", err);
       throw new ValidationError("Failed to upload answer key file");
     }
 
@@ -697,7 +698,7 @@ exports.submitTestAnswer = async (req, res, next) => {
         try {
           await deleteFile(submission.answerFileUrl);
         } catch (err) {
-          console.error("Failed to delete old answer file from S3:", err);
+          logger.error("Failed to delete old answer file from S3:", err);
         }
       }
 
@@ -788,7 +789,7 @@ exports.deleteTestAnswer = async (req, res, next) => {
       try {
         await deleteFile(submission.answerFileUrl);
       } catch (err) {
-        console.error("Failed to delete answer file from S3:", err);
+        logger.error("Failed to delete answer file from S3:", err);
       }
     }
 
@@ -880,7 +881,7 @@ exports.addAttachment = async (req, res, next) => {
       const { key } = await uploadFile(req.file, "attachments");
       fileKey = key;
     } catch (err) {
-      console.error("S3 upload failed:", err);
+      logger.error("S3 upload failed:", err);
       throw new ValidationError("Failed to upload file");
     }
 
@@ -938,7 +939,7 @@ exports.editAttachment = async (req, res, next) => {
           try {
             await deleteFile(attachment.fileUrl);
           } catch (err) {
-            console.error("Failed to delete old attachment:", err);
+            logger.error("Failed to delete old attachment:", err);
           }
         }
 
@@ -993,7 +994,7 @@ exports.removeAttachment = async (req, res, next) => {
       try {
         await deleteFile(attachment.fileUrl);
       } catch (err) {
-        console.error("Failed to delete attachment:", err);
+        logger.error("Failed to delete attachment:", err);
       }
     }
 
@@ -1026,7 +1027,7 @@ exports.getAllAttachments = async (req, res, next) => {
           try {
             signedUrl = await getFile(attachment.fileUrl, 300);
           } catch (err) {
-            console.error("Failed to generate signed URL:", err);
+            logger.error("Failed to generate signed URL:", err);
           }
         }
         return { ...attachment.toObject(), signedUrl };
@@ -1060,7 +1061,7 @@ exports.getAttachment = async (req, res, next) => {
       try {
         signedUrl = await getFile(attachment.fileUrl, 300);
       } catch (err) {
-        console.error("Failed to generate signed URL:", err);
+        logger.error("Failed to generate signed URL:", err);
       }
     }
 

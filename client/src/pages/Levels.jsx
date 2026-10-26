@@ -270,12 +270,6 @@ const Levels = () => {
     );
   }
 
-  // Debug: Log user and authentication state
-  console.log('Current user:', user);
-  console.log('User role:', user?.role);
-  console.log('Levels data:', levelsData);
-  console.log('Dashboard data:', dashboardData);
-
   return (
     <div className="min-h-screen bg-primary p-6">
       <div className="max-w-7xl mx-auto">

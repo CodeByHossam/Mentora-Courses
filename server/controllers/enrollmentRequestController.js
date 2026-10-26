@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 /**
  * Enrollment Request Controller
  *
@@ -130,7 +131,7 @@ const createEnrollmentRequest = asyncHandler(async (req, res) => {
             uploadedAt: new Date(),
           };
         } catch (s3Error) {
-          console.error("S3 upload error:", s3Error);
+          logger.error("S3 upload error:", s3Error);
           throw new Error(`File upload failed: ${s3Error.message}`);
         }
       }
@@ -167,8 +168,8 @@ const createEnrollmentRequest = asyncHandler(async (req, res) => {
       data: populatedRequest,
     });
   } catch (error) {
-    console.error("Error creating enrollment request:", error);
-    console.error("Error details:", {
+    logger.error("Error creating enrollment request:", error);
+    logger.error("Error details:", {
       message: error.message,
       stack: error.stack,
       code: error.code,
@@ -327,17 +328,17 @@ const updateEnrollmentRequest = asyncHandler(async (req, res) => {
               paymentId: payment._id,
               method: "direct_transfer",
             });
-            console.log(
+            logger.info(
               `✅ Billing transaction created for course payment: ${payment._id}`
             );
-            console.log(
+            logger.info(
               `💰 Payment breakdown: Total: $${originalAmount}, Admin: $${totalAdminProfit.toFixed(
                 2
               )}, Instructor: $${instructorAmount.toFixed(2)}`
             );
           }
         } catch (billingError) {
-          console.error("❌ Error creating billing transaction:", billingError);
+          logger.error("❌ Error creating billing transaction:", billingError);
           // Don't fail the enrollment approval if billing fails, but log it
         }
       }
@@ -383,7 +384,7 @@ const updateEnrollmentRequest = asyncHandler(async (req, res) => {
       data: updatedRequest,
     });
   } catch (error) {
-    console.error("Error updating enrollment request:", error);
+    logger.error("Error updating enrollment request:", error);
     res.status(500);
     throw new Error(`Failed to update enrollment request: ${error.message}`);
   }
@@ -511,7 +512,7 @@ const addAdminNote = asyncHandler(async (req, res) => {
       data: updatedRequest,
     });
   } catch (error) {
-    console.error("Error adding admin note:", error);
+    logger.error("Error adding admin note:", error);
     res.status(500);
     throw new Error("Failed to add admin note");
   }
@@ -733,7 +734,7 @@ const getReceiptUrl = asyncHandler(async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Failed to generate signed URL for receipt:", error);
+    logger.error("Failed to generate signed URL for receipt:", error);
     res.status(500);
     throw new Error("Failed to generate receipt URL");
   }

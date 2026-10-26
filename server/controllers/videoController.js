@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 const asyncHandler = require("express-async-handler");
 const Lesson = require("../models/lessonModel");
 const Course = require("../models/Course");
@@ -51,7 +52,7 @@ const generateStreamingUrl = asyncHandler(async (req, res) => {
   }
 
   // Debug: Log lesson video info
-  console.log("🔍 Lesson video check:", {
+  logger.info("🔍 Lesson video check:", {
     lessonId,
     hasVideoRef: !!lesson.videoRef,
     publicId: lesson.videoRef?.publicId,
@@ -101,7 +102,7 @@ const generateStreamingUrl = asyncHandler(async (req, res) => {
     const metadata = videoService.getVideoMetadata(lesson.videoRef);
 
     // Log video access for security monitoring
-    console.log(
+    logger.info(
       `🎥 Video access: User ${userId} (${req.user.email}) accessing lesson ${lessonId} from ${req.ip}`
     );
 
@@ -114,7 +115,7 @@ const generateStreamingUrl = asyncHandler(async (req, res) => {
         "This content is protected by digital rights management. Unauthorized distribution is prohibited.",
     });
   } catch (error) {
-    console.error("Video streaming URL generation error:", error);
+    logger.error("Video streaming URL generation error:", error);
     return errorResponse(res, "Failed to generate streaming URL", 500);
   }
 });
@@ -226,7 +227,7 @@ const debugLessonVideo = asyncHandler(async (req, res) => {
 
     return successResponse(res, "Debug information retrieved", debugInfo);
   } catch (error) {
-    console.error("Debug lesson video error:", error);
+    logger.error("Debug lesson video error:", error);
     return errorResponse(res, "Failed to retrieve debug information", 500);
   }
 });

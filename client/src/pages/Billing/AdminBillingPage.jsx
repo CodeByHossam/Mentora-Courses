@@ -34,6 +34,7 @@ import {
 } from "../../store/services/billingApi";
 import { useGetUsersQuery, useGetAdminReportsQuery } from "../../store/services/userApi";
 import { useGetCoursesQuery } from "../../store/services/courseApi";
+import AdminFinancialSummaryCard from "../../components/AdminFinancialSummaryCard";
 
 const AdminBillingPage = () => {
   const { user } = useSelector((state) => state.auth);
@@ -198,17 +199,6 @@ const AdminBillingPage = () => {
                              course.students?.length ||
                              course.totalEnrollments ||
                              0;
-        
-        console.log(`📖 Course "${course.title}" (Instructor: ${instructorId}):`, {
-          enrolledStudents: course.enrolledStudents?.length,
-          studentsEnrolled: course.studentsEnrolled?.length,
-          enrollmentCount: course.enrollmentCount,
-          enrollments: course.enrollments?.length,
-          students: course.students?.length,
-          totalEnrollments: course.totalEnrollments,
-          finalCount: enrolledCount,
-          availableFields: Object.keys(course)
-        });
         
         instructorStats[instructorId].courseCount++;
         instructorStats[instructorId].totalStudents += enrolledCount;
@@ -495,6 +485,9 @@ const AdminBillingPage = () => {
             </button>
           </div>
           
+          {/* Payment-derived financial summary */}
+          <AdminFinancialSummaryCard />
+
           {/* Financial Management Quick Actions */}
           <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">

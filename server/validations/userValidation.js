@@ -45,6 +45,7 @@ const userValidation = {
       .messages({
         "any.only": "Role must be one of: student, instructor, admin",
       }),
+    termsAccepted: Joi.alternatives().try(Joi.boolean(), Joi.string()).optional(),
   }),
 
   login: Joi.object({

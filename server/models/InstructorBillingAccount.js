@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 // models/InstructorBillingAccount.js
 /**
  * InstructorBillingAccount
@@ -134,8 +135,8 @@ instructorBillingAccountSchema.methods.addCourseSale = function (saleData = {}) 
   const prevLastSale = this.statistics.lastSaleDate;
   const commissionAmount = saleData.commissionAmount || 0;
   
-  console.log(`📊 [INSTRUCTOR] Adding sale - Commission: $${commissionAmount}`);
-  console.log(`   Before: totalCommissionEarned=$${this.totalCommissionEarned}, pendingCommissions=$${this.pendingCommissions}`);
+  logger.info(`📊 [INSTRUCTOR] Adding sale - Commission: $${commissionAmount}`);
+  logger.info(`   Before: totalCommissionEarned=$${this.totalCommissionEarned}, pendingCommissions=$${this.pendingCommissions}`);
   
   // Add to sales history
   this.courseSales.push(Object.assign({ saleDate: now }, saleData));
@@ -144,7 +145,7 @@ instructorBillingAccountSchema.methods.addCourseSale = function (saleData = {}) 
   this.totalCommissionEarned += commissionAmount; // History (never decreases)
   this.pendingCommissions += commissionAmount; // Current unpaid amount
   
-  console.log(`   After: totalCommissionEarned=$${this.totalCommissionEarned}, pendingCommissions=$${this.pendingCommissions}`);
+  logger.info(`   After: totalCommissionEarned=$${this.totalCommissionEarned}, pendingCommissions=$${this.pendingCommissions}`);
   
   // Update statistics
   this.statistics.totalCoursesSold = (this.statistics.totalCoursesSold || 0) + 1;

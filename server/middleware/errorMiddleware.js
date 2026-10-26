@@ -1,3 +1,4 @@
+const logger = require("../utils/logger");
 // Not Found Middleware
 const notFound = (req, res, next) => {
   // Create an Error object for missing routes
@@ -21,27 +22,25 @@ const errorHandler = (err, req, res, next) => {
   const message = err.message || "Internal Server Error";
 
   // Logging (development + production)
-  console.error("[Error Handler]", {
+  logger.error("Unhandled request error", {
     timestamp: new Date().toISOString(),
     statusCode,
     message,
     name: err.name,
-    stack: process.env.NODE_ENV === "development" ? err.stack : undefined,
+    stack: err.stack,
     path: req.path,
     method: req.method,
     params: req.params,
     query: req.query,
     user: req.user ? req.user._id : "unauthenticated",
     ip: req.ip,
-    headers: {
-      "user-agent": req.get("user-agent"),
-      referer: req.get("referer"),
-    },
     details: err.details,
   });
 
-  // Determine client-preferred response type
-  const type = req.accepts(["html", "json", "text"]);
+  // Determine client-preferred response type. API routes always respond with JSON
+  // so that clients (and tests) can parse errors consistently.
+  const isApiRequest = req.originalUrl && req.originalUrl.startsWith("/api");
+  const type = isApiRequest ? "json" : req.accepts(["html", "json", "text"]);
 
   // -------- HTML Response (optional, for server-rendered templates) --------
   if (type === "html" && process.env.NODE_ENV !== "production") {

@@ -1,3 +1,4 @@
+const logger = require('./logger');
 const AdminBillingAccount = require("../models/AdminBillingAccount");
 const InstructorBillingAccount = require("../models/InstructorBillingAccount");
 const StudentBillingAccount = require("../models/StudentBillingAccount");
@@ -62,7 +63,7 @@ checkAndUpdateAccountStatus = async (userId, userKey) => {
       });
     }
   } catch (error) {
-    console.error("Error creating admin billing account:", error);
+    logger.error("Error creating admin billing account:", error);
   }
 };
 // Track ongoing operations to prevent duplicates
@@ -130,7 +131,7 @@ async function getBillingAccountByRole(userId, userRole) {
         break;
 
       default:
-        console.error(`❌ Invalid user role provided: ${userRole}`);
+        logger.error(`❌ Invalid user role provided: ${userRole}`);
         throw new Error(
           `Invalid user role: ${userRole}. Must be admin, instructor, or student.`
         );
@@ -138,7 +139,7 @@ async function getBillingAccountByRole(userId, userRole) {
 
     return account;
   } catch (error) {
-    console.error(`Error getting billing account for role ${userRole}:`, error);
+    logger.error(`Error getting billing account for role ${userRole}:`, error);
     throw error;
   }
 }
@@ -275,7 +276,7 @@ async function processCoursePurchase({
       },
     };
   } catch (error) {
-    console.error("❌ Error in specialized billing processing:", error);
+    logger.error("❌ Error in specialized billing processing:", error);
     throw error;
   } finally {
     ongoingBillingOperations.delete(operationKey);
@@ -293,7 +294,7 @@ async function processStudentPurchase(studentAccount, purchaseData) {
     await studentAccount.save();
 
   } catch (error) {
-    console.error("❌ Error processing student purchase:", error);
+    logger.error("❌ Error processing student purchase:", error);
     throw error;
   }
 }
@@ -309,7 +310,7 @@ async function processInstructorEarnings(instructorAccount, earningsData) {
     await instructorAccount.save();
 
   } catch (error) {
-    console.error("❌ Error processing instructor earnings:", error);
+    logger.error("❌ Error processing instructor earnings:", error);
     throw error;
   }
 }
@@ -330,7 +331,7 @@ async function processAdminRevenue(adminAccount, revenueData) {
     await adminAccount.save();
 
   } catch (error) {
-    console.error("❌ Error processing admin revenue:", error);
+    logger.error("❌ Error processing admin revenue:", error);
     throw error;
   }
 }
@@ -442,7 +443,7 @@ async function createBillingTransactions({
 
     return transactions;
   } catch (error) {
-    console.error("❌ Error creating billing transactions:", error);
+    logger.error("❌ Error creating billing transactions:", error);
     throw error;
   }
 }
@@ -470,7 +471,7 @@ async function getOrCreateAdminAccount() {
 
     return adminAccount;
   } catch (error) {
-    console.error("❌ Error getting admin account:", error);
+    logger.error("❌ Error getting admin account:", error);
     throw error;
   }
 }
@@ -533,7 +534,7 @@ async function getBillingSummary(userId) {
 
     return summary;
   } catch (error) {
-    console.error("❌ Error getting billing summary:", error);
+    logger.error("❌ Error getting billing summary:", error);
     throw error;
   }
 }
@@ -587,7 +588,7 @@ async function reconcileAllAccounts() {
 
     return reconciliation;
   } catch (error) {
-    console.error("❌ Error in reconciliation:", error);
+    logger.error("❌ Error in reconciliation:", error);
     throw error;
   }
 }

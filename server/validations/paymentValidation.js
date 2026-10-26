@@ -26,7 +26,7 @@ const paymentValidation = {
 
     paymentMethod: Joi.string()
       .required()
-      .valid('credit_card', 'debit_card', 'paypal', 'bank_transfer')
+      .valid('direct_transfer', 'direct')
       .messages({
         "string.empty": "Payment method is required",
         "any.only": "Invalid payment method"

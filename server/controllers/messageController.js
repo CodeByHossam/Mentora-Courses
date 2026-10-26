@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 const Message = require("../models/Message");
 const User = require("../models/User");
 const Course = require("../models/Course");
@@ -13,9 +14,9 @@ const getConversations = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    console.log("🔍 DEBUG: getConversations called");
-    console.log("📋 User ID:", userId);
-    console.log("📋 User ID type:", typeof userId);
+    logger.info("🔍 DEBUG: getConversations called");
+    logger.info("📋 User ID:", userId);
+    logger.info("📋 User ID type:", typeof userId);
 
     // Check if there are any messages for this user
     const allMessages = await Message.find({
@@ -23,17 +24,17 @@ const getConversations = async (req, res) => {
       isDeleted: false,
     }).limit(5);
 
-    console.log("📨 Found messages for user:", allMessages.length);
+    logger.info("📨 Found messages for user:", allMessages.length);
     allMessages.forEach((msg) => {
-      console.log(
+      logger.info(
         `  - Message: ${msg._id}, Sender: ${msg.sender}, Receiver: ${msg.receiver}`
       );
     });
 
     const conversations = await Message.getUserConversations(userId);
 
-    console.log("💬 Conversations result:", conversations.length);
-    console.log(
+    logger.info("💬 Conversations result:", conversations.length);
+    logger.info(
       "💬 Conversations data:",
       JSON.stringify(conversations, null, 2)
     );
@@ -44,7 +45,7 @@ const getConversations = async (req, res) => {
       count: conversations.length,
     });
   } catch (error) {
-    console.error("❌ Error fetching conversations:", error);
+    logger.error("❌ Error fetching conversations:", error);
     res.status(500).json({
       success: false,
       message: "Error fetching conversations",
@@ -106,7 +107,7 @@ const getStudentInstructors = async (req, res) => {
       count: instructors.length,
     });
   } catch (error) {
-    console.error("Error fetching student instructors:", error);
+    logger.error("Error fetching student instructors:", error);
     res.status(500).json({
       success: false,
       message: "Error fetching instructors",
@@ -184,7 +185,7 @@ const getConversation = async (req, res) => {
       count: messages.length,
     });
   } catch (error) {
-    console.error("Error fetching conversation:", error);
+    logger.error("Error fetching conversation:", error);
     res.status(500).json({
       success: false,
       message: "Error fetching conversation",
@@ -344,7 +345,7 @@ const sendMessage = async (req, res) => {
         priority: message.priority,
       });
     } catch (notificationError) {
-      console.error("Failed to create notification:", notificationError);
+      logger.error("Failed to create notification:", notificationError);
       // Don't fail the message sending if notification creation fails
     }
 
@@ -354,7 +355,7 @@ const sendMessage = async (req, res) => {
       message: "Message sent successfully",
     });
   } catch (error) {
-    console.error("Error sending message:", error);
+    logger.error("Error sending message:", error);
     res.status(500).json({
       success: false,
       message: "Error sending message",
@@ -396,7 +397,7 @@ const markAsRead = async (req, res) => {
       message: "Message marked as read",
     });
   } catch (error) {
-    console.error("Error marking message as read:", error);
+    logger.error("Error marking message as read:", error);
     res.status(500).json({
       success: false,
       message: "Error marking message as read",
@@ -441,7 +442,7 @@ const deleteMessage = async (req, res) => {
       message: "Message deleted successfully",
     });
   } catch (error) {
-    console.error("Error deleting message:", error);
+    logger.error("Error deleting message:", error);
     res.status(500).json({
       success: false,
       message: "Error deleting message",
@@ -471,7 +472,7 @@ const getUnreadCount = async (req, res) => {
       data: { unreadCount },
     });
   } catch (error) {
-    console.error("Error getting unread count:", error);
+    logger.error("Error getting unread count:", error);
     res.status(500).json({
       success: false,
       message: "Error getting unread count",
@@ -525,7 +526,7 @@ const searchMessages = async (req, res) => {
       count: messages.length,
     });
   } catch (error) {
-    console.error("Error searching messages:", error);
+    logger.error("Error searching messages:", error);
     res.status(500).json({
       success: false,
       message: "Error searching messages",

@@ -1,3 +1,4 @@
+const logger = require('./logger');
 const nodemailer = require("nodemailer");
 
 // Prefer explicit SMTP configuration; fallback to Gmail service if provided
@@ -51,7 +52,7 @@ const sendEmail = async ({ to, subject, text, html, from }) => {
     });
     return info;
   } catch (error) {
-    console.error("Error sending email:", error?.response || error);
+    logger.error("Error sending email:", error?.response || error);
     throw error;
   }
 };

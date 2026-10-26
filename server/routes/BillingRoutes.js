@@ -622,4 +622,34 @@ router.post("/claim-gift-card/:id", protect, async (req, res) => {
  */
 router.get("/admin/reconciliation", admin, getFinancialReconciliation);
 
+/**
+ * @route   GET /api/billing/summary/admin
+ * @desc    Simplified admin financial summary (Phase 1)
+ * @access  Private (Admin only)
+ */
+router.get("/summary/admin", admin, async (req, res) => {
+  const { getAdminFinancialSummary } = require("../controllers/financialSummaryController");
+  return getAdminFinancialSummary(req, res);
+});
+
+/**
+ * @route   GET /api/billing/summary/student
+ * @desc    Simplified student financial summary (Phase 1)
+ * @access  Private
+ */
+router.get("/summary/student", async (req, res) => {
+  const { getStudentFinancialSummary } = require("../controllers/financialSummaryController");
+  return getStudentFinancialSummary(req, res);
+});
+
+/**
+ * @route   GET /api/billing/summary/instructor
+ * @desc    Simplified instructor financial summary (Phase 1)
+ * @access  Private
+ */
+router.get("/summary/instructor", async (req, res) => {
+  const { getInstructorFinancialSummary } = require("../controllers/financialSummaryController");
+  return getInstructorFinancialSummary(req, res);
+});
+
 module.exports = router;

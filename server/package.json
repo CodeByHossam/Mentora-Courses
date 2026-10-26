@@ -8,6 +8,8 @@
     "dev": "nodemon server.js",
     "data": "node seeders/seeder.js",
     "test": "jest",
+    "test:unit": "jest tests/unit",
+    "test:integration": "jest tests/integration",
     "test:security": "jest tests/paymentSecurity.test.js",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
@@ -59,11 +61,22 @@
   },
   "devDependencies": {
     "jest": "^29.7.0",
+    "mongodb-memory-server": "^11.3.0",
     "nodemon": "^3.0.1",
     "supertest": "^6.3.3"
   },
   "jest": {
     "testEnvironment": "node",
+    "transformIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/tests/legacy/"
+    ],
+    "moduleNameMapper": {
+      "^isomorphic-dompurify$": "<rootDir>/tests/__mocks__/isomorphic-dompurify.js"
+    },
     "collectCoverageFrom": [
       "middleware/**/*.js",
       "controllers/**/*.js",
@@ -75,6 +88,14 @@
       "text",
       "lcov",
       "html"
-    ]
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 5,
+        "functions": 10,
+        "lines": 10,
+        "statements": 10
+      }
+    }
   }
 }

@@ -1,3 +1,4 @@
+const logger = require('../utils/logger');
 /**
  * Admin Settings Controller
  *
@@ -23,7 +24,7 @@ const getAdminSettings = asyncHandler(async (req, res) => {
       data: settings,
     });
   } catch (error) {
-    console.error("Error fetching admin settings:", error);
+    logger.error("Error fetching admin settings:", error);
     res.status(500);
     throw new Error("Failed to retrieve admin settings");
   }
@@ -61,7 +62,7 @@ const updateAdminSettings = asyncHandler(async (req, res) => {
       data: updatedSettings,
     });
   } catch (error) {
-    console.error("Error updating admin settings:", error);
+    logger.error("Error updating admin settings:", error);
     res.status(500);
     throw new Error("Failed to update admin settings");
   }
@@ -122,7 +123,7 @@ const updatePaymentSettings = asyncHandler(async (req, res) => {
       data: updatedSettings.paymentSettings,
     });
   } catch (error) {
-    console.error("Error updating payment settings:", error);
+    logger.error("Error updating payment settings:", error);
     res.status(500);
     throw new Error("Failed to update payment settings");
   }
@@ -197,7 +198,7 @@ const getPaymentStats = asyncHandler(async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error fetching payment stats:", error);
+    logger.error("Error fetching payment stats:", error);
     res.status(500);
     throw new Error("Failed to retrieve payment statistics");
   }
@@ -215,10 +216,9 @@ const resetPaymentSettings = asyncHandler(async (req, res) => {
       stripeEnabled: false,
       paypalEnabled: false,
       directTransferEnabled: true,
+      enabledMethods: ['direct_transfer'],
       minimumPaymentAmount: 1,
       currency: "USD",
-      autoEnrollOnCardPayment: true,
-      autoEnrollOnPaypalPayment: true,
       requireAdminApprovalForDirectTransfer: true,
     };
 
@@ -233,7 +233,7 @@ const resetPaymentSettings = asyncHandler(async (req, res) => {
       data: updatedSettings.paymentSettings,
     });
   } catch (error) {
-    console.error("Error resetting payment settings:", error);
+    logger.error("Error resetting payment settings:", error);
     res.status(500);
     throw new Error("Failed to reset payment settings");
   }
@@ -282,7 +282,7 @@ const testPaymentGateway = asyncHandler(async (req, res) => {
       data: testResult,
     });
   } catch (error) {
-    console.error(`Error testing ${gateway} gateway:`, error);
+    logger.error(`Error testing ${gateway} gateway:`, error);
     res.status(500);
     throw new Error(`Failed to test ${gateway} gateway connection`);
   }

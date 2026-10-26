@@ -1,3 +1,4 @@
+const logger = require('./logger');
 const AdminBillingAccount = require("../models/AdminBillingAccount");
 const InstructorBillingAccount = require("../models/InstructorBillingAccount");
 const StudentBillingAccount = require("../models/StudentBillingAccount");
@@ -27,12 +28,12 @@ const {
  */
 const processAnnualFees = async () => {
   try {
-    console.log("💰 Starting annual fee processing...");
+    logger.info("💰 Starting annual fee processing...");
 
     // Get admin settings for fee amounts
     const adminSettings = await AdminSettings.findOne();
     if (!adminSettings) {
-      console.log("⚠️ No admin settings found, skipping annual fee processing");
+      logger.info("⚠️ No admin settings found, skipping annual fee processing");
       return [];
     }
 
@@ -77,13 +78,13 @@ const processAnnualFees = async () => {
               year: currentYear,
             });
 
-            console.log(
+            logger.info(
               `💳 Added annual fee of $${studentAnnualFee} for student ${student.email}`
             );
           }
         }
       } catch (error) {
-        console.error(
+        logger.error(
           `❌ Error processing annual fee for student ${student.email}:`,
           error.message
         );
@@ -126,25 +127,25 @@ const processAnnualFees = async () => {
               year: currentYear,
             });
 
-            console.log(
+            logger.info(
               `💳 Added annual fee of $${instructorAnnualFee} for instructor ${instructor.email}`
             );
           }
         }
       } catch (error) {
-        console.error(
+        logger.error(
           `❌ Error processing annual fee for instructor ${instructor.email}:`,
           error.message
         );
       }
     }
 
-    console.log(
+    logger.info(
       `✅ Annual fee processing completed. Processed ${results.length} users.`
     );
     return results;
   } catch (error) {
-    console.error("❌ Error in processAnnualFees:", error);
+    logger.error("❌ Error in processAnnualFees:", error);
     throw error;
   }
 };
@@ -158,10 +159,10 @@ const USE_SPECIALIZED_BILLING = true;
  */
 const createBillingTransactionForCoursePayment = async (paymentData) => {
   try {
-    console.log("🆕 Using ONLY specialized billing system (legacy disabled)");
+    logger.info("🆕 Using ONLY specialized billing system (legacy disabled)");
     return await processSpecializedCoursePurchase(paymentData);
   } catch (error) {
-    console.error(
+    logger.error(
       "❌ Error in specialized billing transaction creation:",
       error
     );
@@ -197,7 +198,7 @@ const createLegacyBillingTransaction_DISABLED = async (paymentData) => {
 
   // Check if this operation is already in progress
   if (ongoingBillingOperations.has(operationKey)) {
-    console.log("⚠️ Billing operation already in progress for:", operationKey);
+    logger.info("⚠️ Billing operation already in progress for:", operationKey);
     throw new Error("Billing operation already in progress for this payment");
   }
 
@@ -205,7 +206,7 @@ const createLegacyBillingTransaction_DISABLED = async (paymentData) => {
   ongoingBillingOperations.add(operationKey);
 
   try {
-    console.log("Creating billing transactions for course payment:", {
+    logger.info("Creating billing transactions for course payment:", {
       studentId,
       courseId,
       instructorId,
@@ -231,7 +232,7 @@ const createLegacyBillingTransaction_DISABLED = async (paymentData) => {
       userId: studentId,
     });
     if (!studentBillingAccount) {
-      console.log("Creating new billing account for student:", studentId);
+      logger.info("Creating new billing account for student:", studentId);
       const student = await User.findById(studentId);
       studentBillingAccount = await BillingAccount.create({
         userId: studentId,
@@ -259,7 +260,7 @@ const createLegacyBillingTransaction_DISABLED = async (paymentData) => {
       userId: instructorId,
     });
     if (!instructorBillingAccount) {
-      console.log("Creating new billing account for instructor:", instructorId);
+      logger.info("Creating new billing account for instructor:", instructorId);
       const instructor = await User.findById(instructorId);
       const welcomeCredits = instructor?.accountType === "free" ? 100000 : 100;
 
@@ -338,7 +339,7 @@ const createLegacyBillingTransaction_DISABLED = async (paymentData) => {
       instructorAmount;
 
     // Save billing accounts sequentially to prevent parallel save errors
-    console.log("Saving billing accounts:", {
+    logger.info("Saving billing accounts:", {
       studentId: studentId.toString(),
       instructorId: instructorId.toString(),
       sameUser: studentId.toString() === instructorId.toString(),
@@ -349,9 +350,9 @@ const createLegacyBillingTransaction_DISABLED = async (paymentData) => {
     try {
       // Recalculate and save student account first
       studentBillingAccount.recalculateAll();
-      console.log("Saving student billing account...");
+      logger.info("Saving student billing account...");
       await studentBillingAccount.save();
-      console.log("✅ Student billing account saved");
+      logger.info("✅ Student billing account saved");
 
       // Only save instructor account if it's different from student account
       if (
@@ -360,14 +361,14 @@ const createLegacyBillingTransaction_DISABLED = async (paymentData) => {
           instructorBillingAccount._id.toString()
       ) {
         instructorBillingAccount.recalculateAll();
-        console.log("Saving instructor billing account...");
+        logger.info("Saving instructor billing account...");
         await instructorBillingAccount.save();
-        console.log("✅ Instructor billing account saved");
+        logger.info("✅ Instructor billing account saved");
       } else {
-        console.log("Same account - skipping instructor save");
+        logger.info("Same account - skipping instructor save");
       }
     } catch (saveError) {
-      console.error("Error saving billing accounts:", saveError);
+      logger.error("Error saving billing accounts:", saveError);
       throw saveError;
     }
 
@@ -496,7 +497,7 @@ const createLegacyBillingTransaction_DISABLED = async (paymentData) => {
       });
     }
 
-    console.log("Created billing transactions:", {
+    logger.info("Created billing transactions:", {
       studentTransaction: studentTransaction._id,
       instructorTransaction: instructorTransaction._id,
       adminFeeTransaction: adminFeeTransaction._id,
@@ -525,7 +526,7 @@ const createLegacyBillingTransaction_DISABLED = async (paymentData) => {
           : "Student → Admin (full amount), Admin owes Instructor (commission)",
     };
   } catch (error) {
-    console.error(
+    logger.error(
       "Error creating billing transactions for course payment:",
       error
     );
@@ -542,8 +543,8 @@ const createLegacyBillingTransaction_DISABLED = async (paymentData) => {
  */
 const getUserBillingSummary = async (userId) => {
   try {
-    console.log(`🔍 Getting billing summary for user: ${userId}`);
-    console.log(
+    logger.info(`🔍 Getting billing summary for user: ${userId}`);
+    logger.info(
       `🔍 UserId type: ${typeof userId}, value: ${JSON.stringify(userId)}`
     );
 
@@ -556,12 +557,12 @@ const getUserBillingSummary = async (userId) => {
       throw new Error(`User not found with ID: ${userId}`);
     }
 
-    console.log(`User found: ${user.name} (${user.role})`);
+    logger.info(`User found: ${user.name} (${user.role})`);
 
     // Use specialized billing summary
     return await getSpecializedBillingSummary(userId);
   } catch (error) {
-    console.error("Error getting billing summary:", error);
+    logger.error("Error getting billing summary:", error);
     throw error;
   }
 };
@@ -572,7 +573,7 @@ const getUserBillingSummary = async (userId) => {
  */
 const fixInstructorDirectTransferFees = async () => {
   try {
-    console.log(
+    logger.info(
       "🔧 Fixing instructor billing accounts missing direct transfer admin fees..."
     );
 
@@ -582,12 +583,12 @@ const fixInstructorDirectTransferFees = async () => {
       // Add additional criteria based on the new model structure
     });
 
-    console.log(
+    logger.info(
       `Found ${instructorAccounts.length} instructor accounts with missing admin fee bills`
     );
 
     for (const account of instructorAccounts) {
-      console.log(`Fixing instructor account: ${account.instructorId}`);
+      logger.info(`Fixing instructor account: ${account.instructorId}`);
 
       // Find direct transfer payments for this instructor
       const directTransferPayments = await Payment.find({
@@ -623,7 +624,7 @@ const fixInstructorDirectTransferFees = async () => {
               adminFee + (paymentAmount * adminPercentage) / 100;
             const instructorAmount = paymentAmount - totalAdminProfit;
 
-            console.log(
+            logger.info(
               `  Adding course sale record (${instructorAmount} commission, ${totalAdminProfit} admin fee) for payment ${payment._id}`
             );
 
@@ -648,15 +649,15 @@ const fixInstructorDirectTransferFees = async () => {
         // Recalculate totals using the model's method
         account.recalculateAll();
         await account.save();
-        console.log(
+        logger.info(
           `  ✅ Fixed instructor account - New balance: ${account.availableBalance}`
         );
       }
     }
 
-    console.log("✅ Instructor billing account fix completed");
+    logger.info("✅ Instructor billing account fix completed");
   } catch (error) {
-    console.error("❌ Error fixing instructor billing accounts:", error);
+    logger.error("❌ Error fixing instructor billing accounts:", error);
   }
 };
 
@@ -666,7 +667,7 @@ const fixInstructorDirectTransferFees = async () => {
  */
 const fixStudentOutstandingBalances = async () => {
   try {
-    console.log(
+    logger.info(
       "🔧 Fixing student billing accounts with incorrect outstanding balances..."
     );
 
@@ -675,12 +676,12 @@ const fixStudentOutstandingBalances = async () => {
       outstandingAdminFees: { $gt: 0 },
     });
 
-    console.log(
+    logger.info(
       `Found ${studentAccounts.length} student accounts with admin fees to fix`
     );
 
     for (const account of studentAccounts) {
-      console.log(`Fixing student account: ${account.studentId}`);
+      logger.info(`Fixing student account: ${account.studentId}`);
 
       // Update course purchases to remove admin fees for non-direct transfers
       let hasChanges = false;
@@ -692,7 +693,7 @@ const fixStudentOutstandingBalances = async () => {
           payment.method !== "direct_transfer" &&
           purchase.adminFeeAmount > 0
         ) {
-          console.log(
+          logger.info(
             `  Removing admin fees (${purchase.adminFeeAmount}) from ${payment.method} payment`
           );
           purchase.adminFeeAmount = 0;
@@ -704,15 +705,15 @@ const fixStudentOutstandingBalances = async () => {
         // Recalculate totals using the model's method
         account.recalculateAll();
         await account.save();
-        console.log(
+        logger.info(
           `  ✅ Fixed account - New balance: ${account.currentBalance}`
         );
       }
     }
 
-    console.log("✅ Student billing account fix completed");
+    logger.info("✅ Student billing account fix completed");
   } catch (error) {
-    console.error("❌ Error fixing student billing accounts:", error);
+    logger.error("❌ Error fixing student billing accounts:", error);
   }
 };
 
@@ -722,7 +723,7 @@ const fixStudentOutstandingBalances = async () => {
  */
 const recalculateBillingAccountStatistics = async (userId) => {
   try {
-    console.log(`Recalculating billing statistics for user: ${userId}`);
+    logger.info(`Recalculating billing statistics for user: ${userId}`);
 
     // Validate userId
     if (!userId) {
@@ -758,7 +759,7 @@ const recalculateBillingAccountStatistics = async (userId) => {
     billingAccount.recalculateAll();
     await billingAccount.save();
 
-    console.log(`Updated billing account statistics:`, {
+    logger.info(`Updated billing account statistics:`, {
       totalCredits,
       totalDebits,
       userRole: user.role,
@@ -767,7 +768,7 @@ const recalculateBillingAccountStatistics = async (userId) => {
 
     return billingAccount;
   } catch (error) {
-    console.error("Error recalculating billing statistics:", error);
+    logger.error("Error recalculating billing statistics:", error);
     throw error;
   }
 };
@@ -793,7 +794,7 @@ const createCreditPaymentMiddleware = () => {
 
       next();
     } catch (error) {
-      console.error("Credit payment middleware error:", error);
+      logger.error("Credit payment middleware error:", error);
       next(error);
     }
   };
@@ -804,21 +805,21 @@ const createCreditPaymentMiddleware = () => {
  */
 const getEnhancedBillingSummary = async (userId) => {
   try {
-    console.log("🆕 Using specialized billing summary");
+    logger.info("🆕 Using specialized billing summary");
     return await getSpecializedBillingSummary(userId);
   } catch (error) {
-    console.error("❌ Error in billing summary:", error);
+    logger.error("❌ Error in billing summary:", error);
     throw error;
   }
 };
 
 // Specialized billing is now always enabled - these functions are kept for compatibility
 const enableSpecializedBilling = () => {
-  console.log("✅ Specialized billing system is always enabled");
+  logger.info("✅ Specialized billing system is always enabled");
 };
 
 const disableSpecializedBilling = () => {
-  console.log(
+  logger.info(
     "⚠️ Cannot disable specialized billing - it is now the default system"
   );
 };

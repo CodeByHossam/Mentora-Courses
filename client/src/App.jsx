@@ -79,7 +79,7 @@ import AdminInstructorPayouts from "./pages/AdminInstructorPayouts"; // Admin in
 import AdminLiveSessions from "./pages/AdminLiveSessions"; // Admin live sessions management
 import AdminMessages from "./pages/AdminMessages"; // Admin messages & communication
 import AdminNotifications from "./pages/AdminNotifications"; // Admin notifications management
-import AdminSystemLogs from "./pages/AdminSystemLogs"; // Admin system logs viewer
+// Admin system logs removed - no production log endpoint
 import SystemConfiguration from "./pages/SystemConfiguration"; // System configuration
 import SystemHealth from "./pages/SystemHealth"; // System health monitoring
 import InstructorReports from "./pages/InstructorReports.jsx"; // Instructor analytics
@@ -369,10 +369,7 @@ function App() {
                             path="bulk-delete"
                             element={<AdminBulkDelete />}
                           />
-                          <Route
-                            path="system-logs"
-                            element={<AdminSystemLogs />}
-                          />
+{/* system-logs route removed - no production log endpoint */}
                           <Route
                             path="system-config"
                             element={<SystemConfiguration />}
