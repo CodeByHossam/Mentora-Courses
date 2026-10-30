@@ -239,7 +239,6 @@ const CourseStudentsView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default CourseStudentsView;

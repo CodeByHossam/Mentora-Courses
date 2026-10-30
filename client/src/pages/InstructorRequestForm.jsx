@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCreateInstructorRequestMutation } from "../store/services/instructorRequestApi";
 import { toast } from "react-toastify";
-import InstructorRequestFormView from "./InstructorRequestFormView";
 const InstructorRequestForm = () => {
   const navigate = useNavigate();
   // Text fields

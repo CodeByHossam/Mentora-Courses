@@ -494,7 +494,6 @@ const AdminReportsView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default AdminReportsView;

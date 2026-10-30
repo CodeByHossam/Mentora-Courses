@@ -376,7 +376,6 @@ const CourseEnrollmentView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default CourseEnrollmentView;

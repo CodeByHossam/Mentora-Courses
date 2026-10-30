@@ -312,7 +312,6 @@ const SystemHealthView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default SystemHealthView;

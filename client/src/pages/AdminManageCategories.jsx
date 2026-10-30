@@ -7,7 +7,6 @@ import {
 } from "../store/services/categoryApi";
 import { handleApiError, handleApiSuccess } from "../utils/apiErrorHandler"; // ✅ Make sure this path is correct
 import { useConfirm } from "../hooks/useConfirm";
-import AdminManageCategoriesView from "./AdminManageCategoriesView";
 const AdminManageCategories = () => {
   const { data: categories, isLoading, error } = useGetCategoriesQuery();
   const [createCategory] = useCreateCategoryMutation();

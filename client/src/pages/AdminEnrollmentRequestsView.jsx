@@ -429,7 +429,6 @@ const AdminEnrollmentRequestsView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default AdminEnrollmentRequestsView;

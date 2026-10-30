@@ -54,7 +54,6 @@ import {
   useApproveDirectTransferMutation 
 } from '../store/services/billingApi';
 import { useGetPaymentReportsQuery } from '../store/services/paymentApi';
-import AdminPaymentsView from "./AdminPaymentsView";
 
 const AdminPayments = () => {
   const [activeTab, setActiveTab] = useState('overview');

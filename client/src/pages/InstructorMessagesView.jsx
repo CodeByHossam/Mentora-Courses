@@ -250,7 +250,6 @@ const InstructorMessagesView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default InstructorMessagesView;

@@ -203,7 +203,6 @@ const HelpView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default HelpView;

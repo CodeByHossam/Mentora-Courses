@@ -10,7 +10,6 @@ import {
 } from '../store/services/notificationApi';
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
-import InstructorNotificationsView from "./InstructorNotificationsView";
 
 const InstructorNotifications = () => {
   const navigate = useNavigate();

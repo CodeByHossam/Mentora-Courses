@@ -46,7 +46,6 @@ import {
 } from "../../store/services/billingApi";
 import { useGetCoursesQuery } from "../../store/services/courseApi";
 import LoadingSpinner from "../../components/LoadingSpinner";
-import InstructorBillingPageView from "./InstructorBillingPageView";
 
 const InstructorBillingPage = () => {
   const { user } = useSelector((state) => state.auth);

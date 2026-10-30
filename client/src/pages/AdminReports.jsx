@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import ProgressLoader from "../components/ProgressLoader";
 import { selectCurrentUser } from "../store/slices/authSlice";
 import { useGetAdminReportsQuery } from "../store/services/userApi";
-import AdminReportsView from "./AdminReportsView";
 
 const AdminReports = () => {
   const user = useSelector(selectCurrentUser);

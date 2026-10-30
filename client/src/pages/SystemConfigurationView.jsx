@@ -92,7 +92,6 @@ const SystemConfigurationView = (props) => {
       )}
     </div>
   );
-  );
 };
 
 export default SystemConfigurationView;

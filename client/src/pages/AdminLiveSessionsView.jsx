@@ -350,7 +350,6 @@ const AdminLiveSessionsView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default AdminLiveSessionsView;

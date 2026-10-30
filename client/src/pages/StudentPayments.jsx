@@ -19,7 +19,6 @@ import {
 import { format } from "date-fns";
 import { useGetPaymentHistoryQuery } from "../store/services/paymentApi";
 import { selectCurrentUser } from "../store/slices/authSlice";
-import StudentPaymentsView from "./StudentPaymentsView";
 
 const StudentPayments = () => {
   const [filterStatus, setFilterStatus] = useState("all");

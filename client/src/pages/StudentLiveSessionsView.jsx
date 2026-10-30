@@ -316,7 +316,6 @@ const StudentLiveSessionsView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default StudentLiveSessionsView;

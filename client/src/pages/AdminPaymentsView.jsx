@@ -756,7 +756,6 @@ const AdminPaymentsView = (props) => {
       )}
     </div>
   );
-  );
 };
 
 export default AdminPaymentsView;

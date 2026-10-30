@@ -250,7 +250,6 @@ const AdminMessagesView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default AdminMessagesView;

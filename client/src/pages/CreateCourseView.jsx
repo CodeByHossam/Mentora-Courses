@@ -263,7 +263,6 @@ const CreateCourseView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default CreateCourseView;

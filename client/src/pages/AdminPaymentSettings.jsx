@@ -26,7 +26,6 @@ import {
 } from 'lucide-react';
 import Card from '../components/Card';
 import Button from '../components/Button';
-import AdminPaymentSettingsView from "./AdminPaymentSettingsView";
 
 const AdminPaymentSettings = () => {
   const [settings, setSettings] = useState({

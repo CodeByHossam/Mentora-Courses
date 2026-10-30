@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useCreateCourseMutation } from "../store/services/courseApi";
 import { handleApiError, handleApiSuccess } from "../utils/apiErrorHandler";
 import { useGetCategoriesQuery } from "../store/services/categoryApi";
-import CreateCourseView from "./CreateCourseView";
 
 const LEVELS = ["Beginner", "Intermediate", "Advanced"];
 

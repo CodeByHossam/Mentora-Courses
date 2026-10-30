@@ -11,7 +11,6 @@ import {
 import ProgressLoader from "../components/ProgressLoader";
 import { handleApiError, handleApiSuccess } from "../utils/apiErrorHandler";
 import { useConfirm } from "../hooks/useConfirm";
-import InstructorRequestsView from "./InstructorRequestsView";
 
 const InstructorRequests = () => {
   const { confirm, ConfirmationModalWrapper } = useConfirm();

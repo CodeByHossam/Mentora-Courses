@@ -380,7 +380,6 @@ const TestGradingView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default TestGradingView;

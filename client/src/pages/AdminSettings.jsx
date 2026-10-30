@@ -14,7 +14,6 @@ import {
   Percent
 } from "lucide-react";
 import {
-import AdminSettingsView from "./AdminSettingsView";
   useGetAdminSettingsQuery,
   useUpdateAdminSettingsMutation,
   useUpdatePaymentSettingsMutation,

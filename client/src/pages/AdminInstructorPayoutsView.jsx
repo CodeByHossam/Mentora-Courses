@@ -273,7 +273,6 @@ const AdminInstructorPayoutsView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default AdminInstructorPayoutsView;

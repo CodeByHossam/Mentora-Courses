@@ -182,7 +182,6 @@ const AdminManageCategoriesView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default AdminManageCategoriesView;

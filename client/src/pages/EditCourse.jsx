@@ -7,7 +7,6 @@ import {
 } from "../store/services/courseApi";
 import { useGetCategoriesQuery } from "../store/services/categoryApi";
 import { handleApiError, handleApiSuccess } from "../utils/apiErrorHandler";
-import EditCourseView from "./EditCourseView";
 
 const EditCourse = () => {
   const { user } = useSelector((state) => state.auth);

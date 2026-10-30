@@ -304,7 +304,6 @@ const StudentPaymentsView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default StudentPaymentsView;

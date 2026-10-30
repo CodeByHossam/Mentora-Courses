@@ -13,7 +13,6 @@ import {
   Filter
 } from "lucide-react";
 import { format, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, addWeeks, subWeeks } from "date-fns";
-import StudentScheduleView from "./StudentScheduleView";
 
 const StudentSchedule = () => {
   const [currentWeek, setCurrentWeek] = useState(new Date());

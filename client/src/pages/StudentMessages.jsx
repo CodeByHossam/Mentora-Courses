@@ -22,7 +22,6 @@ import {
 import { toast } from "react-toastify";
 import StartConversation from "../components/StartConversation";
 import { useSelector } from "react-redux";
-import StudentMessagesView from "./StudentMessagesView";
 
 const StudentMessages = () => {
   const [selectedConversation, setSelectedConversation] = useState(null);

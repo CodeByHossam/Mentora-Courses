@@ -9,23 +9,23 @@ const isValidObjectId = mongoose.isValidObjectId;
 const asyncHandler = require("express-async-handler");
 
 // Models
-const Course = require("../models/Course");
-const Lesson = require("../models/lessonModel");
-const Comment = require("../models/Comment");
-const Attachment = require("../models/Attachment");
-const Test = require("../models/Test");
-const Category = require("../models/Category");
-const User = require("../models/User");
+const Course = require("../../models/Course");
+const Lesson = require("../../models/lessonModel");
+const Comment = require("../../models/Comment");
+const Attachment = require("../../models/Attachment");
+const Test = require("../../models/Test");
+const Category = require("../../models/Category");
+const User = require("../../models/User");
 
 // Utilities
 const {
   deleteFromCloudinary,
   uploadToCloudinary,
   getResourceType,
-} = require("../utils/cloudinary");
-const { sendSuccess, sendError } = require("../utils/apiResponse");
-const logger = require("../utils/logger");
-const parseTopics = require("../utils/parseTopics");
+} = require("../../utils/cloudinary");
+const { sendSuccess, sendError } = require("../../utils/apiResponse");
+const logger = require("../../utils/logger");
+const parseTopics = require("../../utils/parseTopics");
 
 const updateCourse = asyncHandler(async (req, res) => {
   try {
@@ -154,7 +154,7 @@ const deleteCourse = asyncHandler(async (req, res) => {
       );
     }
 
-    const LiveSession = require("../models/LiveSession");
+    const LiveSession = require("../../models/LiveSession");
     const activeSessions = await LiveSession.find({
       course: id,
       status: { $in: ["scheduled", "live"] },
@@ -165,7 +165,7 @@ const deleteCourse = asyncHandler(async (req, res) => {
       );
     }
 
-    const Payment = require("../models/Payment");
+    const Payment = require("../../models/Payment");
     const pendingPayments = await Payment.find({
       course: id,
       status: { $in: ["pending", "processing"] },
@@ -188,7 +188,7 @@ const deleteCourse = asyncHandler(async (req, res) => {
     await Comment.deleteMany({ course: course._id });
     await Attachment.deleteMany({ course: course._id });
 
-    const EnrollmentRequest = require("../models/EnrollmentRequest");
+    const EnrollmentRequest = require("../../models/EnrollmentRequest");
     await EnrollmentRequest.deleteMany({ course: course._id });
 
     const lessons = await Lesson.find({ course: course._id });
@@ -205,7 +205,7 @@ const deleteCourse = asyncHandler(async (req, res) => {
       }
       if (lesson.videoRef?.publicId) {
         try {
-          const videoService = require("../services/videoService");
+          const videoService = require("../../services/videoService");
           await videoService.deleteVideo(lesson.videoRef.publicId);
         } catch (error) {
           logger.error(`Failed to delete lesson video: ${error.message}`);
@@ -224,7 +224,7 @@ const deleteCourse = asyncHandler(async (req, res) => {
     }
     await Lesson.deleteMany({ course: course._id });
 
-    const { deleteFile } = require("../utils/aws");
+    const { deleteFile } = require("../../utils/aws");
     const attachments = await Attachment.find({ course: course._id });
     for (const attachment of attachments) {
       if (attachment.fileUrl) {

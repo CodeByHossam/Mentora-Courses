@@ -12,7 +12,6 @@ import ProgressLoader from "../components/ProgressLoader";
 import { handleApiError, handleApiSuccess } from "../utils/apiErrorHandler";
 import { useCreatePaymentMutation } from "../store/services/paymentApi";
 import { useConfirm } from "../hooks/useConfirm";
-import AdminEnrollmentRequestsView from "./AdminEnrollmentRequestsView";
 
 const AdminEnrollmentRequests = () => {
   const { confirm, ConfirmationModalWrapper } = useConfirm();

@@ -176,7 +176,6 @@ const CourseDetailsView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default CourseDetailsView;

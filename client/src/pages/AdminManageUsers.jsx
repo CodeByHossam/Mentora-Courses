@@ -12,7 +12,6 @@ import {
 } from "../store/services/userApi";
 import ProgressLoader from "../components/ProgressLoader";
 import { useConfirm } from "../hooks/useConfirm";
-import AdminManageUsersView from "./AdminManageUsersView";
 
 const AdminManageUsers = () => {
   const { confirm, ConfirmationModalWrapper } = useConfirm();

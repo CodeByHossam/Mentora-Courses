@@ -207,7 +207,6 @@ const EditCourseView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default EditCourseView;

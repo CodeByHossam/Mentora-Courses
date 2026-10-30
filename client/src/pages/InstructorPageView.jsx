@@ -287,7 +287,6 @@ const InstructorPageView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default InstructorPageView;

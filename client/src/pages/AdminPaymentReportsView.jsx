@@ -452,7 +452,6 @@ const AdminPaymentReportsView = (props) => {
       )}
     </div>
   );
-  );
 };
 
 export default AdminPaymentReportsView;

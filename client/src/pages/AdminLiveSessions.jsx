@@ -9,7 +9,6 @@ import {
 } from "../store/services/liveSessionApi";
 import { toast } from "react-toastify";
 import {
-import AdminLiveSessionsView from "./AdminLiveSessionsView";
   Calendar,
   Clock,
   Users,

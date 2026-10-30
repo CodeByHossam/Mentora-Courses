@@ -54,7 +54,6 @@ import ScheduleSessionForm from "../../components/LiveSession/ScheduleSessionFor
 
 // Allowed file types for validation
 import allowedFileTypes from "../../config/allowedFileTypes";
-import CourseDetailsView from "./CourseDetailsView";
 
 const CourseDetails = () => {
   let notEnrolledContent;

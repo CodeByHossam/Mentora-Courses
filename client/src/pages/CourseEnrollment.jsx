@@ -7,7 +7,6 @@ import { useGetCourseQuery } from "../store/services/courseApi";
 import { useCreateEnrollmentRequestMutation } from "../store/services/enrollmentRequestApi";
 import ProgressLoader from "../components/ProgressLoader";
 import { ArrowLeft, BookOpen, Users, Clock, Star, CheckCircle, AlertCircle, Send, Sparkles } from "lucide-react";
-import CourseEnrollmentView from "./CourseEnrollmentView";
 
 const CourseEnrollment = () => {
   const { courseId } = useParams();

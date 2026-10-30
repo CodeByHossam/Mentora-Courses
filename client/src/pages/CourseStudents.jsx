@@ -4,7 +4,6 @@ import { ArrowLeft, Users, Mail, Calendar, BookOpen, User } from "lucide-react";
 import { useGetCourseStudentsQuery } from "../store/services/courseApi";
 import ProgressLoader from "../components/ProgressLoader";
 import { handleApiError } from "../utils/apiErrorHandler";
-import CourseStudentsView from "./CourseStudentsView";
 const CourseStudents = () => {
   const { courseId } = useParams();
   const navigate = useNavigate();

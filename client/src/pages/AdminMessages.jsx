@@ -18,7 +18,6 @@ import {
 } from "../store/services/messageApi";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import AdminMessagesView from "./AdminMessagesView";
 
 const AdminMessages = () => {
   const [selectedConversation, setSelectedConversation] = useState(null);

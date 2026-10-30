@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import { selectCurrentUser } from "../store/slices/authSlice";
 import ProgressLoader from "../components/ProgressLoader";
-import SystemConfigurationView from "./SystemConfigurationView";
 
 const SystemConfiguration = () => {
   const user = useSelector(selectCurrentUser);

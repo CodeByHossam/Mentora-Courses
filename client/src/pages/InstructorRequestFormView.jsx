@@ -253,7 +253,6 @@ const InstructorRequestFormView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default InstructorRequestFormView;

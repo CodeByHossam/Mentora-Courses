@@ -3,7 +3,6 @@ import { useGetAllInstructorsQuery } from '../store/services/userApi';
 import { useProcessInstructorPayoutMutation } from '../store/services/payoutApi';
 import { DollarSign, Upload, X, CheckCircle, AlertCircle, RefreshCw, Send } from 'lucide-react';
 import { toast } from 'react-toastify';
-import AdminInstructorPayoutsView from "./AdminInstructorPayoutsView";
 
 const AdminInstructorPayouts = () => {
   const [selectedInstructor, setSelectedInstructor] = useState(null);

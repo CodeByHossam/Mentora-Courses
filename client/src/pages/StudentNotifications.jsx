@@ -30,7 +30,6 @@ import {
 import { toast } from "react-toastify";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import StudentNotificationsView from "./StudentNotificationsView";
 
 const StudentNotifications = () => {
   const navigate = useNavigate();

@@ -299,7 +299,6 @@ const AdminNotificationsView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default AdminNotificationsView;

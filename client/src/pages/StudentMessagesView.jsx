@@ -280,7 +280,6 @@ const StudentMessagesView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default StudentMessagesView;

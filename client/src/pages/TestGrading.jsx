@@ -25,7 +25,6 @@ import {
 import { useGetCourseQuery, useGetCourseStudentsQuery } from "../store/services/courseApi";
 import LoadingSpinner from "../components/LoadingSpinner";
 import { toast } from "react-toastify";
-import TestGradingView from "./TestGradingView";
 
 const TestGrading = () => {
   const { courseId, testId } = useParams();

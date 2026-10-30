@@ -6,7 +6,6 @@ import {
 } from "../store/services/liveSessionApi";
 import { toast } from "react-toastify";
 import {
-import StudentLiveSessionsView from "./StudentLiveSessionsView";
   Calendar,
   Clock,
   Users,

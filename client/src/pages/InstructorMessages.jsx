@@ -18,7 +18,6 @@ import {
 } from "../store/services/messageApi";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import InstructorMessagesView from "./InstructorMessagesView";
 
 const InstructorMessages = () => {
   const [selectedConversation, setSelectedConversation] = useState(null);

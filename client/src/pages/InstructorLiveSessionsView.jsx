@@ -369,7 +369,6 @@ const InstructorLiveSessionsView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default InstructorLiveSessionsView;

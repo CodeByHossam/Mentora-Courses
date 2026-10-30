@@ -1,4 +1,4 @@
-const logger = require('../utils/logger');
+const logger = require('../../utils/logger');
 /**
  * PAYMENT CONTROLLER - COMPREHENSIVE PAYMENT PROCESSING SYSTEM
  *
@@ -74,20 +74,20 @@ if (process.env.STRIPE_SECRET_KEY) {
   }
 }
 
-const Payment = require("../models/Payment");
-const Course = require("../models/Course");
-const { getMethod } = require("../services/paymentMethods");
+const Payment = require("../../models/Payment");
+const Course = require("../../models/Course");
+const { getMethod } = require("../../services/paymentMethods");
 
-const User = require("../models/User");
-const EnrollmentRequest = require("../models/EnrollmentRequest");
-const AdminSettings = require("../models/AdminSettings");
-const { processCoursePurchase } = require("../utils/specializedBillingUtils");
+const User = require("../../models/User");
+const EnrollmentRequest = require("../../models/EnrollmentRequest");
+const AdminSettings = require("../../models/AdminSettings");
+const { processCoursePurchase } = require("../../utils/specializedBillingUtils");
 
 // Import simple notification utility
 const {
   notifyPaymentReceived,
   notifyPaymentApproved,
-} = require("../utils/notificationUtils");
+} = require("../../utils/notificationUtils");
 
 /**
  * Process instructor commission for completed payments
@@ -136,13 +136,13 @@ const {
   sanitizeText,
   sanitizeObjectId,
   sanitizeNumber,
-} = require("../utils/sanitizer");
+} = require("../../utils/sanitizer");
 const {
   createBillingTransactionForCoursePayment,
   addCreditsToUser,
   checkAndUpdateAccountStatus,
   createCreditPaymentMiddleware,
-} = require("../utils/billingUtils");
+} = require("../../utils/billingUtils");
 
 // PayPal integration removed; direct transfer only. PayPal environment/client no longer initialized.
 

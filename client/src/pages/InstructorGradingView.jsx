@@ -576,7 +576,6 @@ const InstructorGradingView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default InstructorGradingView;

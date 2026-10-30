@@ -254,7 +254,6 @@ const InstructorRequestsView = (props) => {
       </table>
     </div>
   );
-  );
 };
 
 export default InstructorRequestsView;

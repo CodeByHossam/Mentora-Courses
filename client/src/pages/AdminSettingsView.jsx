@@ -561,7 +561,6 @@ const AdminSettingsView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default AdminSettingsView;

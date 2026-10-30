@@ -311,7 +311,6 @@ const AdminPaymentSettingsView = (props) => {
       </Card>
     </div>
   );
-  );
 };
 
 export default AdminPaymentSettingsView;

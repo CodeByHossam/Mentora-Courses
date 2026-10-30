@@ -202,7 +202,6 @@ const StudentScheduleView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default StudentScheduleView;

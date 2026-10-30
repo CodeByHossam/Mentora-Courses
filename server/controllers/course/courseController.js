@@ -17,22 +17,22 @@ const mongoose = require("mongoose");
 const asyncHandler = require("express-async-handler");
 
 // Models
-const Course = require("../models/Course");
-const Lesson = require("../models/lessonModel");
-const Comment = require("../models/Comment");
-const Attachment = require("../models/Attachment");
-const Test = require("../models/Test");
-const Category = require("../models/Category");
-const User = require("../models/User");
+const Course = require("../../models/Course");
+const Lesson = require("../../models/lessonModel");
+const Comment = require("../../models/Comment");
+const Attachment = require("../../models/Attachment");
+const Test = require("../../models/Test");
+const Category = require("../../models/Category");
+const User = require("../../models/User");
 
 // Utilities
 const {
   deleteFromCloudinary,
   uploadToCloudinary,
   getResourceType,
-} = require("../utils/cloudinary");
-const { sendSuccess, sendError } = require("../utils/apiResponse");
-const logger = require("../utils/logger");
+} = require("../../utils/cloudinary");
+const { sendSuccess, sendError } = require("../../utils/apiResponse");
+const logger = require("../../utils/logger");
 
 /* =========================================================
    HELPER FUNCTIONS

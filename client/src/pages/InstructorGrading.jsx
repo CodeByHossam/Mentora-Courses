@@ -25,7 +25,6 @@ import {
 } from "../store/services/gradeApi";
 import { useGetInstructorCoursesQuery } from "../store/services/courseApi";
 import LoadingSpinner from "../components/LoadingSpinner";
-import InstructorGradingView from "./InstructorGradingView";
 
 const InstructorGrading = () => {
   const { user } = useSelector((state) => state.auth);

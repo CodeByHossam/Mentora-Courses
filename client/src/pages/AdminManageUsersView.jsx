@@ -251,7 +251,6 @@ const AdminManageUsersView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default AdminManageUsersView;

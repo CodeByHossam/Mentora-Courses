@@ -3,7 +3,6 @@ import { useParams, Link } from "react-router-dom";
 import { useGetUserQuery } from "../store/services/userApi";
 import ProgressLoader from "../components/ProgressLoader";
 import { Mail, Award, BookOpen, Users, Calendar, Star, CheckCircle, ExternalLink, Printer, ArrowLeft, GraduationCap, Briefcase, CreditCard, User } from "lucide-react";
-import InstructorPageView from "./InstructorPageView";
 
 const InfoRow = ({ label, value, mono = false }) => (
   <div className="flex flex-col gap-1">

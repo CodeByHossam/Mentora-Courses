@@ -371,7 +371,6 @@ const StudentNotificationsView = (props) => {
       </div>
     </div>
   );
-  );
 };
 
 export default StudentNotificationsView;
