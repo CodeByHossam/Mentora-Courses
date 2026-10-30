@@ -53,17 +53,17 @@ export const certificateApi = apiSlice.injectEndpoints({
         try {
           const state = api.getState();
           const token = state.auth?.accessToken;
-          
+
           if (!token) {
             return { error: { message: 'No authentication token found' } };
           }
-          
+
           // Create download URL with token as query parameter
           const downloadUrl = `/api/certificates/${certificateId}/download?token=${encodeURIComponent(token)}`;
-          
+
           // Open the download URL in a new tab/window
           window.open(downloadUrl, '_blank');
-          
+
           return { data: { success: true } };
         } catch (error) {
           return { error: { message: error.message } };

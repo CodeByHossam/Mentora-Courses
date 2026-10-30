@@ -32,10 +32,10 @@ const FormTextarea = ({
   const handleChange = (e) => {
     const newValue = e.target.value;
     const sanitized = sanitizeInput(newValue, validationRules.allowHtml);
-    
+
     setSanitizedValue(sanitized);
     setCharCount(sanitized.length);
-    
+
     if (onChange) {
       onChange({
         ...e,
@@ -55,7 +55,7 @@ const FormTextarea = ({
   const handleBlur = (e) => {
     setTouched(true);
     validateInput(sanitizedValue);
-    
+
     if (onBlur) {
       onBlur(e);
     }
@@ -66,7 +66,7 @@ const FormTextarea = ({
       required,
       ...validationRules
     });
-    
+
     setErrors(validation.errors);
     return validation.isValid;
   };
@@ -74,8 +74,8 @@ const FormTextarea = ({
   const hasErrors = errors.length > 0 && touched;
   const textareaClasses = `
     w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 transition-colors resize-vertical
-    ${hasErrors 
-      ? 'border-red-500 focus:ring-red-500 focus:border-red-500' 
+    ${hasErrors
+      ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
       : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
     }
     ${disabled ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'}
@@ -90,7 +90,7 @@ const FormTextarea = ({
           {required && <span className="text-red-500 ml-1">*</span>}
         </label>
       )}
-      
+
       <div className="relative">
         <textarea
           id={name}
@@ -106,7 +106,7 @@ const FormTextarea = ({
           {...props}
         />
       </div>
-      
+
       <div className="flex justify-between items-start mt-1">
         <div className="flex-1">
           {hasErrors && (
@@ -119,7 +119,7 @@ const FormTextarea = ({
             </div>
           )}
         </div>
-        
+
         {maxLength && (
           <div className={`text-xs ml-2 ${charCount > maxLength * 0.9 ? 'text-red-500' : 'text-gray-500'}`}>
             {charCount}/{maxLength}

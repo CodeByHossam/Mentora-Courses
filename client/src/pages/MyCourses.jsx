@@ -86,7 +86,7 @@ const MyCourses = () => {
                       </span>
                     </div>
                   </div>
-                  
+
                   <div className="p-6">
                     <h3 className="text-lg font-bold text-primary mb-2 line-clamp-2">
                       {course.title}
@@ -94,7 +94,7 @@ const MyCourses = () => {
                     <p className="text-sm text-secondary mb-4 line-clamp-3">
                       {course.description || 'No description available'}
                     </p>
-                    
+
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center space-x-2">
                         <span style={{color: 'var(--secondary)'}}>👨‍🏫</span>
@@ -109,7 +109,7 @@ const MyCourses = () => {
                         </span>
                       </div>
                     </div>
-                    
+
                     <div className="flex flex-col space-y-2">
                       <button
                         onClick={() => navigate(`/courses/${course._id}/learn`)}

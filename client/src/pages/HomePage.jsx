@@ -13,7 +13,7 @@ function HomePage() {
         <div className="absolute inset-0 bg-primary shadow-2xl opacity-60"></div>
         <div className="absolute top-20 right-10 w-72 h-72 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse" style={{background: 'var(--secondary)'}}></div>
         <div className="absolute bottom-20 left-10 w-72 h-72 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-1000" style={{background: 'var(--accent)'}}></div>
-        
+
         {/* === Hero Main Content === */}
         <div className="relative flex-1 pt-8 sm:pt-12 px-4 sm:px-6 lg:px-8 xl:px-12 w-full max-w-[1400px] mx-auto bg-transparent">
           <div className="flex flex-col lg:flex-row items-center justify-center gap-6 sm:gap-8 lg:gap-12">
@@ -35,7 +35,7 @@ function HomePage() {
                   </span> Today
                 </h2>
                 <p className="text-lg sm:text-xl text-secondary max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                  Join thousands of learners mastering in-demand skills with our expert-led courses. 
+                  Join thousands of learners mastering in-demand skills with our expert-led courses.
                   <span className="font-semibold" style={{color: 'var(--primary)'}}>Start your journey</span> to success today.
                 </p>
               </header>
@@ -58,7 +58,7 @@ function HomePage() {
                   Learn More
                 </Link>
               </nav>
-              
+
               {/* === Trust Indicators === */}
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-6 pt-4">
                 <div className="flex items-center gap-2">
@@ -104,7 +104,7 @@ function HomePage() {
                 <div className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-full opacity-80 animate-bounce delay-300"></div>
                 <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full opacity-80 animate-bounce delay-700"></div>
                 <div className="absolute top-1/4 -left-8 w-12 h-12 bg-gradient-to-r from-green-400 to-blue-400 rounded-full opacity-60 animate-pulse"></div>
-                
+
                 {/* Main Image Container */}
                 <div className="relative h-full w-full p-4 sm:p-6">
                   <div className="relative h-full w-full rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-white to-gray-50 p-6">
@@ -134,8 +134,8 @@ function HomePage() {
 {/* =====  Benefits Section ===== */}
 
 {/* =====  Benefits Section ===== */}
-<section 
-  className="relative w-full py-8 sm:py-12 mt-4 sm:mt-8 bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900" 
+<section
+  className="relative w-full py-8 sm:py-12 mt-4 sm:mt-8 bg-gradient-to-br from-indigo-900 via-purple-900 to-slate-900"
   aria-label="Key benefits"
 >
   <div className="absolute inset-0 bg-black/30"></div>
@@ -148,13 +148,13 @@ function HomePage() {
         { icon: <Clock />, title: "24/7 Support", description: "Always here to help", color: "from-pink-400 to-rose-500" },
         { icon: <BookOpen />, title: "100+ Courses", description: "Comprehensive curriculum", color: "from-emerald-400 to-teal-500" },
       ].map(({ icon, title, description, color }) => (
-        <div 
-          key={title} 
-          className="group flex flex-col items-center text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 
+        <div
+          key={title}
+          className="group flex flex-col items-center text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10
                      hover:bg-white/10 hover:scale-105 hover:shadow-xl transition-all duration-300"
         >
-          <div 
-            className={`p-3 rounded-xl shadow-md mb-4 bg-gradient-to-r ${color} group-hover:scale-110 
+          <div
+            className={`p-3 rounded-xl shadow-md mb-4 bg-gradient-to-r ${color} group-hover:scale-110
                         transition-transform duration-300`}
           >
             {React.cloneElement(icon, {
@@ -196,7 +196,7 @@ function HomePage() {
           {/* Enhanced Course List */}
           <div className="relative">
             <CourseList limit={9} />
-            
+
             {/* Call to Action */}
             <div className="text-center mt-12">
               <Link

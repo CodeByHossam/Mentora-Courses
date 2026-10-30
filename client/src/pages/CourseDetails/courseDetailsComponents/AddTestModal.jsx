@@ -75,7 +75,6 @@ const AddTestModal = ({
       formData.append("totalPoints", testForm.totalPoints);
       formData.append("testFile", testForm.testFile);
 
-
       await addTest({ courseId, formData }).unwrap();
 
       toast.success("Test added successfully!");

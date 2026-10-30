@@ -1,0 +1,375 @@
+import React from "react";
+
+const InstructorLiveSessionsView = (props) => {
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 mb-8">
+        <div className="flex items-center justify-between">
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold text-gray-900 flex items-center">
+              <Video className="h-8 w-8 text-blue-600 mr-3" />
+              My Live Sessions
+            </h1>
+            <p className="text-gray-600 mt-2">
+              Manage your live sessions and engage with students
+            </p>
+          </div>
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={() => navigate('/instructor/courses')}
+              className="flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Schedule Session
+            </button>
+            <button
+              onClick={() => refetch()}
+              className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+              disabled={isLoading}
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
+              Refresh
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+        <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Total Sessions</p>
+              <p className="text-3xl font-bold text-gray-900">{stats.total}</p>
+            </div>
+            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <Video className="h-6 w-6 text-blue-600" />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-yellow-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Upcoming</p>
+              <p className="text-3xl font-bold text-gray-900">{stats.upcoming}</p>
+            </div>
+            <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+              <Calendar className="h-6 w-6 text-yellow-600" />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-green-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Live Now</p>
+              <p className="text-3xl font-bold text-gray-900">{stats.live}</p>
+            </div>
+            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+              <Play className="h-6 w-6 text-green-600" />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-emerald-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Completed</p>
+              <p className="text-3xl font-bold text-gray-900">{stats.completed}</p>
+            </div>
+            <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
+              <CheckCircle className="h-6 w-6 text-emerald-600" />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-xl shadow-lg p-6 border-l-4 border-red-500">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Cancelled</p>
+              <p className="text-3xl font-bold text-gray-900">{stats.cancelled}</p>
+            </div>
+            <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+              <XCircle className="h-6 w-6 text-red-600" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Filters and Search */}
+      <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search sessions, courses..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+
+          {/* Status Filter */}
+          <div className="relative">
+            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="pl-10 pr-8 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none"
+            >
+              <option value="all">All Sessions</option>
+              <option value="upcoming">Upcoming</option>
+              <option value="ongoing">Live Now</option>
+              <option value="past">Past Sessions</option>
+            </select>
+          </div>
+
+          {/* Sort By */}
+          <div>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              <option value="scheduledDate">Sort by Date</option>
+              <option value="course">Sort by Course</option>
+              <option value="participants">Sort by Participants</option>
+            </select>
+          </div>
+
+          {/* Sort Order */}
+          <div>
+            <button
+              onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+              className="flex items-center justify-center px-4 py-2 w-full border border-gray-300 rounded-lg hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            >
+              {sortOrder === "asc" ? "↑ Ascending" : "↓ Descending"}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Sessions List */}
+      <div className="space-y-6">
+        {filteredAndSortedSessions.length === 0 ? (
+          <div className="text-center py-12">
+            <Video className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">No Sessions Found</h3>
+            <p className="text-gray-600 mb-4">
+              {searchTerm || filterStatus !== "all"
+                ? "No sessions match your current filters."
+                : "You haven't scheduled any live sessions yet."}
+            </p>
+            <button
+              onClick={() => navigate('/instructor/courses')}
+              className="flex items-center mx-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+            >
+              <Plus className="h-5 w-5 mr-2" />
+              Schedule Your First Session
+            </button>
+          </div>
+        ) : (
+          filteredAndSortedSessions.map((session) => {
+            const statusInfo = getSessionStatus(session);
+            const dateTime = formatDateTime(session.scheduledDate);
+            const StatusIcon = statusInfo.icon;
+            const isExpanded = expandedSession === session._id;
+
+            return (
+              <div key={session._id} className="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div className="p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1">
+                      <div className="flex items-center mb-2">
+                        <h3 className="text-xl font-semibold text-gray-900 mr-3">
+                          {session.title}
+                        </h3>
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-${statusInfo.color}-100 text-${statusInfo.color}-800`}>
+                          <StatusIcon className="h-4 w-4 mr-1" />
+                          {statusInfo.label}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center text-sm text-gray-600 mb-2">
+                        <BookOpen className="h-4 w-4 mr-2" />
+                        <span className="font-medium">Course:</span>
+                        <span className="ml-1 text-blue-600">{session.course?.title}</span>
+                      </div>
+
+                      <div className="flex items-center text-sm text-gray-600 mb-2">
+                        <Calendar className="h-4 w-4 mr-2" />
+                        <span className="font-medium">Date:</span>
+                        <span className="ml-1">{dateTime.date}</span>
+                        <span className="mx-2">•</span>
+                        <Clock className="h-4 w-4 mr-1" />
+                        <span className="font-medium">Time:</span>
+                        <span className="ml-1">{dateTime.time}</span>
+                      </div>
+
+                      <div className="flex items-center text-sm text-gray-600">
+                        <Users className="h-4 w-4 mr-2" />
+                        <span className="font-medium">Enrolled Students:</span>
+                        <span className="ml-1">
+                          {session.course?.enrolledStudents?.length || 0} students
+                        </span>
+                        <span className="mx-2">•</span>
+                        <span className="font-medium">Duration:</span>
+                        <span className="ml-1">{session.duration} minutes</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-3 ml-6">
+                      {/* Join Button - For live and ready sessions */}
+                      {(statusInfo.status === "live" || statusInfo.status === "ready") && (session.zoomJoinUrl || session.zoomStartUrl) && (
+                        <button
+                          onClick={() => {
+                            const joinUrl = session.zoomStartUrl || session.zoomJoinUrl;
+                            if (joinUrl) {
+                              window.open(joinUrl, '_blank');
+                            } else {
+                              toast.error("No Zoom meeting URL available");
+                            }
+                          }}
+                          className="flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+                        >
+                          <ExternalLink className="h-4 w-4 mr-2" />
+                          {statusInfo.status === "live" ? "Join Live" : "Join Session"}
+                        </button>
+                      )}
+
+                      {/* Start Session Button - Only for non-live sessions */}
+                      {(session.status !== "active" && session.status !== "live") && (statusInfo.status === "upcoming" || statusInfo.status === "ready") && (
+                        <button
+                          onClick={() => handleStartSession(session._id)}
+                          className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                        >
+                          <Play className="h-4 w-4 mr-2" />
+                          Start Session
+                        </button>
+                      )}
+
+                      {/* Open Meeting Button - Only for live sessions */}
+                      {(session.status === "active" || session.status === "live") && (session.zoomStartUrl || session.zoomJoinUrl) && (
+                        <button
+                          onClick={() => {
+                            const meetingUrl = session.zoomStartUrl || session.zoomJoinUrl;
+                            if (meetingUrl) {
+                              window.open(meetingUrl, '_blank');
+                            } else {
+                              toast.error("No Zoom meeting URL available");
+                            }
+                          }}
+                          className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                        >
+                          <ExternalLink className="h-4 w-4 mr-2" />
+                          Open Meeting
+                        </button>
+                      )}
+
+                      {/* End Session Button - Only for live sessions */}
+                      {(session.status === "active" || session.status === "live") && (
+                        <button
+                          onClick={() => handleEndSession(session._id)}
+                          className="flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                        >
+                          <Square className="h-4 w-4 mr-2" />
+                          End Session
+                        </button>
+                      )}
+
+                      {/* Cancel Session Button - Only for upcoming sessions */}
+                      {(statusInfo.status === "upcoming" || statusInfo.status === "scheduled") && (
+                        <button
+                          onClick={() => handleCancelSession(session._id, session.title)}
+                          className="flex items-center px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors"
+                        >
+                          <Ban className="h-4 w-4 mr-2" />
+                          Cancel
+                        </button>
+                      )}
+
+                      {/* Delete Session Button - For upcoming, cancelled, completed, and ended sessions */}
+                      {(statusInfo.status === "upcoming" || statusInfo.status === "scheduled" || statusInfo.status === "cancelled" || statusInfo.status === "completed" || statusInfo.status === "ended") && (
+                        <button
+                          onClick={() => handleDeleteSession(session._id, session.title)}
+                          className="flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          {(statusInfo.status === "completed" || statusInfo.status === "ended") ? "Remove" : "Delete"}
+                        </button>
+                      )}
+
+                      {/* Expand Button */}
+                      <button
+                        onClick={() => setExpandedSession(isExpanded ? null : session._id)}
+                        className="flex items-center px-3 py-2 text-gray-600 hover:text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                      >
+                        {isExpanded ? (
+                          <ChevronUp className="h-4 w-4" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Expanded Details */}
+                  {isExpanded && (
+                    <div className="border-t pt-4 mt-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <h4 className="font-semibold text-gray-900 mb-3">Session Details</h4>
+                          <div className="space-y-2 text-sm">
+                            <div>
+                              <span className="font-medium text-gray-600">Description:</span>
+                              <p className="text-gray-800 mt-1">{session.description || "No description provided"}</p>
+                            </div>
+                            <div>
+                              <span className="font-medium text-gray-600">Meeting ID:</span>
+                              <span className="ml-2 font-mono text-gray-800">{session.zoomMeetingId || "N/A"}</span>
+                            </div>
+                            <div>
+                              <span className="font-medium text-gray-600">Passcode:</span>
+                              <span className="ml-2 font-mono text-gray-800">{session.zoomPassword || session.zoomPasscode || "N/A"}</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div>
+                          <h4 className="font-semibold text-gray-900 mb-3">Course Information</h4>
+                          <div className="space-y-2 text-sm">
+                            <div>
+                              <span className="font-medium text-gray-600">Category:</span>
+                              <span className="ml-2 text-gray-800">{session.course?.category?.name || "N/A"}</span>
+                            </div>
+                            <div>
+                              <span className="font-medium text-gray-600">Price:</span>
+                              <span className="ml-2 text-gray-800">${session.course?.price || "N/A"}</span>
+                            </div>
+                            <div>
+                              <span className="font-medium text-gray-600">Created:</span>
+                              <span className="ml-2 text-gray-800">
+                                {session.createdAt ? new Date(session.createdAt).toLocaleDateString() : "N/A"}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+    </div>
+  );
+  );
+};
+
+export default InstructorLiveSessionsView;

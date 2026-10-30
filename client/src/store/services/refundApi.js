@@ -3,7 +3,7 @@ import { apiSlice } from '../api/apiSlice';
 export const refundApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // Student Refund Operations
-    
+
     // Create student refund request
     createStudentRefund: builder.mutation({
       query: (refundData) => ({
@@ -27,7 +27,7 @@ export const refundApi = apiSlice.injectEndpoints({
     }),
 
     // Instructor Refund Operations
-    
+
     // Create instructor admin fee refund request
     createInstructorRefund: builder.mutation({
       query: (refundData) => ({
@@ -51,7 +51,7 @@ export const refundApi = apiSlice.injectEndpoints({
     }),
 
     // Admin Refund Operations
-    
+
     // Get pending refund requests (Admin only)
     getPendingRefunds: builder.query({
       query: ({ page = 1, limit = 20, refundType, requesterType } = {}) => {
@@ -66,14 +66,14 @@ export const refundApi = apiSlice.injectEndpoints({
 
     // Get all refund requests (Admin only)
     getAllRefunds: builder.query({
-      query: ({ 
-        page = 1, 
-        limit = 20, 
-        status, 
-        refundType, 
+      query: ({
+        page = 1,
+        limit = 20,
+        status,
+        refundType,
         requesterType,
         startDate,
-        endDate 
+        endDate
       } = {}) => {
         const params = new URLSearchParams({ page, limit });
         if (status) params.append('status', status);
@@ -111,7 +111,7 @@ export const refundApi = apiSlice.injectEndpoints({
 
     // Get refund statistics (Admin only)
     getRefundStats: builder.query({
-      query: ({ period = '30d' } = {}) => 
+      query: ({ period = '30d' } = {}) =>
         `/refunds/admin/stats?period=${period}`,
       providesTags: ['RefundRequest'],
       transformResponse: (response) => response.data,
@@ -142,18 +142,18 @@ export const {
   // Student hooks
   useCreateStudentRefundMutation,
   useGetStudentRefundsQuery,
-  
+
   // Instructor hooks
   useCreateInstructorRefundMutation,
   useGetInstructorRefundsQuery,
-  
+
   // Admin hooks
   useGetPendingRefundsQuery,
   useGetAllRefundsQuery,
   useApproveRefundMutation,
   useRejectRefundMutation,
   useGetRefundStatsQuery,
-  
+
   // General hooks
   useGetRefundDetailsQuery,
   useCancelRefundMutation,

@@ -1,14 +1,14 @@
 import React from 'react';
 import { X } from 'lucide-react';
 
-const AddTestModal = ({ 
-  showAddTestModal, 
-  setShowAddTestModal, 
-  testForm, 
-  testFormError, 
-  isAddingTest, 
-  handleTestFormChange, 
-  handleAddTest 
+const AddTestModal = ({
+  showAddTestModal,
+  setShowAddTestModal,
+  testForm,
+  testFormError,
+  isAddingTest,
+  handleTestFormChange,
+  handleAddTest
 }) => {
   if (!showAddTestModal) return null;
 
@@ -66,7 +66,7 @@ const AddTestModal = ({
               className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
             />
           </div>
-          
+
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-700">🎯 Test Type *</label>
             <select
@@ -83,7 +83,7 @@ const AddTestModal = ({
               Progress tests are for regular assessments. Final tests are for course completion evaluation.
             </p>
           </div>
-          
+
           <div>
             <label className="block mb-2 text-sm font-medium text-gray-700">🎯 Total Points *</label>
             <input

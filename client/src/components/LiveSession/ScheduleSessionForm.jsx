@@ -1,6 +1,6 @@
 /**
  * Schedule Session Form Component
- * 
+ *
  * Allows instructors to schedule new live sessions
  */
 
@@ -62,7 +62,7 @@ const ScheduleSessionForm = ({ courseId, onSuccess, onCancel }) => {
     } else {
       const scheduledDate = new Date(formData.scheduledDate);
       const oneHourFromNow = new Date(Date.now() + 60 * 60 * 1000);
-      
+
       if (scheduledDate <= oneHourFromNow) {
         newErrors.scheduledDate = 'Session must be scheduled at least 1 hour in advance';
       }
@@ -108,13 +108,13 @@ const ScheduleSessionForm = ({ courseId, onSuccess, onCancel }) => {
       };
 
       const result = await createLiveSession(sessionData).unwrap();
-      
+
       toast.success('Live session scheduled successfully! 🎉');
-      
+
       if (onSuccess) {
         onSuccess(result.data);
       }
-      
+
       // Reset form
       setFormData({
         title: '',
@@ -125,7 +125,7 @@ const ScheduleSessionForm = ({ courseId, onSuccess, onCancel }) => {
         maxParticipants: 100,
         instructorNotes: ''
       });
-      
+
     } catch (error) {
       console.error('Error scheduling session:', error);
       toast.error(error?.data?.message || 'Failed to schedule session');

@@ -43,15 +43,15 @@ const Hero = memo(() => {
                 <Star className="w-4 h-4 mr-2 fill-current" />
                 Trusted by 50,000+ learners worldwide
               </div>
-              
+
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-text-primary leading-tight">
                 Master New Skills with
                 <span className="bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent"> Expert-Led</span>
                 <br />Online Courses
               </h1>
-              
+
               <p className="text-xl text-text-secondary leading-relaxed max-w-2xl">
-                Join thousands of learners advancing their careers with our comprehensive, 
+                Join thousands of learners advancing their careers with our comprehensive,
                 project-based courses taught by industry experts. Start your learning journey today.
               </p>
             </div>
@@ -77,7 +77,7 @@ const Hero = memo(() => {
               >
                 Explore Courses
               </Button>
-              
+
               <Button
                 variant="outline"
                 size="lg"
@@ -115,14 +115,14 @@ const Hero = memo(() => {
                       <p className="text-sm text-text-secondary">Full Stack Web Development</p>
                     </div>
                   </div>
-                  
+
                   <LazyImage
                     src="/images/hero-course.jpg"
                     alt="Featured Course"
                     className="w-full h-32 object-cover rounded-lg"
                     fallbackSrc="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=200&fit=crop"
                   />
-                  
+
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-1">
                       {[...Array(5)].map((_, i) => (

@@ -5,6 +5,7 @@
  */
 
 const mongoose = require("mongoose");
+const isValidObjectId = mongoose.isValidObjectId;
 const asyncHandler = require("express-async-handler");
 
 // Models
@@ -24,6 +25,7 @@ const {
 } = require("../utils/cloudinary");
 const { sendSuccess, sendError } = require("../utils/apiResponse");
 const logger = require("../utils/logger");
+const parseTopics = require("../utils/parseTopics");
 
 const updateCourse = asyncHandler(async (req, res) => {
   try {

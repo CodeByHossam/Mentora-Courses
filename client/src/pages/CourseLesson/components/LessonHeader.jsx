@@ -2,12 +2,12 @@ import React from 'react';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-const LessonHeader = ({ 
-  courseId, 
-  course, 
-  currentLesson, 
-  isSidebarOpen, 
-  setIsSidebarOpen 
+const LessonHeader = ({
+  courseId,
+  course,
+  currentLesson,
+  isSidebarOpen,
+  setIsSidebarOpen
 }) => {
   const navigate = useNavigate();
 

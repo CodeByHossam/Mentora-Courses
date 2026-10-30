@@ -37,7 +37,7 @@ const AddUserForm = () => {
 
     // Validate form data
     const validation = validateForm(formData, VALIDATION_RULES.user.register);
-    
+
     if (!validation.isValid) {
       const errorMessages = Object.values(validation.errors).flat();
       toast.error(errorMessages[0] || "Please fix the validation errors.");

@@ -70,7 +70,7 @@ const FeatureSection = memo(() => {
             Why Choose Mentora?
           </h2>
           <p className="text-body max-w-3xl mx-auto">
-            Our platform combines cutting-edge technology with proven educational methods 
+            Our platform combines cutting-edge technology with proven educational methods
             to deliver an unparalleled learning experience that fits your lifestyle.
           </p>
         </div>
@@ -78,9 +78,9 @@ const FeatureSection = memo(() => {
         {/* Features Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <Card 
-              key={index} 
-              hover 
+            <Card
+              key={index}
+              hover
               className="group overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-300"
             >
               {/* Feature Image */}

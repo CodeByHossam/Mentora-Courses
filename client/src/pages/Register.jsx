@@ -131,14 +131,14 @@ const Register = memo(() => {
                 {...getFieldProps('name')}
                 helpText="Only letters and spaces allowed"
               />
-              
+
               <FormInput
                 label="Email Address"
                 type="email"
                 placeholder="Enter your email address"
                 {...getFieldProps('email')}
               />
-              
+
               <FormInput
                 label="Password"
                 type="password"
@@ -146,14 +146,14 @@ const Register = memo(() => {
                 {...getFieldProps('password')}
                 helpText="Must contain 8+ characters, uppercase, lowercase, number, and special character"
               />
-              
+
               <FormInput
                 label="Confirm Password"
                 type="password"
                 placeholder="Confirm your password"
                 {...getFieldProps('confirmPassword')}
               />
-              
+
               <FileUpload
                 label="Profile Photo (Optional)"
                 {...getFileFieldProps('photo')}
@@ -192,7 +192,6 @@ const Register = memo(() => {
                 </div>
               </div>
             </div>
-
 
             <Button
               type="submit"

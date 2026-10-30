@@ -15,7 +15,7 @@ const AdminRefundManagement = () => {
             Refund Request Management
           </h1>
           <p className="mt-2 text-gray-600">
-            Review and approve refund requests from students and instructors. 
+            Review and approve refund requests from students and instructors.
             All approved refunds will be processed as gift cards.
           </p>
         </div>

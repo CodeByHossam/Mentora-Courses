@@ -22,9 +22,9 @@ const LazyImage = memo(({
 
   useEffect(() => {
     const currentImg = imgRef.current;
-    
+
     if (!currentImg) return;
-    
+
     // If no src provided, immediately show error state
     if (!src) {
       setImageState('error');
@@ -38,13 +38,13 @@ const LazyImage = memo(({
           if (entry.isIntersecting) {
             // Start loading the image
             const img = new Image();
-            
+
             img.onload = () => {
               setImageSrc(src);
               setImageState('loaded');
               onLoad?.();
             };
-            
+
             img.onerror = () => {
               if (fallbackSrc && fallbackSrc !== src) {
                 // Try fallback image
@@ -63,9 +63,9 @@ const LazyImage = memo(({
                 onError?.();
               }
             };
-            
+
             img.src = src;
-            
+
             // Stop observing once we start loading
             observerRef.current?.unobserve(currentImg);
           }
@@ -87,7 +87,7 @@ const LazyImage = memo(({
 
   if (imageState === 'loading') {
     return (
-      <div 
+      <div
         ref={imgRef}
         className={`flex items-center justify-center bg-gray-100 ${baseClasses} ${loadingClassName}`}
         {...props}
@@ -99,7 +99,7 @@ const LazyImage = memo(({
 
   if (imageState === 'error') {
     return (
-      <div 
+      <div
         className={`flex items-center justify-center bg-gradient-to-br from-green-500 to-blue-600 ${baseClasses} ${errorClassName}`}
         {...props}
       >

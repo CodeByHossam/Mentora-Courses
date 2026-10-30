@@ -72,7 +72,6 @@ import AddUserForm from "./pages/AddUserForm"; // Admin add user form
 import EditUser from "./pages/EditUser"; // Admin edit user form
 import AdminReports from "./pages/AdminReports"; // Admin reports dashboard
 import AdminSettings from "./pages/AdminSettings"; // Admin system settings
-import AdminBulkDelete from "./pages/AdminBulkDelete"; // Admin bulk deletion page
 import AdminPaymentSettings from "./pages/AdminPaymentSettings"; // Admin payment settings
 import AdminPayments from "./pages/AdminPayments"; // Admin payments & accounting
 import AdminInstructorPayouts from "./pages/AdminInstructorPayouts"; // Admin instructor payouts (new simplified system)
@@ -92,15 +91,12 @@ import InstructorPayments from "./pages/InstructorPayments.jsx"; // Instructor p
 // InstructorAdminFeePayment removed - old admin fee payment system replaced
 import InstructorRefunds from "./pages/InstructorRefunds.jsx"; // Instructor refund requests
 import InstructorMessages from "./pages/InstructorMessages.jsx"; // Instructor messages
-import InstructorGiftCards from "./pages/InstructorGiftCards.jsx"; // Instructor gift cards
 import InstructorGrading from "./pages/InstructorGrading.jsx"; // Instructor grading system
 import TestGrading from "./pages/TestGrading.jsx"; // Test-specific grading page
-import StudentGiftCards from "./pages/StudentGiftCards.jsx"; // Student gift cards
 import StudentRefunds from "./pages/StudentRefunds.jsx"; // Student refund requests
-import AdminGiftCards from "./pages/AdminGiftCards.jsx"; // Admin gift cards management
 import AdminRefundManagement from "./pages/AdminRefundManagement.jsx"; // Admin refund management
 import ForgotPassword from "./pages/ForgotPassword"; // Password reset page
-import Levels from "./pages/Levels"; // Levels management page
+// Levels management removed - course level is metadata, not a managed taxonomy
 
 /* ========================================================================
    LAZY LOADED COMPONENTS - Loaded on demand for better performance
@@ -118,9 +114,6 @@ const Contact = lazy(() => import("./pages/Contact")); // Contact page
 // Admin-specific pages
 const AdminManageCategories = lazy(
   () => import("./pages/AdminManageCategories") // Admin category management
-);
-const AdminGiftCardManager = lazy(
-  () => import("./components/AdminGiftCardManager") // Admin gift card management
 );
 // AdminPendingFeePayments removed - old admin fee payment system replaced
 
@@ -143,6 +136,7 @@ const StudentSchedule = lazy(() => import("./pages/StudentSchedule")); // Studen
 const StudentMessages = lazy(() => import("./pages/StudentMessages")); // Student messages
 const StudentNotifications = lazy(() => import("./pages/StudentNotifications")); // Student notifications
 const StudentPayments = lazy(() => import("./pages/StudentPayments")); // Student payments
+const Wishlist = lazy(() => import("./pages/Wishlist")); // Student wishlist for future purchases
 
 /**
  * Loading Component for Suspense Fallback
@@ -329,7 +323,7 @@ function App() {
                             path="manage-categories"
                             element={<AdminManageCategories />}
                           />
-                          <Route path="levels" element={<Levels />} />
+                          {/* levels route removed - course level is metadata */}
 
                           {/* System management */}
                           <Route
@@ -355,20 +349,14 @@ function App() {
                             path="refunds"
                             element={<AdminRefundManagement />}
                           />
-                          <Route
-                            path="gift-cards"
-                            element={<AdminGiftCards />}
-                          />
+                          {/* gift-cards route removed - non-core feature */}
                           <Route
                             path="payment-settings"
                             element={<AdminPaymentSettings />}
                           />
                           {/* pending-fee-payments route removed - old system replaced */}
                           <Route path="settings" element={<AdminSettings />} />
-                          <Route
-                            path="bulk-delete"
-                            element={<AdminBulkDelete />}
-                          />
+                          {/* bulk-delete route removed - dangerous admin utility */}
 {/* system-logs route removed - no production log endpoint */}
                           <Route
                             path="system-config"
@@ -443,10 +431,6 @@ function App() {
                             element={<InstructorRefunds />}
                           />
                           <Route
-                            path="gift-cards"
-                            element={<InstructorGiftCards />}
-                          />
-                          <Route
                             path="messages"
                             element={<InstructorMessages />}
                           />
@@ -454,7 +438,6 @@ function App() {
                             path="notifications"
                             element={<InstructorNotifications />}
                           />
-                          <Route path="levels" element={<Levels />} />
                           <Route path="billing" element={<BillingRouter />} />
                         </Route>
                       </Route>
@@ -513,8 +496,8 @@ function App() {
                           element={<StudentNotifications />}
                         />
                         <Route
-                          path="/student/gift-cards"
-                          element={<StudentGiftCards />}
+                          path="/student/wishlist"
+                          element={<Wishlist />}
                         />
                         <Route
                           path="/student/refunds"

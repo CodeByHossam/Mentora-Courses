@@ -1,9 +1,7 @@
 import { toast } from 'react-toastify';
-
 /**
  * Centralized error handling utility for consistent error management
  */
-
 // Error types
 export const ERROR_TYPES = {
   VALIDATION: 'VALIDATION',
@@ -15,7 +13,6 @@ export const ERROR_TYPES = {
   NOT_FOUND: 'NOT_FOUND',
   RATE_LIMIT: 'RATE_LIMIT'
 };
-
 // Default error messages
 const DEFAULT_MESSAGES = {
   [ERROR_TYPES.VALIDATION]: 'Please check your input and try again.',
@@ -27,7 +24,6 @@ const DEFAULT_MESSAGES = {
   [ERROR_TYPES.NOT_FOUND]: 'The requested resource was not found.',
   [ERROR_TYPES.RATE_LIMIT]: 'Too many requests. Please wait before trying again.'
 };
-
 /**
  * Parse API error response and extract meaningful error information
  */
@@ -41,7 +37,6 @@ export const parseApiError = (error) => {
       type: getErrorType(error.status, error.data)
     };
   }
-
   // Handle network errors
   if (error?.name === 'NetworkError' || error?.message?.includes('fetch')) {
     return {
@@ -50,7 +45,6 @@ export const parseApiError = (error) => {
       status: 0
     };
   }
-
   // Handle generic errors
   return {
     message: error?.message || 'An unexpected error occurred',
@@ -58,7 +52,6 @@ export const parseApiError = (error) => {
     status: error?.status || 500
   };
 };
-
 /**
  * Determine error type based on status code and response data
  */
@@ -71,18 +64,16 @@ const getErrorType = (status, data) => {
   if (status >= 500) return ERROR_TYPES.SERVER;
   return ERROR_TYPES.SERVER;
 };
-
 /**
  * Handle API errors with appropriate user feedback
  */
 export const handleApiError = (error, options = {}) => {
-  const { 
-    showToast = true, 
-    customMessage, 
+  const {
+    showToast = true,
+    customMessage,
     onError,
-    silent = false 
+    silent = false
   } = options;
-
   const parsedError = parseApiError(error);
   const message = customMessage || parsedError.message;
 
@@ -118,10 +109,10 @@ export const handleApiError = (error, options = {}) => {
  * Handle successful API responses with user feedback
  */
 export const handleApiSuccess = (response, options = {}) => {
-  const { 
-    showToast = true, 
+  const {
+    showToast = true,
     message = 'Operation completed successfully',
-    onSuccess 
+    onSuccess
   } = options;
 
   if (onSuccess) {
@@ -139,32 +130,32 @@ export const handleApiSuccess = (response, options = {}) => {
  * Retry mechanism for failed API calls
  */
 export const withRetry = async (apiCall, options = {}) => {
-  const { 
-    maxRetries = 3, 
-    delay = 1000, 
+  const {
+    maxRetries = 3,
+    delay = 1000,
     backoff = true,
-    retryCondition = (error) => error?.status >= 500 
+    retryCondition = (error) => error?.status >= 500
   } = options;
 
   let lastError;
-  
+
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
       return await apiCall();
     } catch (error) {
       lastError = error;
-      
+
       // Don't retry if condition not met or max retries reached
       if (!retryCondition(error) || attempt === maxRetries) {
         throw error;
       }
-      
+
       // Wait before retrying with exponential backoff
       const waitTime = backoff ? delay * Math.pow(2, attempt) : delay;
       await new Promise(resolve => setTimeout(resolve, waitTime));
     }
   }
-  
+
   throw lastError;
 };
 
@@ -173,9 +164,9 @@ export const withRetry = async (apiCall, options = {}) => {
  */
 export const formatValidationErrors = (errors) => {
   if (!errors || typeof errors !== 'object') return {};
-  
+
   const formatted = {};
-  
+
   Object.entries(errors).forEach(([field, error]) => {
     if (typeof error === 'string') {
       formatted[field] = error;
@@ -185,7 +176,7 @@ export const formatValidationErrors = (errors) => {
       formatted[field] = error[0];
     }
   });
-  
+
   return formatted;
 };
 
@@ -194,12 +185,12 @@ export const formatValidationErrors = (errors) => {
  */
 export const handleGlobalError = (error, errorInfo) => {
   console.error('Global error caught:', error, errorInfo);
-  
+
   // Log to external service in production
   if (import.meta.env.NODE_ENV === 'production') {
     // TODO: Send to error tracking service (Sentry, LogRocket, etc.)
   }
-  
+
   toast.error('An unexpected error occurred. Please refresh the page.', {
     toastId: 'global-error',
     autoClose: false
@@ -211,9 +202,9 @@ export const handleGlobalError = (error, errorInfo) => {
  */
 export const handleFileUploadError = (error, file) => {
   const parsedError = parseApiError(error);
-  
+
   let message = parsedError.message;
-  
+
   // Customize message based on common file upload errors
   if (parsedError.message?.includes('size')) {
     message = `File "${file?.name}" is too large. Please choose a smaller file.`;
@@ -222,7 +213,7 @@ export const handleFileUploadError = (error, file) => {
   } else if (parsedError.message?.includes('upload')) {
     message = `Failed to upload "${file?.name}". Please try again.`;
   }
-  
+
   toast.error(message, { toastId: 'file-upload-error' });
   return parsedError;
 };
@@ -232,14 +223,14 @@ export const handleFileUploadError = (error, file) => {
  */
 export const handleFormError = (error, formName = 'form') => {
   const parsedError = parseApiError(error);
-  
+
   // Handle validation errors specially
   if (parsedError.type === ERROR_TYPES.VALIDATION && parsedError.errors) {
     const formattedErrors = formatValidationErrors(parsedError.errors);
     toast.error(`Please fix the errors in the ${formName} and try again.`);
     return { ...parsedError, formattedErrors };
   }
-  
+
   handleApiError(error, { customMessage: `Failed to submit ${formName}. ${parsedError.message}` });
   return parsedError;
 };

@@ -5,7 +5,7 @@ export const mailApi = apiSlice.injectEndpoints({
     // 1. Send password reset email
     sendPasswordLink: builder.mutation({
       query: (data) => ({
-        url: "/password/password-link", 
+        url: "/password/password-link",
         method: "POST",
         body: data,
       }),

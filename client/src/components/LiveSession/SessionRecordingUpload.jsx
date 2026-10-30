@@ -1,6 +1,6 @@
 /**
  * Session Recording Upload Component
- * 
+ *
  * Allows instructors to upload recording links for completed sessions
  */
 
@@ -64,13 +64,13 @@ const SessionRecordingUpload = ({ session, onSuccess, onCancel }) => {
         sessionId: session._id,
         recordingData: formData
       }).unwrap();
-      
+
       toast.success('Recording uploaded successfully! 🎉');
-      
+
       if (onSuccess) {
         onSuccess();
       }
-      
+
     } catch (error) {
       console.error('Error uploading recording:', error);
       toast.error(error?.data?.message || 'Failed to upload recording');
@@ -158,7 +158,7 @@ const SessionRecordingUpload = ({ session, onSuccess, onCancel }) => {
                     Make recording publicly accessible
                   </label>
                   <p className="text-sm text-gray-500 mt-1">
-                    {formData.isRecordingPublic 
+                    {formData.isRecordingPublic
                       ? '🌐 Anyone with the link can access this recording'
                       : '🔒 Only enrolled students can access this recording'
                     }

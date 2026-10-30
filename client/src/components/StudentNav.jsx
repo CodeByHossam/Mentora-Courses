@@ -20,7 +20,7 @@ import {
   ChevronRight,
   Wallet,
   Settings,
-  Gift,
+  Heart,
 } from "lucide-react";
 import { selectCurrentUser, sendLogout } from "../store/slices/authSlice";
 
@@ -37,8 +37,8 @@ const navItems = [
 const accountItems = [
   { name: "Profile", path: "/profile", icon: User },
   { name: "Billing", path: "/billing", icon: Wallet },
-  { name: "Gift Cards", path: "/student/gift-cards", icon: Gift },
   { name: "Payments", path: "/student/payments", icon: CreditCard },
+  { name: "Wishlist", path: "/student/wishlist", icon: Heart },
   { name: "Messages", path: "/student/messages", icon: MessageSquare },
 ];
 

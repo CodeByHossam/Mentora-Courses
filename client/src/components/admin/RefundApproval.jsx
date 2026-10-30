@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { 
+import {
   useGetPendingRefundsQuery,
   useGetAllRefundsQuery,
   useApproveRefundMutation,
@@ -7,9 +7,9 @@ import {
   useGetRefundStatsQuery
 } from '../../store/services/refundApi';
 import { toast } from 'react-toastify';
-import { 
-  DollarSign, 
-  FileText, 
+import {
+  DollarSign,
+  FileText,
   CheckCircle,
   XCircle,
   Clock,
@@ -53,27 +53,27 @@ const RefundApproval = () => {
 
   const handleSubmitApproval = async () => {
     if (!selectedRefund) return;
-    
+
     try {
       if (approvalAction === 'approve') {
-        await approveRefund({ 
-          refundId: selectedRefund._id, 
-          adminNotes 
+        await approveRefund({
+          refundId: selectedRefund._id,
+          adminNotes
         }).unwrap();
         toast.success('Refund request approved and gift card created successfully');
       } else {
-        await rejectRefund({ 
-          refundId: selectedRefund._id, 
-          adminNotes 
+        await rejectRefund({
+          refundId: selectedRefund._id,
+          adminNotes
         }).unwrap();
         toast.success('Refund request rejected');
       }
-      
+
       setShowApprovalModal(false);
       setSelectedRefund(null);
       setApprovalAction(null);
       setAdminNotes('');
-      
+
     } catch (error) {
       toast.error(error?.data?.message || `Failed to ${approvalAction} refund request`);
     }
@@ -117,8 +117,8 @@ const RefundApproval = () => {
   };
 
   const getRequesterIcon = (requesterType) => {
-    return requesterType === 'student' ? 
-      <User className="h-5 w-5 text-blue-500" /> : 
+    return requesterType === 'student' ?
+      <User className="h-5 w-5 text-blue-500" /> :
       <GraduationCap className="h-5 w-5 text-purple-500" />;
   };
 
@@ -153,7 +153,7 @@ const RefundApproval = () => {
             </p>
           </div>
         </div>
-        
+
         <div className="flex items-center">
           {getStatusIcon(refund.status)}
           <span className={`ml-2 px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(refund.status)}`}>
@@ -257,7 +257,7 @@ const RefundApproval = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
             <div className="flex items-center">
               <CheckCircle className="h-8 w-8 text-green-500" />
@@ -267,7 +267,7 @@ const RefundApproval = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
             <div className="flex items-center">
               <XCircle className="h-8 w-8 text-red-500" />
@@ -277,7 +277,7 @@ const RefundApproval = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
             <div className="flex items-center">
               <DollarSign className="h-8 w-8 text-blue-500" />
@@ -331,7 +331,7 @@ const RefundApproval = () => {
               <Filter className="h-5 w-5 text-gray-600 mr-2" />
               <h3 className="text-lg font-medium text-gray-900">Filters</h3>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -348,7 +348,7 @@ const RefundApproval = () => {
                   <option value="admin_fee_overpayment">Admin Fee Overpayment</option>
                 </select>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Requester Type
@@ -364,7 +364,7 @@ const RefundApproval = () => {
                   <option value="instructor">Instructors</option>
                 </select>
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Start Date
@@ -377,7 +377,7 @@ const RefundApproval = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   End Date
@@ -450,7 +450,7 @@ const RefundApproval = () => {
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 {approvalAction === 'approve' ? 'Approve' : 'Reject'} Refund Request
               </h3>
-              
+
               <div className="mb-4 p-4 bg-gray-50 rounded-lg">
                 <p className="text-sm text-gray-600">
                   <span className="font-medium">Amount:</span> {formatCurrency(selectedRefund.requestedAmount)}
@@ -472,7 +472,7 @@ const RefundApproval = () => {
                         Gift Card Refund
                       </h4>
                       <p className="text-sm text-green-800">
-                        This refund will be processed as a gift card valid for 1 year. 
+                        This refund will be processed as a gift card valid for 1 year.
                         The gift card will be automatically added to the user's account balance.
                       </p>
                     </div>
@@ -492,7 +492,6 @@ const RefundApproval = () => {
                   placeholder={`Provide notes for this ${approvalAction}...`}
                 />
               </div>
-
 
               {approvalAction === 'reject' && !adminNotes.trim() && (
                 <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
@@ -515,7 +514,7 @@ const RefundApproval = () => {
                 <button
                   onClick={handleSubmitApproval}
                   disabled={
-                    (isApproving || isRejecting) || 
+                    (isApproving || isRejecting) ||
                     (approvalAction === 'reject' && !adminNotes.trim())
                   }
                   className={`flex-1 px-4 py-2 text-white rounded-lg font-medium transition-colors flex items-center justify-center ${

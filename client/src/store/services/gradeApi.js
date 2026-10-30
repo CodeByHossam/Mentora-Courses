@@ -7,7 +7,7 @@ export const gradeApi = apiSlice.injectEndpoints({
       query: () => '/grades/student',
       providesTags: ['StudentGrades'],
     }),
-    
+
     getStudentCourseGrades: builder.query({
       query: (courseId) => `/grades/student/${courseId}`,
       providesTags: (result, error, courseId) => [

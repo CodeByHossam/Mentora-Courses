@@ -39,7 +39,7 @@ const PayPalPaymentForm = ({ course, paymentData, onInitiate, loading }) => {
               <span className="text-xl font-bold text-blue-600">${paymentData.amount}</span>
             </div>
           </div>
-          
+
           {paymentData.approvalUrl ? (
             <div className="text-center">
               <p className="text-gray-600 mb-4">Click the button below to complete payment with PayPal</p>

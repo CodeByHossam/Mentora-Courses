@@ -37,7 +37,6 @@ const CertificateSection = ({ courseId }) => {
 
   const students = studentsData?.students || [];
 
-
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -68,7 +67,7 @@ const CertificateSection = ({ courseId }) => {
       formData.append('studentId', selectedStudent._id);
 
       const result = await uploadCertificate({ formData, courseId }).unwrap();
-      
+
       toast.success(`Certificate uploaded successfully for ${selectedStudent.name}! Email notification sent.`);
       setShowUploadModal(false);
       setSelectedFile(null);

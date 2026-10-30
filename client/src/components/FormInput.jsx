@@ -31,9 +31,9 @@ const FormInput = ({
   const handleChange = (e) => {
     const newValue = e.target.value;
     const sanitized = sanitizeInput(newValue, validationRules.allowHtml);
-    
+
     setSanitizedValue(sanitized);
-    
+
     if (onChange) {
       onChange({
         ...e,
@@ -54,7 +54,7 @@ const FormInput = ({
   const handleBlur = (e) => {
     setTouched(true);
     validateInput(sanitizedValue);
-    
+
     if (onBlur) {
       onBlur(e);
     }
@@ -65,7 +65,7 @@ const FormInput = ({
       required,
       ...validationRules
     });
-    
+
     setErrors(validation.errors);
     return validation.isValid;
   };
@@ -73,8 +73,8 @@ const FormInput = ({
   const hasErrors = errors.length > 0 && touched;
   const inputClasses = `
     w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 transition-colors
-    ${hasErrors 
-      ? 'border-error focus:ring-error focus:border-error' 
+    ${hasErrors
+      ? 'border-error focus:ring-error focus:border-error'
       : 'border-gray-300 focus:ring-primary focus:border-primary'
     }
     ${disabled ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'}
@@ -89,7 +89,7 @@ const FormInput = ({
           {required && <span className="text-error ml-1">*</span>}
         </label>
       )}
-      
+
       <div className="relative">
         <input
           id={name}
@@ -104,7 +104,7 @@ const FormInput = ({
           autoComplete={autoComplete}
           {...props}
         />
-        
+
         {hasErrors && (
           <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
             <svg className="h-5 w-5 text-error" fill="currentColor" viewBox="0 0 20 20">
@@ -113,7 +113,7 @@ const FormInput = ({
           </div>
         )}
       </div>
-      
+
       {hasErrors && (
         <div className="mt-1">
           {errors.map((error, index) => (
@@ -123,7 +123,7 @@ const FormInput = ({
           ))}
         </div>
       )}
-      
+
       {helpText && !hasErrors && (
         <p className="mt-1 text-sm text-muted">
           {helpText}

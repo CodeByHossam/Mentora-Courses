@@ -19,11 +19,11 @@ class VideoService {
     try {
       console.log('📹 Requesting video stream for lesson:', lessonId, 'quality:', quality);
       const response = await api.post(`/videos/stream/${lessonId}`, { quality });
-      
+
       if (response.data.success) {
         const streamingData = response.data.data;
         console.log('✅ Video stream response received:', streamingData);
-        
+
         // Store token for automatic refresh
         this.activeTokens.set(lessonId, {
           token: streamingData.token,
@@ -33,7 +33,7 @@ class VideoService {
 
         return streamingData;
       }
-      
+
       throw new Error(response.data.message || 'Failed to generate streaming URL');
     } catch (error) {
       console.error('❌ Video streaming URL generation failed:', error);
@@ -55,11 +55,11 @@ class VideoService {
   async getVideoMetadata(lessonId) {
     try {
       const response = await api.get(`/videos/metadata/${lessonId}`);
-      
+
       if (response.data.success) {
         return response.data.data;
       }
-      
+
       throw new Error(response.data.message || 'Failed to get video metadata');
     } catch (error) {
       console.error('Video metadata fetch failed:', error);
@@ -94,7 +94,7 @@ class VideoService {
 
     const now = new Date();
     const timeUntilExpiry = tokenData.expiresAt.getTime() - now.getTime();
-    
+
     return timeUntilExpiry < (this.tokenRefreshThreshold * 1000);
   }
 
@@ -142,15 +142,15 @@ class VideoService {
    */
   formatDuration(seconds) {
     if (!seconds || seconds < 0) return '00:00';
-    
+
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = Math.floor(seconds % 60);
-    
+
     if (hours > 0) {
       return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     }
-    
+
     return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }
 
@@ -161,10 +161,10 @@ class VideoService {
    */
   formatFileSize(bytes) {
     if (!bytes || bytes === 0) return '0 B';
-    
+
     const sizes = ['B', 'KB', 'MB', 'GB'];
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
-    
+
     return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${sizes[i]}`;
   }
 }

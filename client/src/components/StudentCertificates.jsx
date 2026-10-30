@@ -8,11 +8,9 @@ import {
 } from '../store/services/certificateApi';
 import Card from './Card';
 import Button from './Button';
-
 const StudentCertificates = () => {
   const { user, token } = useAuth();
   const [downloading, setDownloading] = useState(null);
-
   // RTK Query hooks
   const {
     data: certificatesData,
@@ -21,25 +19,18 @@ const StudentCertificates = () => {
   } = useGetStudentCertificatesQuery(undefined, {
     skip: user?.role !== 'student'
   });
-
   const [downloadCertificate] = useDownloadCertificateMutation();
-
   const certificates = certificatesData?.certificates || [];
-
-
   const handleDownloadCertificate = async (certificateId, courseName) => {
     try {
       setDownloading(certificateId);
-      
       if (!token) {
         toast.error('Authentication token not found. Please log in again.');
         return;
       }
-      
       // Create download URL with proper backend server URL
       const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
       const downloadUrl = `${baseUrl}/certificates/${certificateId}/download?token=${encodeURIComponent(token)}`;
-      
       // Open the download URL in a new tab/window
       window.open(downloadUrl, '_blank');
       toast.success(`Certificate for ${courseName} download started`);
@@ -50,7 +41,6 @@ const StudentCertificates = () => {
       setDownloading(null);
     }
   };
-
   const getStatusBadge = (certificate) => {
     switch (certificate.status) {
       case 'issued':
@@ -80,7 +70,6 @@ const StudentCertificates = () => {
         );
     }
   };
-
   if (user?.role !== 'student') {
     return null;
   }
@@ -174,7 +163,7 @@ const StudentCertificates = () => {
                       <span className="text-sm text-gray-500">Status:</span>
                       {getStatusBadge(certificate)}
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-gray-500">Issued:</span>
                       <span className="text-sm font-medium text-gray-900">
@@ -246,7 +235,7 @@ const StudentCertificates = () => {
               Congratulations on Your Achievements!
             </h4>
             <p className="text-gray-600">
-              You have earned {certificates.length} certificate{certificates.length !== 1 ? 's' : ''} so far. 
+              You have earned {certificates.length} certificate{certificates.length !== 1 ? 's' : ''} so far.
               Keep learning and growing!
             </p>
           </div>

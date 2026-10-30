@@ -127,7 +127,7 @@ function Navbar() {
             menuOpen
               ? "translate-x-0 opacity-100 bg-secondary"
               : "translate-x-full opacity-0"
-          } 
+          }
           lg:static lg:w-auto lg:h-auto lg:bg-transparent lg:backdrop-blur-none lg:flex-row lg:translate-x-0 lg:opacity-100 lg:gap-3 xl:gap-4`}
       >
         <li>
@@ -282,7 +282,7 @@ function Navbar() {
 
       {/* Burger Button */}
       <span className="lg:hidden">
-        
+
         <button
           onClick={() => setMenuOpen(!menuOpen)}
           className="relative w-8 h-8 md:w-10 md:h-10 flex flex-col justify-center items-center z-50 lg:hidden p-1 rounded-md hover:bg-gray-100 transition-colors "

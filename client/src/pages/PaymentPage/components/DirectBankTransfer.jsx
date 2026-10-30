@@ -5,7 +5,6 @@ import {
   useGetAdminBankDetailsQuery,
 } from "../../../store/services/paymentApi";
 import { useCreateEnrollmentRequestMutation } from "../../../store/services/enrollmentRequestApi";
-
 const DirectBankTransfer = ({ course, user }) => {
   const navigate = useNavigate();
   const [bankDetails, setBankDetails] = useState(null);
@@ -17,13 +16,11 @@ const DirectBankTransfer = ({ course, user }) => {
     receiptFile: null,
     bankName: "",
   });
-
   // 📦 SIMPLIFIED: Get ADMIN bank details (not instructor)
   // Students transfer money to admin, admin pays instructor directly
   const { data: adminData, isLoading: isLoadingAdmin } =
     useGetAdminBankDetailsQuery();
   const [createEnrollmentRequest] = useCreateEnrollmentRequestMutation();
-
   React.useEffect(() => {
     if (
       adminData?.success &&
@@ -44,7 +41,6 @@ const DirectBankTransfer = ({ course, user }) => {
           adminData.data.paymentDetails.bankDetails.iban ||
           "Not available",
       });
-
       // Auto-populate bank name in form
       setFormData(prev => ({
         ...prev,
@@ -52,7 +48,6 @@ const DirectBankTransfer = ({ course, user }) => {
       }));
     }
   }, [adminData]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (
@@ -64,9 +59,7 @@ const DirectBankTransfer = ({ course, user }) => {
       toast.error("Please fill all fields and upload receipt");
       return;
     }
-
     setLoading(true);
-    
     try {
       const submitData = new FormData();
       submitData.append("courseId", course._id);
@@ -77,9 +70,7 @@ const DirectBankTransfer = ({ course, user }) => {
       submitData.append("transferDate", formData.transferDate);
       submitData.append("bankTransferProof", formData.receiptFile);
       submitData.append("message", `Direct bank transfer payment for ${course.title}`);
-
       await createEnrollmentRequest(submitData).unwrap();
-
       setRequestSubmitted(true);
       toast.success(
         "Enrollment request with bank transfer submitted successfully! Your enrollment is pending admin approval."
@@ -91,7 +82,6 @@ const DirectBankTransfer = ({ course, user }) => {
       setLoading(false);
     }
   };
-
   if (requestSubmitted) {
     return (
       <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-center">
@@ -111,7 +101,6 @@ const DirectBankTransfer = ({ course, user }) => {
       </div>
     );
   }
-
   if (isLoadingAdmin) {
     return (
       <div className="text-center">
@@ -120,7 +109,6 @@ const DirectBankTransfer = ({ course, user }) => {
       </div>
     );
   }
-
   return (
     <div className="space-y-6">
       {/* Bank Details Display */}
@@ -182,7 +170,6 @@ const DirectBankTransfer = ({ course, user }) => {
               </div>
             </div>
           </div>
-
           {/* Payment Form */}
           <form
             onSubmit={handleSubmit}
@@ -203,7 +190,6 @@ const DirectBankTransfer = ({ course, user }) => {
                     </span>
                   </div>
                 </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Bank Name *
@@ -220,7 +206,6 @@ const DirectBankTransfer = ({ course, user }) => {
                   />
                 </div>
               </div>
-
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -240,7 +225,6 @@ const DirectBankTransfer = ({ course, user }) => {
                     required
                   />
                 </div>
-
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Transfer Date *
@@ -256,7 +240,6 @@ const DirectBankTransfer = ({ course, user }) => {
                   />
                 </div>
               </div>
-
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Upload Receipt (PDF/Image) *
@@ -271,7 +254,6 @@ const DirectBankTransfer = ({ course, user }) => {
                   required
                 />
               </div>
-
               <button
                 type="submit"
                 disabled={loading}
@@ -286,5 +268,4 @@ const DirectBankTransfer = ({ course, user }) => {
     </div>
   );
 };
-
 export default DirectBankTransfer;

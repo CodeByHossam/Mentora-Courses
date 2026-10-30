@@ -1,4 +1,4 @@
-//hook to trust device 
+//hook to trust device
 
 import { useState, useEffect } from "react"
 

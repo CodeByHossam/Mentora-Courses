@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { 
+import {
   Calendar,
   Gift,
   BookOpen,
@@ -109,7 +109,7 @@ const StudentBillingPage = () => {
 
         {/* Main Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          
+
           {/* Annual Subscription Card */}
           <div className="bg-white rounded-2xl p-6 shadow-lg border-l-4 border-orange-500">
             <div className="flex items-center gap-3 mb-4">
@@ -226,7 +226,7 @@ const StudentBillingPage = () => {
                   <div className="flex-1">
                     <p className="font-semibold text-gray-900">{card.courseName}</p>
                     <p className="text-sm text-gray-600">
-                      {card.type === 'refund' ? '🔄 Refund' : '🎁 Gift'} • 
+                      {card.type === 'refund' ? '🔄 Refund' : '🎁 Gift'} •
                       Issued: {formatDate(card.issuedAt)}
                       {card.expiryDate && ` • Expires: ${formatDate(card.expiryDate)}`}
                     </p>
@@ -255,8 +255,8 @@ const StudentBillingPage = () => {
                   <div className="flex-1">
                     <p className="font-semibold text-gray-900">Course Purchase</p>
                     <p className="text-sm text-gray-600">
-                      {formatDate(purchase.purchaseDate)} • 
-                      {purchase.paymentMethod === 'gift_card' ? ' 🎁 Gift Card' : 
+                      {formatDate(purchase.purchaseDate)} •
+                      {purchase.paymentMethod === 'gift_card' ? ' 🎁 Gift Card' :
                        purchase.paymentMethod === 'stripe' ? ' 💳 Card' :
                        purchase.paymentMethod === 'paypal' ? ' 🅿️ PayPal' : ' 🏦 Direct Transfer'}
                     </p>

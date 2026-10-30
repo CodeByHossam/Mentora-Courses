@@ -1,20 +1,20 @@
 /**
  * Zoom Meeting Component
- * 
+ *
  * Integrates Zoom Web SDK for in-browser video conferencing
  */
 
 import React, { useEffect, useRef, useState } from 'react';
 import { ZoomMtg } from '@zoomus/websdk';
 
-const ZoomMeeting = ({ 
-  meetingNumber, 
-  userName, 
-  userEmail, 
-  passWord = '', 
+const ZoomMeeting = ({
+  meetingNumber,
+  userName,
+  userEmail,
+  passWord = '',
   role = 0, // 0 for attendee, 1 for host
   onMeetingEnd,
-  onError 
+  onError
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -203,12 +203,12 @@ const ZoomMeeting = ({
   return (
     <div className="zoom-meeting-container">
       {/* Zoom Web SDK will render the meeting interface here */}
-      <div 
+      <div
         ref={meetingContainerRef}
-        id="zmmtg-root" 
+        id="zmmtg-root"
         className="w-full h-screen"
       />
-      
+
       {/* Custom overlay for meeting controls (optional) */}
       <div className="fixed top-4 right-4 z-50">
         <div className="bg-black bg-opacity-50 text-white px-4 py-2 rounded-lg">

@@ -4,11 +4,11 @@ import LoadingSpinner from './LoadingSpinner';
 /**
  * Higher-order component for lazy loading React components
  */
-const LazyComponent = memo(({ 
-  component, 
+const LazyComponent = memo(({
+  component,
   fallback = <LoadingSpinner size="lg" text="Loading..." />,
   errorFallback = <div className="text-center text-red-500">Failed to load component</div>,
-  ...props 
+  ...props
 }) => {
   const LazyLoadedComponent = lazy(component);
 

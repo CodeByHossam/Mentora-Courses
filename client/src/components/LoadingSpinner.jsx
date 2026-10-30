@@ -17,21 +17,21 @@ const LoadingSpinner = memo(({
     lg: 'w-8 h-8',
     xl: 'w-12 h-12'
   };
-  
+
   const colorClasses = {
     primary: 'text-primary-500',
     secondary: 'text-secondary-500',
     gray: 'text-gray-500',
     white: 'text-white'
   };
-  
+
   const spinnerClasses = [
     'animate-spin',
     sizeClasses[size],
     colorClasses[color],
     className
   ].filter(Boolean).join(' ');
-  
+
   const content = (
     <div className="flex flex-col items-center justify-center space-y-2">
       <Loader2 className={spinnerClasses} />
@@ -40,7 +40,7 @@ const LoadingSpinner = memo(({
       )}
     </div>
   );
-  
+
   if (fullScreen) {
     return (
       <div className="fixed inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50">
@@ -48,7 +48,7 @@ const LoadingSpinner = memo(({
       </div>
     );
   }
-  
+
   return content;
 });
 

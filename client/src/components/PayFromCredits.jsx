@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { CreditCard, DollarSign, AlertTriangle, CheckCircle } from 'lucide-react';
 
-const PayFromCredits = ({ 
-  availableCredits = 0, 
-  outstandingBalance = 0, 
+const PayFromCredits = ({
+  availableCredits = 0,
+  outstandingBalance = 0,
   onPaymentSuccess,
-  onCancel 
+  onCancel
 }) => {
   const maxPayableAmount = Math.min(availableCredits, outstandingBalance);
   const [paymentAmount, setPaymentAmount] = useState(maxPayableAmount > 0 ? maxPayableAmount : 10);
@@ -28,7 +28,7 @@ const PayFromCredits = ({
     try {
       // Get token from localStorage or Redux store
       const token = localStorage.getItem('token');
-      
+
       // Create a billing payment record for admin approval
       const response = await fetch('/api/billing/pay-from-credits', {
         method: 'POST',
@@ -96,7 +96,7 @@ const PayFromCredits = ({
         <div className="text-center py-8">
           <AlertTriangle className="w-12 h-12 text-yellow-500 mx-auto mb-4" />
           <p className="text-gray-600 mb-2">
-            {availableCredits <= 0 
+            {availableCredits <= 0
               ? "You don't have enough credits to make a payment"
               : "You don't have any outstanding balance to pay"
             }

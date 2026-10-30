@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { Phone, Mail, MapPin, Send, User, MessageSquare } from "lucide-react";
 import { useSendMailMutation } from "../store/services/mailApi";
-
 const Contact = () => {
   const [sendMail, { isLoading }] = useSendMailMutation();
   const [formData, setFormData] = useState({
@@ -11,11 +10,9 @@ const Contact = () => {
     subject: "",
     message: "",
   });
-
   const handleChange = (e) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -26,7 +23,6 @@ const Contact = () => {
       toast.error("Failed to send message. Please try again.");
     }
   };
-
   return (
     <div className="min-h-screen bg-page-primary py-6 sm:py-8 px-4 sm:px-6 lg:px-8 overflow-x-hidden">
       <div className="w-full max-w-7xl mx-auto">
@@ -40,7 +36,6 @@ const Contact = () => {
             your learning journey
           </p>
         </div>
-
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
           <div className="flex flex-col lg:flex-row">
             {/* Left: Contact Info */}
@@ -55,7 +50,6 @@ const Contact = () => {
                     We're here to help!
                   </p>
                 </div>
-
                 <div className="space-y-6">
                   <div className="flex items-start gap-4 p-4 bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300">
                     <div className="bg-green-100 p-3 rounded-xl">
@@ -71,7 +65,6 @@ const Contact = () => {
                       </p>
                     </div>
                   </div>
-
                   <div className="flex items-start gap-4 p-4 bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300">
                     <div className="bg-blue-100 p-3 rounded-xl">
                       <Mail className="w-6 h-6 text-blue-600" />
@@ -88,7 +81,6 @@ const Contact = () => {
                       </p>
                     </div>
                   </div>
-
                   <div className="flex items-start gap-4 p-4 bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300">
                     <div className="bg-purple-100 p-3 rounded-xl">
                       <MapPin className="w-6 h-6 text-purple-600" />
@@ -108,7 +100,6 @@ const Contact = () => {
                     </div>
                   </div>
                 </div>
-
                 {/* Social Links */}
                 <div className="pt-6 border-t border-gray-200">
                   <p className="text-sm text-gray-600 mb-4">
@@ -137,7 +128,6 @@ const Contact = () => {
                 </div>
               </div>
             </div>
-
             {/* Right: Contact Form */}
             <div className="lg:w-3/5 w-full p-8 lg:p-12">
               <div className="max-w-2xl">
@@ -150,7 +140,6 @@ const Contact = () => {
                     we'll get back to you as soon as possible.
                   </p>
                 </div>
-
                 <form onSubmit={handleSubmit} className="space-y-6" noValidate>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div>
@@ -198,7 +187,6 @@ const Contact = () => {
                       />
                     </div>
                   </div>
-
                   <div>
                     <label
                       htmlFor="subject"
@@ -221,7 +209,6 @@ const Contact = () => {
                       placeholder="What is this regarding?"
                     />
                   </div>
-
                   <div>
                     <label
                       htmlFor="message"
@@ -244,7 +231,6 @@ const Contact = () => {
                       placeholder="Tell us how we can help you..."
                     />
                   </div>
-
                   <div className="flex justify-end">
                     <button
                       type="submit"
@@ -268,5 +254,4 @@ const Contact = () => {
     </div>
   );
 };
-
 export default Contact;

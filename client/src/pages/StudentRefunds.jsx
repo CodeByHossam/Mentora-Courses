@@ -15,7 +15,7 @@ const StudentRefunds = () => {
             Course Refund Requests
           </h1>
           <p className="mt-2 text-gray-600">
-            Request refunds for courses that don't meet your expectations. 
+            Request refunds for courses that don't meet your expectations.
             All approved refunds will be processed as gift cards for future use.
           </p>
         </div>

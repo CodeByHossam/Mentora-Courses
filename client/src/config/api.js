@@ -39,7 +39,7 @@ class ApiClient {
             tokenPreview: token ? `${token.substring(0, 20)}...` : 'No token'
           });
         }
-        
+
         // Add auth token if available
         const token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
         if (token) {
@@ -48,7 +48,7 @@ class ApiClient {
 
         // Add request timestamp for debugging
         config.metadata = { startTime: new Date() };
-        
+
         return config;
       },
       (error) => {
@@ -134,7 +134,7 @@ class ApiClient {
 
           const { accessToken } = response.data.data;
           localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, accessToken);
-          
+
           // Retry original request with new token
           originalRequest.headers.Authorization = `Bearer ${accessToken}`;
           return this.client(originalRequest);
@@ -156,13 +156,13 @@ class ApiClient {
     if (this.retryCount < API_CONFIG.RETRY_ATTEMPTS) {
       this.retryCount++;
       const delay = Math.pow(2, this.retryCount) * 1000; // Exponential backoff
-      
+
       console.warn(`Rate limited. Retrying in ${delay}ms...`);
-      
+
       await new Promise(resolve => setTimeout(resolve, delay));
       return this.client(originalRequest);
     }
-    
+
     toast.error('Too many requests. Please try again later.');
   }
 
@@ -173,14 +173,14 @@ class ApiClient {
     if (this.retryCount < API_CONFIG.RETRY_ATTEMPTS && !originalRequest._retry) {
       originalRequest._retry = true;
       this.retryCount++;
-      
+
       const delay = API_CONFIG.RETRY_DELAY * this.retryCount;
       console.warn(`Server error. Retrying in ${delay}ms...`);
-      
+
       await new Promise(resolve => setTimeout(resolve, delay));
       return this.client(originalRequest);
     }
-    
+
     toast.error(ERROR_MESSAGES.SERVER_ERROR);
   }
 

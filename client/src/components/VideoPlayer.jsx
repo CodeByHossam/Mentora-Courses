@@ -26,7 +26,7 @@ const VideoPlayer = memo(({ lessonId, autoplay = false, className = '' }) => {
   const [isLoadingVideo, setIsLoadingVideo] = useState(false);
   const loadingTimeoutRef = useRef(null);
   const hasLoadedRef = useRef(false);
-  
+
   // Redux API hook for video streaming
   const [generateStreamingUrl, { isLoading: streamingLoading }] = useGenerateStreamingUrlMutation();
 
@@ -55,14 +55,14 @@ const VideoPlayer = memo(({ lessonId, autoplay = false, className = '' }) => {
   // Initialize video (ONLY when lessonId changes - no other dependencies!)
   useEffect(() => {
     console.log('🎯 VideoPlayer useEffect triggered with lessonId:', lessonId, 'hasLoaded:', hasLoadedRef.current);
-    
+
     if (!lessonId) {
       console.warn('⚠️ VideoPlayer mounted without lessonId');
       setError('No lesson ID provided');
       setLoading(false);
       return;
     }
-    
+
     // Simple direct call - no debouncing, no complex logic
     const loadVideoForLesson = async () => {
       // Prevent duplicate calls in StrictMode - check inside the function
@@ -70,21 +70,21 @@ const VideoPlayer = memo(({ lessonId, autoplay = false, className = '' }) => {
         console.log('⚠️ Video already loading/loaded, skipping duplicate call');
         return;
       }
-      
+
       hasLoadedRef.current = true; // Mark as loaded immediately
-      
+
       try {
         setIsLoadingVideo(true);
         setLoading(true);
         setError(null);
-        
+
         console.log('📡 Loading video for lesson:', lessonId);
         const data = await generateStreamingUrl({ lessonId, quality: 'auto' }).unwrap();
         console.log('✅ Video loaded successfully');
         console.log('📺 Full streaming data:', data);
-        
+
         setStreamingData({ ...data, lessonId });
-        
+
         // Wait for video element to be available
         const setVideoSource = () => {
           if (videoRef.current) {
@@ -93,18 +93,18 @@ const VideoPlayer = memo(({ lessonId, autoplay = false, className = '' }) => {
             console.log('📹 Data.streamingUrl:', data.streamingUrl);
             console.log('📹 Data.urls:', data.urls);
             console.log('📹 VideoRef exists:', !!videoRef.current);
-            
+
             if (videoUrl) {
               videoRef.current.src = videoUrl;
               console.log('✅ Video source set successfully:', videoRef.current.src);
-              
+
               // Force video element to load the new source
               videoRef.current.load();
               console.log('🔄 Video load() called');
             } else {
               console.error('❌ No video URL found in streaming data');
             }
-            
+
             // Add video event listeners for debugging
             videoRef.current.addEventListener('loadstart', () => console.log('📹 Video loadstart'));
             videoRef.current.addEventListener('loadeddata', () => console.log('📹 Video loadeddata'));
@@ -113,7 +113,7 @@ const VideoPlayer = memo(({ lessonId, autoplay = false, className = '' }) => {
               console.error('❌ Video error:', e);
               console.error('Video error details:', videoRef.current.error);
             });
-            
+
             // Security: Disable right-click context menu
             videoRef.current.addEventListener('contextmenu', (e) => {
               e.preventDefault();
@@ -126,7 +126,7 @@ const VideoPlayer = memo(({ lessonId, autoplay = false, className = '' }) => {
             setTimeout(setVideoSource, 100);
           }
         };
-        
+
         setVideoSource();
       } catch (err) {
         console.error('❌ Video loading failed:', err);
@@ -137,27 +137,27 @@ const VideoPlayer = memo(({ lessonId, autoplay = false, className = '' }) => {
         setIsLoadingVideo(false);
       }
     };
-    
+
     // Use setTimeout to ensure this runs after any other synchronous effects
     const timeoutId = setTimeout(loadVideoForLesson, 0);
-    
+
     return () => {
       clearTimeout(timeoutId);
     };
   }, [lessonId]); // ONLY lessonId dependency
-  
+
   // Reset hasLoaded when lessonId changes
   useEffect(() => {
     hasLoadedRef.current = false;
   }, [lessonId]);
-  
+
   // Separate useEffect for token refresh interval
   useEffect(() => {
     if (!streamingData) return;
-    
+
     // Set up token refresh interval only when we have streaming data
     const refreshInterval = setInterval(refreshTokenIfNeeded, 300000); // Check every 5 minutes
-    
+
     return () => {
       clearInterval(refreshInterval);
     };
@@ -185,13 +185,13 @@ const VideoPlayer = memo(({ lessonId, autoplay = false, className = '' }) => {
         console.log('🎬 Attempting to play video:', videoRef.current.src);
         console.log('📹 Video ready state:', videoRef.current.readyState);
         console.log('📹 Video network state:', videoRef.current.networkState);
-        
+
         // Check if video has a source
         if (!videoRef.current.src) {
           console.error('❌ No video source available');
           return;
         }
-        
+
         await videoRef.current.play();
         console.log('✅ Video play successful');
         setIsPlaying(true);
@@ -268,15 +268,15 @@ const VideoPlayer = memo(({ lessonId, autoplay = false, className = '' }) => {
   // Format video duration for display
   const formatTime = (time) => {
     if (!time || time < 0) return '00:00';
-    
+
     const hours = Math.floor(time / 3600);
     const minutes = Math.floor((time % 3600) / 60);
     const secs = Math.floor(time % 60);
-    
+
     if (hours > 0) {
       return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     }
-    
+
     return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
@@ -303,7 +303,7 @@ const VideoPlayer = memo(({ lessonId, autoplay = false, className = '' }) => {
   }
 
   return (
-    <div 
+    <div
       className={`relative bg-black rounded-lg overflow-hidden ${className}`}
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
@@ -344,7 +344,7 @@ const VideoPlayer = memo(({ lessonId, autoplay = false, className = '' }) => {
       )}
 
       {/* Video Controls Overlay */}
-      <div 
+      <div
         className={`absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent transition-opacity duration-300 ${
           showControls ? 'opacity-100' : 'opacity-0'
         }`}
@@ -368,11 +368,11 @@ const VideoPlayer = memo(({ lessonId, autoplay = false, className = '' }) => {
         {/* Bottom Controls */}
         <div className="absolute bottom-0 left-0 right-0 p-4">
           {/* Progress Bar */}
-          <div 
+          <div
             className="w-full h-2 bg-white/30 rounded-full cursor-pointer mb-3"
             onClick={handleSeek}
           >
-            <div 
+            <div
               className="h-full bg-primary-500 rounded-full transition-all duration-150"
               style={{ width: `${progressPercentage}%` }}
             />

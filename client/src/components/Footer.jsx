@@ -105,7 +105,7 @@ export default function Footer() {
       <div className="mt-12 pt-6 border-t border-soDark text-center text-accent-dark text-sm">
         © {new Date().getFullYear()} Mentora. All rights reserved.
       </div>
-      
+
       {/* Developer Signature */}
       <div className="mt-4 pt-4 border-t border-soDark text-center text-xs text-accent-dark">
         <div className="flex items-center justify-center gap-3 flex-wrap">

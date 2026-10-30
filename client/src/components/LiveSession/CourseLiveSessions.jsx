@@ -1,14 +1,14 @@
 /**
  * Course Live Sessions Component
- * 
+ *
  * Displays live sessions for a specific course in the course details page
  */
 
 import React, { useState } from 'react';
-import { 
+import {
   useGetSessionsByCourseQuery,
   useJoinLiveSessionMutation,
-  useDeleteLiveSessionMutation 
+  useDeleteLiveSessionMutation
 } from '../../store/services/liveSessionApi';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../hooks/useAuth';
@@ -17,10 +17,10 @@ const CourseLiveSessions = ({ courseId, isEnrolled = false }) => {
   const { user } = useAuth();
   const [showAll, setShowAll] = useState(false);
 
-  const { 
-    data: sessionsData, 
-    isLoading, 
-    error 
+  const {
+    data: sessionsData,
+    isLoading,
+    error
   } = useGetSessionsByCourseQuery({
     courseId,
     upcoming: showAll ? undefined : 'true'
@@ -42,7 +42,7 @@ const CourseLiveSessions = ({ courseId, isEnrolled = false }) => {
     try {
       const result = await joinSession(sessionId).unwrap();
       toast.success('Joined session successfully! 🎉');
-      
+
       // Open Zoom join URL in new tab
       if (result.data?.zoomJoinUrl) {
         window.open(result.data.zoomJoinUrl, '_blank');
@@ -96,12 +96,12 @@ const CourseLiveSessions = ({ courseId, isEnrolled = false }) => {
   const canJoinSession = (session) => {
     // Allow instructors to join their own sessions, or enrolled students
     if (!isEnrolled && user?.role !== 'instructor') return false;
-    
+
     const now = new Date();
     const sessionStart = new Date(session.scheduledDate);
     const sessionEnd = new Date(sessionStart.getTime() + session.duration * 60 * 1000);
     const canJoinTime = new Date(sessionStart.getTime() - 60 * 60 * 1000); // 1 hour before (for testing)
-    
+
     return (
       (session.status === 'scheduled' || session.status === 'live') &&
       now >= canJoinTime &&
@@ -196,7 +196,7 @@ const CourseLiveSessions = ({ courseId, isEnrolled = false }) => {
         <div className="space-y-4">
           {displaySessions.map(session => {
             const status = session.currentStatus || session.status;
-            
+
             return (
               <div key={session._id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
                 {/* Live Session Alert */}
@@ -214,7 +214,7 @@ const CourseLiveSessions = ({ courseId, isEnrolled = false }) => {
                       </h4>
                       {getStatusBadge(session)}
                     </div>
-                    
+
                     <p className="text-gray-600 text-sm mb-3 line-clamp-2">
                       {session.description}
                     </p>
@@ -226,9 +226,9 @@ const CourseLiveSessions = ({ courseId, isEnrolled = false }) => {
                       </div>
                       <div className="flex items-center">
                         <span className="mr-2">⏰</span>
-                        {new Date(session.scheduledDate).toLocaleTimeString([], { 
-                          hour: '2-digit', 
-                          minute: '2-digit' 
+                        {new Date(session.scheduledDate).toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit'
                         })}
                       </div>
                       <div className="flex items-center">

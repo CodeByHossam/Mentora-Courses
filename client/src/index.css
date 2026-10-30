@@ -71,7 +71,6 @@ a[disabled] {
 
   --footer-gradient: linear-gradient(to bottom right, #1c1b4b, #27256a);
 
-
   /* Text */
   --text-primary: #111827;
   --text-secondary: #374151;
@@ -112,7 +111,6 @@ h6 {
   padding-left: 1rem;
   padding-right: 1rem;
 }
-
 
 /* Simple Button Styles */
 .btn-primary {

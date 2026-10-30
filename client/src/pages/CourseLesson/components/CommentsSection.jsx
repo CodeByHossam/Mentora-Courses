@@ -1,15 +1,15 @@
 import React from 'react';
 import { User } from 'lucide-react';
 
-const CommentsSection = ({ 
-  user, 
-  interactions, 
-  commentText, 
-  setCommentText, 
-  isAddingComment, 
-  isDeletingComment, 
-  handleCommentSubmit, 
-  handleCommentDelete 
+const CommentsSection = ({
+  user,
+  interactions,
+  commentText,
+  setCommentText,
+  isAddingComment,
+  isDeletingComment,
+  handleCommentSubmit,
+  handleCommentDelete
 }) => {
   return (
     <div className="bg-white rounded-2xl shadow-xl p-8 mb-6 border border-gray-100">

@@ -24,11 +24,9 @@ import {
   Settings,
   Layers,
   Send,
-  Gift,
   Trash2,
 } from "lucide-react";
 import { selectCurrentUser, sendLogout } from "../store/slices/authSlice";
-
 // ---------------- NAVIGATION CONFIG ----------------
 const navItems = [
   { name: "Dashboard", path: "/admin", icon: Home },
@@ -38,11 +36,11 @@ const navItems = [
   { name: "Financial Dashboard", path: "/admin/billing", icon: Wallet },
   { name: "Payments Reports", path: "/admin/payments", icon: CreditCard },
   { name: "Instructor Payouts", path: "/admin/instructor-payouts", icon: Send },
-  { name: "Gift Cards", path: "/admin/gift-cards", icon: Gift },
+
   { name: "Live Sessions", path: "/admin/live-sessions", icon: Video },
   { name: "Instructors", path: "/admin/instructors", icon: GraduationCap },
   { name: "Categories", path: "/admin/manage-categories", icon: Tags },
-  { name: "Levels", path: "/admin/levels", icon: Layers },
+
   { name: "Reports", path: "/admin/reports", icon: BarChart3 },
 ];
 
@@ -50,7 +48,7 @@ const accountItems = [
   { name: "Profile", path: "/profile", icon: User },
   { name: "Messages", path: "/admin/messages", icon: MessageSquare },
   { name: "Settings", path: "/admin/settings", icon: Settings },
-  { name: "🗑️ Bulk Delete", path: "/admin/bulk-delete", icon: Trash2 },
+
 ];
 
 // ---------------- COMPONENT ----------------

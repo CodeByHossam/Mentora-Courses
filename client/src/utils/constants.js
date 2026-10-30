@@ -1,27 +1,22 @@
 /**
  * Application constants and configuration
  */
-
 // API Configuration
 const getApiBaseUrl = () => {
   const envUrl = import.meta.env.VITE_API_URL;
-  
   // If environment variable is set, ensure it includes /api
   if (envUrl) {
     return envUrl.endsWith('/api') ? envUrl : `${envUrl}/api`;
   }
-  
   // Default fallback
   return 'http://localhost:5000/api';
 };
-
 export const API_CONFIG = {
   BASE_URL: getApiBaseUrl(),
   TIMEOUT: 30000,
   RETRY_ATTEMPTS: 3,
   RETRY_DELAY: 1000
 };
-
 // File Upload Limits
 export const FILE_LIMITS = {
   IMAGE: {
@@ -44,7 +39,6 @@ export const FILE_LIMITS = {
     ALLOWED_TYPES: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
   }
 };
-
 // Pagination
 export const PAGINATION = {
   DEFAULT_PAGE_SIZE: 12,
@@ -52,14 +46,12 @@ export const PAGINATION = {
   COURSE_PAGE_SIZE: 12,
   LESSON_PAGE_SIZE: 20
 };
-
 // User Roles
 export const USER_ROLES = {
   ADMIN: 'admin',
   INSTRUCTOR: 'instructor',
   STUDENT: 'student'
 };
-
 // Course Levels
 export const COURSE_LEVELS = {
   GENERAL: 'General',
@@ -67,14 +59,12 @@ export const COURSE_LEVELS = {
   INTERMEDIATE: 'Intermediate',
   ADVANCED: 'Advanced'
 };
-
 // Course Status
 export const COURSE_STATUS = {
   DRAFT: 'draft',
   PUBLISHED: 'published',
   ARCHIVED: 'archived'
 };
-
 // Validation Rules
 export const VALIDATION_RULES = {
   PASSWORD: {
@@ -101,7 +91,6 @@ export const VALIDATION_RULES = {
     MAX_LENGTH: 80
   }
 };
-
 // UI Constants
 export const UI_CONSTANTS = {
   DEBOUNCE_DELAY: 500,
@@ -110,7 +99,6 @@ export const UI_CONSTANTS = {
   VIDEO_TOKEN_REFRESH_THRESHOLD: 300, // 5 minutes
   LAZY_LOADING_OFFSET: 100
 };
-
 // Storage Keys
 export const STORAGE_KEYS = {
   AUTH_TOKEN: 'auth_token',
@@ -120,7 +108,6 @@ export const STORAGE_KEYS = {
   LANGUAGE: 'language',
   COURSE_PROGRESS: 'course_progress'
 };
-
 // Error Messages
 export const ERROR_MESSAGES = {
   NETWORK_ERROR: 'Network error. Please check your connection.',
@@ -133,7 +120,6 @@ export const ERROR_MESSAGES = {
   INVALID_FILE_TYPE: 'Invalid file type.',
   UPLOAD_FAILED: 'File upload failed. Please try again.'
 };
-
 // Success Messages
 export const SUCCESS_MESSAGES = {
   LOGIN_SUCCESS: 'Successfully logged in!',
@@ -147,7 +133,6 @@ export const SUCCESS_MESSAGES = {
   ENROLLMENT_SUCCESS: 'Successfully enrolled in course!',
   UPLOAD_SUCCESS: 'File uploaded successfully!'
 };
-
 // Routes
 export const ROUTES = {
   HOME: '/',
@@ -163,7 +148,6 @@ export const ROUTES = {
   ADMIN: '/admin',
   INSTRUCTOR: '/instructor'
 };
-
 // Video Quality Options
 export const VIDEO_QUALITY = {
   AUTO: 'auto',
@@ -172,7 +156,6 @@ export const VIDEO_QUALITY = {
   HIGH: 'high',
   ADAPTIVE: 'adaptive'
 };
-
 // Theme Colors (matching CSS variables)
 export const THEME_COLORS = {
   PRIMARY: {
@@ -190,11 +173,9 @@ export const THEME_COLORS = {
     700: '#0e7490'
   }
 };
-
 // ================================
 // UTILITY FUNCTIONS FOR SAFE DATA HANDLING
 // ================================
-
 /**
  * Safe value getter with fallback
  * Prevents undefined/null errors
@@ -203,7 +184,6 @@ export const safeValue = (value, fallback = 'N/A') => {
   if (value === null || value === undefined || value === '') return fallback;
   return value;
 };
-
 /**
  * Safe number with fallback (prevents NaN)
  */
@@ -211,14 +191,12 @@ export const safeNumber = (value, fallback = 0) => {
   const num = Number(value);
   return isNaN(num) ? fallback : num;
 };
-
 /**
  * Safe user name getter
  */
 export const safeUserName = (user) => {
   return user?.name || user?.email || 'Unknown User';
 };
-
 /**
  * Safe image URL with fallback icon
  */
@@ -233,14 +211,12 @@ export const safeImageUrl = (url, type = 'user') => {
   }
   return url;
 };
-
 /**
  * Safe array getter
  */
 export const safeArray = (arr) => {
   return Array.isArray(arr) ? arr : [];
 };
-
 /**
  * Safe math division (prevents NaN and Infinity)
  */
@@ -249,7 +225,6 @@ export const safeDivide = (numerator, denominator, fallback = 0) => {
   const result = numerator / denominator;
   return isNaN(result) || !isFinite(result) ? fallback : result;
 };
-
 /**
  * Safe percentage calculation
  */
@@ -257,7 +232,6 @@ export const safePercentage = (value, total, decimals = 0) => {
   const percentage = safeDivide(value, total, 0) * 100;
   return Number(percentage.toFixed(decimals));
 };
-
 /**
  * Format currency safely
  */
@@ -265,7 +239,6 @@ export const safeCurrency = (amount, currency = '$') => {
   const num = safeNumber(amount, 0);
   return `${currency}${num.toFixed(2)}`;
 };
-
 export default {
   API_CONFIG,
   FILE_LIMITS,

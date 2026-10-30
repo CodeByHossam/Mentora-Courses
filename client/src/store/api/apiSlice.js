@@ -90,6 +90,7 @@ export const apiSlice = createApi({
     "Level",
     "LevelStats",
     "LevelDashboard",
+    "Wishlist",
   ],
 
   endpoints: (builder) => ({}),

@@ -8,7 +8,7 @@ const LessonContent = ({ currentLesson }) => {
       {/* Secure Video Player */}
       <div className="bg-gradient-to-br from-gray-900 to-black rounded-2xl shadow-2xl overflow-hidden aspect-video mb-6 border border-gray-200">
         {currentLesson?._id ? (
-          <VideoPlayer 
+          <VideoPlayer
             lessonId={currentLesson._id}
             autoplay={false}
             className="w-full h-full"

@@ -5,12 +5,10 @@ import { BookOpen } from "lucide-react";
 import { useGetInstructorCoursesQuery, useUpdateCourseStatusMutation } from "../store/services/courseApi";
 import { handleApiError, handleApiSuccess } from "../utils/apiErrorHandler";
 import { selectCurrentUser } from "../store/slices/authSlice";
-
 const InstructorCourses = () => {
   const user = useSelector(selectCurrentUser);
   const navigate = useNavigate();
   const [statusFilter, setStatusFilter] = useState("all");
-
   const {
     data: courses,
     isLoading,
@@ -20,9 +18,7 @@ const InstructorCourses = () => {
     skip: !user?.id,
     refetchOnMountOrArgChange: true,
   });
-
   const [updateCourseStatus] = useUpdateCourseStatusMutation();
-
   const handleStatusChange = async (courseId, newStatus) => {
     try {
       await updateCourseStatus({ courseId, status: newStatus }).unwrap();
@@ -31,12 +27,10 @@ const InstructorCourses = () => {
       handleApiError(error, "Failed to update course status");
     }
   };
-
   const filteredCourses = courses?.filter((course) => {
     if (statusFilter === "all") return true;
     return course.status === statusFilter;
   });
-
   // Redirect if user is not an instructor
   useEffect(() => {
     if (!user || user.role !== "instructor") {
@@ -44,7 +38,6 @@ const InstructorCourses = () => {
       navigate("/");
     }
   }, [user, navigate]);
-
   // Handle API error with your custom handler
   useEffect(() => {
     if (error) {
@@ -52,15 +45,12 @@ const InstructorCourses = () => {
       // Assume your handler deals with status codes internally (like 401, 500)
     }
   }, [error]);
-
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[var(--primary-color)] flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[rgb(48,146,85)]"></div>
       </div>
     );
-    
-  
 };
   return (
     <div className="min-h-screen bg-primary">
@@ -98,7 +88,6 @@ const InstructorCourses = () => {
             </div>
           </div>
         </div>
-
         {/* Filter Section */}
         <div className="card rounded-xl p-6 mb-8">
           <div className="flex items-center justify-between">
@@ -119,7 +108,6 @@ const InstructorCourses = () => {
             </div>
           </div>
         </div>
-
         {/* Course Grid */}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredCourses?.map((course) => (
@@ -149,8 +137,8 @@ const InstructorCourses = () => {
                     value={course.status || 'draft'}
                     onChange={(e) => handleStatusChange(course._id, e.target.value)}
                     className={`px-3 py-1 rounded-full text-xs font-medium border-0 focus:ring-2 focus:ring-white focus:ring-opacity-50 ${
-                      course.status === 'published' 
-                        ? 'bg-green-100 text-green-800' 
+                      course.status === 'published'
+                        ? 'bg-green-100 text-green-800'
                         : course.status === 'draft'
                         ? 'bg-yellow-100 text-yellow-800'
                         : course.status === 'archived'
@@ -164,7 +152,7 @@ const InstructorCourses = () => {
                   </select>
                 </div>
               </div>
-              
+
               <div className="p-6">
                 <h3 className="text-lg font-bold text-primary mb-2 line-clamp-2">
                   {course.title}
@@ -172,7 +160,7 @@ const InstructorCourses = () => {
                 <p className="text-sm text-secondary mb-4 line-clamp-3">
                   {course.description || 'No description available'}
                 </p>
-                
+
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center space-x-2">
                     <div className="flex items-center space-x-1">
@@ -189,7 +177,7 @@ const InstructorCourses = () => {
                     </span>
                   </div>
                 </div>
-                
+
                 <div className="flex flex-col space-y-2">
                   <button
                     onClick={() => navigate(`/courses/${course._id}`)}
@@ -256,6 +244,5 @@ const InstructorCourses = () => {
 
   );
 };
-
 
 export default InstructorCourses;

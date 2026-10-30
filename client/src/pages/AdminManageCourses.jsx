@@ -27,7 +27,7 @@ const AdminManageCourses = () => {
     {
       refetchOnMountOrArgChange: true,
     }
-    
+
   );
   const [deleteCourse] = useDeleteCourseMutation();
   const [updateCourseStatus] = useUpdateCourseStatusMutation();
@@ -152,9 +152,9 @@ const AdminManageCourses = () => {
                 placeholder="Search by course title..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full px-4 py-3 border rounded-lg transition-all duration-200" 
-                style={{borderColor: 'var(--card-border)'}} 
-                onFocus={(e) => {e.target.style.borderColor = 'var(--success)'; e.target.style.outline = '2px solid var(--success)'; e.target.style.outlineOffset = '2px'}} 
+                className="w-full px-4 py-3 border rounded-lg transition-all duration-200"
+                style={{borderColor: 'var(--card-border)'}}
+                onFocus={(e) => {e.target.style.borderColor = 'var(--success)'; e.target.style.outline = '2px solid var(--success)'; e.target.style.outlineOffset = '2px'}}
                 onBlur={(e) => {e.target.style.borderColor = 'var(--card-border)'; e.target.style.outline = 'none'}}
               />
             </div>
@@ -165,9 +165,9 @@ const AdminManageCourses = () => {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full px-4 py-3 border rounded-lg transition-all duration-200" 
-                style={{borderColor: 'var(--card-border)'}} 
-                onFocus={(e) => {e.target.style.borderColor = 'var(--success)'; e.target.style.outline = '2px solid var(--success)'; e.target.style.outlineOffset = '2px'}} 
+                className="w-full px-4 py-3 border rounded-lg transition-all duration-200"
+                style={{borderColor: 'var(--card-border)'}}
+                onFocus={(e) => {e.target.style.borderColor = 'var(--success)'; e.target.style.outline = '2px solid var(--success)'; e.target.style.outlineOffset = '2px'}}
                 onBlur={(e) => {e.target.style.borderColor = 'var(--card-border)'; e.target.style.outline = 'none'}}
               >
                 <option value="all">All Status</option>
@@ -252,8 +252,8 @@ const AdminManageCourses = () => {
                         value={course.status || 'draft'}
                         onChange={(e) => handleStatusChange(course._id, e.target.value)}
                         className={`px-3 py-1 rounded-full text-xs font-medium border-0 ${
-                          course.status === 'published' 
-                            ? 'btn-success-status' 
+                          course.status === 'published'
+                            ? 'btn-success-status'
                             : course.status === 'draft'
                             ? 'btn-warning-status'
                             : course.status === 'archived'

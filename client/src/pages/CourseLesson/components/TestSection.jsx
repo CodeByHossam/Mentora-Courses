@@ -1,13 +1,13 @@
 import React from 'react';
 import { Plus, Download } from 'lucide-react';
 
-const TestSection = ({ 
-  user, 
-  interactions, 
-  setShowAddTestModal, 
-  handleTestSubmit, 
-  handleDeleteTestAnswer, 
-  isDeletingTestAnswer 
+const TestSection = ({
+  user,
+  interactions,
+  setShowAddTestModal,
+  handleTestSubmit,
+  handleDeleteTestAnswer,
+  isDeletingTestAnswer
 }) => {
   return (
     <div className="bg-white rounded-2xl shadow-xl p-8 mb-6 border border-gray-100">
@@ -23,7 +23,7 @@ const TestSection = ({
             className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-xl hover:from-purple-700 hover:to-indigo-700 transition-all duration-200 font-medium transform hover:scale-105 shadow-lg"
             onClick={() => setShowAddTestModal(true)}
           >
-            <Plus size={18} /> 
+            <Plus size={18} />
             <span>Add Test</span>
           </button>
         )}
@@ -62,7 +62,7 @@ const TestSection = ({
                     )}
                   </div>
                 </div>
-                
+
                 {/* Test file download link */}
                 {test?.fileUrl && (
                   <div className="mb-4">
@@ -73,12 +73,12 @@ const TestSection = ({
                       className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200 font-medium transform hover:scale-105"
                       download
                     >
-                      <Download size={16} className="mr-2" /> 
+                      <Download size={16} className="mr-2" />
                       Download Test File
                     </a>
                   </div>
                 )}
-                
+
                 {/* Student's answer file link (if any) */}
                 {user?.role === "student" &&
                   studentSubmission?.answerFileUrl && (
@@ -96,7 +96,7 @@ const TestSection = ({
                             className="inline-flex items-center text-blue-600 hover:text-blue-800 transition-colors font-medium"
                             download
                           >
-                            <Download size={16} className="mr-1" /> 
+                            <Download size={16} className="mr-1" />
                             Download Answer
                           </a>
                         </div>
@@ -116,7 +116,7 @@ const TestSection = ({
                       </div>
                     </div>
                   )}
-                
+
                 {/* Upload answer */}
                 {user?.role === "student" && !studentSubmission?.answerFileUrl && (
                   <label className="block cursor-pointer">

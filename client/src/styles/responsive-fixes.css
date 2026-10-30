@@ -1,4 +1,4 @@
-/* 
+/*
  * Comprehensive Responsive Fixes for Mentora
  * Addresses overflow issues and improves responsivity across all screen sizes
  */
@@ -201,7 +201,7 @@ html, body {
   .table-responsive table {
     font-size: 0.875rem;
   }
-  
+
   .table-responsive th,
   .table-responsive td {
     padding: 0.5rem 0.25rem;
@@ -283,7 +283,7 @@ html, body {
     padding: 0.625rem 1.25rem;
     font-size: 0.875rem;
   }
-  
+
   .btn-lg {
     padding: 0.875rem 1.75rem;
     font-size: 1.125rem;
@@ -319,7 +319,7 @@ html, body {
   .nav-mobile {
     display: none;
   }
-  
+
   .nav-desktop {
     display: block;
   }
@@ -442,7 +442,7 @@ html, body {
   .no-print {
     display: none !important;
   }
-  
+
   .print-full-width {
     width: 100% !important;
     max-width: none !important;

@@ -1,6 +1,6 @@
 /**
  * Live Session API Service
- * 
+ *
  * RTK Query API service for live session management
  */
 

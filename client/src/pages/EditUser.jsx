@@ -87,7 +87,7 @@ const EditUser = () => {
           <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent mb-6">
             ✏️ Edit User
           </h2>
-          
+
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
 
       {formData.avatar && (

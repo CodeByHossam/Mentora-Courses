@@ -20,7 +20,7 @@ import {
   Settings,
   Send,
   CreditCard,
-  Gift,
+
 } from "lucide-react";
 import { selectCurrentUser, sendLogout } from "../store/slices/authSlice";
 
@@ -38,9 +38,9 @@ const navItems = [
     icon: CreditCard,
   },
   { name: "Earnings Dashboard", path: "/instructor/billing", icon: Wallet },
-  { name: "Gift Cards", path: "/instructor/gift-cards", icon: Gift },
+
   // Payout Requests removed - admin pays directly now, view history in billing page
-  { name: "Levels", path: "/instructor/levels", icon: Layers },
+
   { name: "Reports", path: "/instructor/reports", icon: BarChart3 },
 ];
 

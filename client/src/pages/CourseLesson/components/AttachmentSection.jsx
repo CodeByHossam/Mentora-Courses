@@ -1,17 +1,16 @@
 import React from 'react';
 import { Download } from 'lucide-react';
 import { getDownloadUrl, ensureFileExtension } from '../../../utils/fileUtils';
-
-const AttachmentSection = ({ 
-  user, 
-  interactions, 
-  currentLesson, 
-  courseId, 
-  isUploadingAttachment, 
-  uploadProgress, 
-  error, 
-  handleAttachmentUpload, 
-  removeAttachment 
+const AttachmentSection = ({
+  user,
+  interactions,
+  currentLesson,
+  courseId,
+  isUploadingAttachment,
+  uploadProgress,
+  error,
+  handleAttachmentUpload,
+  removeAttachment
 }) => {
   return (
     <div className="bg-white rounded-2xl shadow-xl p-8 mb-6 border border-gray-100">
@@ -51,7 +50,6 @@ const AttachmentSection = ({
           </label>
         )}
       </div>
-
       {/* Error Display */}
       {error && (
         <div className="mb-6 p-4 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-center">
@@ -62,7 +60,6 @@ const AttachmentSection = ({
           </div>
         </div>
       )}
-
       {/* Upload Progress Bar */}
       {isUploadingAttachment && uploadProgress > 0 && (
         <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
@@ -81,7 +78,6 @@ const AttachmentSection = ({
           </p>
         </div>
       )}
-
       <div className="space-y-4">
         {interactions?.attachments?.filter(
           (attachment) =>
@@ -262,5 +258,4 @@ const AttachmentSection = ({
     </div>
   );
 };
-
 export default AttachmentSection;

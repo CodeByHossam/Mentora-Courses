@@ -40,7 +40,7 @@ const CourseLesson = () => {
   const navigate = useNavigate();
   const user = useSelector(selectCurrentUser);
   const selectedLesson = useSelector(selectSelectedLesson);
-  
+
   // Local state
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [commentText, setCommentText] = useState("");
@@ -308,7 +308,7 @@ const CourseLesson = () => {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-gray-50">
       {/* Confirmation Modal */}
       <ConfirmationModalWrapper />
-      
+
       {/* Add Test Modal */}
       <AddTestModal
         showAddTestModal={showAddTestModal}
@@ -340,7 +340,7 @@ const CourseLesson = () => {
           {/* Main Content Area */}
           <div className="flex-1">
             <LessonContent currentLesson={currentLesson} />
-            
+
             <AttachmentSection
               user={user}
               interactions={interactions}

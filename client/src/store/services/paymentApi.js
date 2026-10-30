@@ -32,7 +32,7 @@ export const paymentApi = apiSlice.injectEndpoints({
       invalidatesTags: ["Payment"],
     }),
 
-    // Submit direct transfer payment 
+    // Submit direct transfer payment
     submitDirectTransfer: builder.mutation({
       query: ({ paymentId, formData }) => ({
         url: `/payments/direct-transfer/${paymentId}`,

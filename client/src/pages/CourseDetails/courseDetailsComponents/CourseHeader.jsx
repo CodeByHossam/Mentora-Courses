@@ -1,7 +1,5 @@
 import React from "react";
 import { Edit, Heart, Star, StarOff, BookOpen } from "lucide-react";
-
-
 const CourseHeader = ({
   notEnrolledContent,
   course,
@@ -32,7 +30,6 @@ const CourseHeader = ({
       </div>
     );
   }
-
   return (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-6 sm:mb-8 lg:mb-10 border border-gray-200">
       {/* Course Title */}
@@ -42,7 +39,6 @@ const CourseHeader = ({
         </h1>
         <p className="text-gray-600 text-lg">{course.description}</p>
       </div>
-
       <div className="flex flex-col lg:flex-row">
         {/* Left: Course Image */}
         <div className="sm:w-full md:w-2/5 lg:w-1/3   flex-shrink-0 relative bg-gradient-to-br from-green-500 to-blue-600 flex items-center justify-center"
@@ -62,7 +58,6 @@ const CourseHeader = ({
             <BookOpen className="w-16 h-16 text-white" />
           </div>
         </div>
-        
         {/* Right: Course Details */}
         <div className="lg:w-2/3 w-full p-6 flex flex-col justify-between">
           {/* Price and Course Info */}
@@ -80,7 +75,6 @@ const CourseHeader = ({
                 </div>
               </div>
             </div>
-
             {/* Rating & Like Section */}
             <div className="flex flex-wrap items-center gap-6">
               <div className="flex items-center gap-2">
@@ -115,7 +109,6 @@ const CourseHeader = ({
                 </span>
               </button>
             </div>
-
             {/* Instructor Section */}
             <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <h3 className="text-lg font-semibold text-gray-900 mb-3">Instructor</h3>
@@ -144,18 +137,16 @@ const CourseHeader = ({
                 )}
               </div>
             </div>
-
             {/* Course Duration */}
             <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
               <h3 className="text-sm font-medium text-gray-500 mb-1">Duration</h3>
               <p className="text-lg font-semibold text-gray-900">{course?.duration}</p>
             </div>
-
             {/* Actions */}
             <div className="flex flex-wrap gap-3">
               {/* Go to Lessons Button - Only for enrolled students, admins, or course instructor */}
-              {(isEnrolled || 
-                currentUser?.role === "admin" || 
+              {(isEnrolled ||
+                currentUser?.role === "admin" ||
                 (currentUser?.role === "instructor" && course?.instructor?._id === currentUser?.id)) && (
                 <button
                   onClick={() => navigate(`/courses/${courseId}/learn`)}
@@ -165,7 +156,6 @@ const CourseHeader = ({
                   <span>Go to Lessons</span>
                 </button>
               )}
-              
               {/* Edit Course Button - Only for instructors and admins */}
               {(currentUser?.role === "instructor" ||
                 currentUser?.role === "admin") && (
@@ -184,7 +174,6 @@ const CourseHeader = ({
                   <span>Edit Course</span>
                 </button>
               )}
-              
               {/* Enroll Button - Only for students */}
               {currentUser?.role === "student" && (
                 <button
@@ -207,7 +196,6 @@ const CourseHeader = ({
               )}
             </div>
           </div>
-
           {/* User rating input (if enrolled and userRating is defined) */}
           {isAuthenticated &&
             isEnrolled &&
@@ -267,5 +255,4 @@ const CourseHeader = ({
     </div>
   );
 };
-
 export default CourseHeader;

@@ -131,8 +131,8 @@ const InstructorReports = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        course.status === 'published' ? 'bg-green-100 text-green-800' : 
-                        course.status === 'draft' ? 'bg-yellow-100 text-yellow-800' : 
+                        course.status === 'published' ? 'bg-green-100 text-green-800' :
+                        course.status === 'draft' ? 'bg-yellow-100 text-yellow-800' :
                         'bg-gray-100 text-gray-800'
                       }`}>
                         {course.status || 'draft'}

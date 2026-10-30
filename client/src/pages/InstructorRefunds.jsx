@@ -15,7 +15,7 @@ const InstructorRefunds = () => {
             Admin Fee Refund Requests
           </h1>
           <p className="mt-2 text-gray-600">
-            Request refunds for admin fee overpayments. 
+            Request refunds for admin fee overpayments.
             All approved refunds will be processed as gift cards that can be used for platform services.
           </p>
         </div>

@@ -1,5 +1,4 @@
 import { apiSlice } from "../api/apiSlice";
-
 export const courseApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getCourses: builder.query({
@@ -8,7 +7,6 @@ export const courseApi = apiSlice.injectEndpoints({
         Object.entries(params).forEach(([key, value]) => {
           if (value) query.append(key, value);
         });
-
         return `/courses?${query.toString()}`;
       },
       providesTags: (response) =>
@@ -72,7 +70,7 @@ export const courseApi = apiSlice.injectEndpoints({
         // Get current user from state to update the correct instructor courses cache
         const state = getState();
         const currentUser = state.auth?.user;
-        
+
         if (currentUser?.id) {
           // Update the instructor courses cache optimistically
           const patchResult = dispatch(
@@ -83,7 +81,7 @@ export const courseApi = apiSlice.injectEndpoints({
               }
             })
           );
-          
+
           try {
             await queryFulfilled;
           } catch {

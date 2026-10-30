@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  useCreateInstructorRefundMutation, 
+import {
+  useCreateInstructorRefundMutation,
   useGetInstructorRefundsQuery,
-  useGetRefundStatsQuery 
+  useGetRefundStatsQuery
 } from '../../store/services/refundApi';
 import { useGetBillingAccountQuery } from '../../store/services/billingApi';
 import { toast } from 'react-toastify';
-import { 
-  DollarSign, 
-  FileText, 
+import {
+  DollarSign,
+  FileText,
   AlertTriangle,
   CheckCircle,
   XCircle,
@@ -59,7 +59,7 @@ const InstructorRefundRequest = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.reason || !formData.requestedAmount) {
       toast.error('Please fill in all required fields');
       return;
@@ -80,7 +80,7 @@ const InstructorRefundRequest = () => {
       };
 
       await createRefund(refundData).unwrap();
-      
+
       toast.success('Financial refund request submitted successfully');
       setShowForm(false);
       setFormData({
@@ -159,7 +159,7 @@ const InstructorRefundRequest = () => {
               Request refunds for any financial issues or overpayments
             </p>
           </div>
-          
+
           {!hasPendingRefund && (
             <button
               onClick={() => setShowForm(!showForm)}
@@ -177,7 +177,7 @@ const InstructorRefundRequest = () => {
           <Info className="h-6 w-6 text-blue-600 mr-2" />
           Refund Overview
         </h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="bg-yellow-50 p-4 rounded-lg">
             <div className="text-sm text-yellow-600 font-medium">Pending Requests</div>
@@ -185,21 +185,21 @@ const InstructorRefundRequest = () => {
               {refunds?.refunds?.filter(r => r.status === 'pending').length || 0}
             </div>
           </div>
-          
+
           <div className="bg-green-50 p-4 rounded-lg">
             <div className="text-sm text-green-600 font-medium">Approved Requests</div>
             <div className="text-2xl font-bold text-green-900">
               {refunds?.refunds?.filter(r => r.status === 'approved').length || 0}
             </div>
           </div>
-          
+
           <div className="bg-red-50 p-4 rounded-lg">
             <div className="text-sm text-red-600 font-medium">Rejected Requests</div>
             <div className="text-2xl font-bold text-red-900">
               {refunds?.refunds?.filter(r => r.status === 'rejected').length || 0}
             </div>
           </div>
-          
+
           <div className="bg-blue-50 p-4 rounded-lg">
             <div className="text-sm text-blue-600 font-medium">Total Approved Amount</div>
             <div className="text-2xl font-bold text-blue-900">
@@ -218,7 +218,7 @@ const InstructorRefundRequest = () => {
             <div>
               <p className="text-blue-800 font-medium">Refund Information</p>
               <p className="text-blue-700 text-sm mt-1">
-                You can request refunds for various financial issues including overpayments, billing errors, or other financial discrepancies. 
+                You can request refunds for various financial issues including overpayments, billing errors, or other financial discrepancies.
                 All approved refunds are processed as gift cards valid for 1 year.
               </p>
             </div>
@@ -232,7 +232,7 @@ const InstructorRefundRequest = () => {
           <h3 className="text-lg font-semibold text-gray-900 mb-4">
             Submit Financial Refund Request
           </h3>
-          
+
           {/* Gift Card Notice */}
           <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-6">
             <div className="flex items-start">
@@ -242,13 +242,13 @@ const InstructorRefundRequest = () => {
                   Refund Processing Information
                 </h4>
                 <p className="text-sm text-purple-800">
-                  All approved refunds will be processed as <strong>gift cards</strong> that can be used for future course purchases or platform services. 
+                  All approved refunds will be processed as <strong>gift cards</strong> that can be used for future course purchases or platform services.
                   Gift cards are valid for 1 year from the issue date and will be added to your account upon approval.
                 </p>
               </div>
             </div>
           </div>
-          
+
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Refund Type */}
             <div>
@@ -405,11 +405,11 @@ const InstructorRefundRequest = () => {
                         {refund.status.charAt(0).toUpperCase() + refund.status.slice(1)}
                       </span>
                     </div>
-                    
+
                     <h4 className="font-medium text-gray-900 mb-1">
                       {refund.refundType.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                     </h4>
-                    
+
                     <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
                       <div>
                         <span className="font-medium">Requested Amount:</span> {formatCurrency(refund.requestedAmount)}

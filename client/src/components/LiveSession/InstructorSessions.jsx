@@ -1,16 +1,16 @@
 /**
  * Instructor Sessions Component
- * 
+ *
  * Displays and manages instructor's live sessions
  */
 
 import React, { useState, useEffect } from 'react';
-import { 
+import {
   useGetInstructorSessionsQuery,
   useStartLiveSessionMutation,
   useEndLiveSessionMutation,
   useDeleteLiveSessionMutation,
-  useJoinLiveSessionMutation 
+  useJoinLiveSessionMutation
 } from '../../store/services/liveSessionApi';
 import { toast } from 'react-toastify';
 import ScheduleSessionForm from './ScheduleSessionForm';
@@ -22,11 +22,11 @@ const InstructorSessions = ({ courseId }) => {
   const [showRecordingUpload, setShowRecordingUpload] = useState(false);
   const [filter, setFilter] = useState('all');
 
-  const { 
-    data: sessionsData, 
-    isLoading, 
+  const {
+    data: sessionsData,
+    isLoading,
     error,
-    refetch 
+    refetch
   } = useGetInstructorSessionsQuery({
     status: filter === 'all' ? undefined : filter,
     upcoming: filter === 'upcoming' ? 'true' : undefined
@@ -50,12 +50,12 @@ const InstructorSessions = ({ courseId }) => {
     try {
       const result = await startSession(sessionId).unwrap();
       toast.success('Session started successfully! 🎉');
-      
+
       // Open Zoom start URL in new tab
       if (result.data?.zoomStartUrl) {
         window.open(result.data.zoomStartUrl, '_blank');
       }
-      
+
       // Force refresh to show updated status immediately
       refetch();
     } catch (error) {
@@ -98,7 +98,7 @@ const InstructorSessions = ({ courseId }) => {
     try {
       const result = await joinSession(sessionId).unwrap();
       toast.success('Joined session successfully! 🎉');
-      
+
       // Open Zoom join URL in new tab
       if (result.data?.zoomJoinUrl) {
         window.open(result.data.zoomJoinUrl, '_blank');
@@ -168,7 +168,7 @@ const InstructorSessions = ({ courseId }) => {
     const now = new Date();
     const sessionStart = new Date(session.scheduledDate);
     const canStartTime = new Date(sessionStart.getTime() - 60 * 60 * 1000); // 1 hour before (consistent with join)
-    
+
     return session.status === 'scheduled' && now >= canStartTime;
   };
 
@@ -177,7 +177,7 @@ const InstructorSessions = ({ courseId }) => {
     const sessionStart = new Date(session.scheduledDate);
     const sessionEnd = new Date(sessionStart.getTime() + session.duration * 60 * 1000);
     const canJoinTime = new Date(sessionStart.getTime() - 60 * 60 * 1000); // 1 hour before (for testing)
-    
+
     return (
       (session.status === 'scheduled' || session.status === 'live') &&
       now >= canJoinTime &&
@@ -297,7 +297,7 @@ const InstructorSessions = ({ courseId }) => {
             <div className="text-gray-400 text-6xl mb-4">📅</div>
             <h3 className="text-xl font-semibold text-gray-800 mb-2">No Sessions Found</h3>
             <p className="text-gray-600 mb-6">
-              {filter === 'all' 
+              {filter === 'all'
                 ? "You haven't scheduled any live sessions yet."
                 : `No ${filter} sessions found.`
               }
@@ -334,9 +334,9 @@ const InstructorSessions = ({ courseId }) => {
                       </div>
                       <div className="flex items-center text-gray-600">
                         <span className="mr-2">⏰</span>
-                        {new Date(session.scheduledDate).toLocaleTimeString([], { 
-                          hour: '2-digit', 
-                          minute: '2-digit' 
+                        {new Date(session.scheduledDate).toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit'
                         })}
                       </div>
                       <div className="flex items-center text-gray-600">

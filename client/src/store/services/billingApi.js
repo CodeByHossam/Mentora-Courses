@@ -6,7 +6,7 @@ export const billingApi = apiSlice.injectEndpoints({
     getBillingAccount: builder.query({
       query: () => ({
         url: `/billing/account?t=${Date.now()}`, // Cache busting with timestamp
-        
+
       }),
       providesTags: ['BillingAccount'],
       transformResponse: (response) => {
@@ -19,7 +19,7 @@ export const billingApi = apiSlice.injectEndpoints({
 
     // Get billing transactions
     getBillingTransactions: builder.query({
-      query: ({ page = 1, limit = 20 } = {}) => 
+      query: ({ page = 1, limit = 20 } = {}) =>
         `billing/transactions?page=${page}&limit=${limit}`,
       providesTags: ['BillingTransaction'],
       transformResponse: (response) => response.data,
@@ -134,7 +134,7 @@ export const billingApi = apiSlice.injectEndpoints({
 
     // Get billing statistics for charts
     getBillingStats: builder.query({
-      query: ({ period = '30d' } = {}) => 
+      query: ({ period = '30d' } = {}) =>
         `/stats?period=${period}`,
       providesTags: ['BillingTransaction'],
       transformResponse: (response) => response.data,
@@ -195,7 +195,7 @@ export const billingApi = apiSlice.injectEndpoints({
     }),
 
     // Gift Card Operations (Admin only)
-    
+
     // Add gift card to user account
     addGiftCard: builder.mutation({
       query: (giftCardData) => ({
@@ -209,22 +209,22 @@ export const billingApi = apiSlice.injectEndpoints({
 
     // Get gift card history (Admin view)
     getGiftCardHistory: builder.query({
-      query: ({ 
-        page = 1, 
-        limit = 20, 
-        giftCardType, 
-        userId, 
-        startDate, 
-        endDate, 
-        minAmount, 
-        maxAmount, 
-        isActive 
+      query: ({
+        page = 1,
+        limit = 20,
+        giftCardType,
+        userId,
+        startDate,
+        endDate,
+        minAmount,
+        maxAmount,
+        isActive
       } = {}) => {
         const params = new URLSearchParams({
           page: page.toString(),
           limit: limit.toString()
         });
-        
+
         if (giftCardType) params.append('giftCardType', giftCardType);
         if (userId) params.append('userId', userId);
         if (startDate) params.append('startDate', startDate);
@@ -232,7 +232,7 @@ export const billingApi = apiSlice.injectEndpoints({
         if (minAmount) params.append('minAmount', minAmount.toString());
         if (maxAmount) params.append('maxAmount', maxAmount.toString());
         if (isActive !== undefined) params.append('isActive', isActive.toString());
-        
+
         return `/billing/admin/gift-cards?${params.toString()}`;
       },
       providesTags: ['GiftCards'],
@@ -270,7 +270,7 @@ export const billingApi = apiSlice.injectEndpoints({
     // Admin Fee Payment Operations moved to payoutApi.js
 
     // 🆕 ADMIN DASHBOARD & BILLING - SPECIALIZED ENDPOINTS
-    
+
     // Get admin dashboard data (comprehensive financial overview)
     getAdminDashboard: builder.query({
       query: () => '/billing/admin/dashboard',
@@ -287,7 +287,7 @@ export const billingApi = apiSlice.injectEndpoints({
 
     // Get all platform transactions (admin view)
     getAllPlatformTransactions: builder.query({
-      query: ({ page = 1, limit = 50 } = {}) => 
+      query: ({ page = 1, limit = 50 } = {}) =>
         `/billing/transactions?page=${page}&limit=${limit}`,
       providesTags: ['BillingTransaction'],
     // Financial summary aggregation (Phase 1 simplified reporting)
@@ -315,8 +315,6 @@ export const billingApi = apiSlice.injectEndpoints({
     }),
   }),
 });
-
-
 
 export const {
   useGetBillingAccountQuery,

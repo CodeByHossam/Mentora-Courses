@@ -1,6 +1,6 @@
 /**
  * INSTRUCTOR PAYOUT REQUEST API SERVICE
- * 
+ *
  * RTK Query service for instructor payout requests
  */
 
@@ -86,7 +86,7 @@ export const payoutApi = apiSlice.injectEndpoints({
       query: ({ requestId, receiptFile }) => {
         const formData = new FormData();
         formData.append('receipt', receiptFile);
-        
+
         return {
           url: `/payouts/process/${requestId}`,
           method: 'POST',
@@ -113,7 +113,7 @@ export const {
   useCreatePayoutRequestMutation,
   useGetMyPayoutRequestsQuery,
   useCancelPayoutRequestMutation,
-  
+
   // Admin hooks
   useGetPendingPayoutRequestsQuery,
   useGetPayoutRequestsByStatusQuery,

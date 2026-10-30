@@ -1,12 +1,12 @@
 import React from 'react';
 import { X } from 'lucide-react';
 
-const LessonSidebar = ({ 
-  course, 
-  currentLesson, 
-  isSidebarOpen, 
-  setIsSidebarOpen, 
-  handleSelectLesson 
+const LessonSidebar = ({
+  course,
+  currentLesson,
+  isSidebarOpen,
+  setIsSidebarOpen,
+  handleSelectLesson
 }) => {
   return (
     <aside
@@ -25,14 +25,14 @@ const LessonSidebar = ({
           <X size={24} />
         </button>
       </div>
-      
+
       <div className="flex items-center mb-6 mt-10">
         <div className="text-2xl mr-3">📚</div>
         <h2 className="text-xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
           Course Lessons
         </h2>
       </div>
-      
+
       <div className="space-y-3">
         {course?.lessons?.length > 0 ? (
           course?.lessons.map((lesson, index) => (
@@ -68,8 +68,8 @@ const LessonSidebar = ({
               </div>
               <svg
                 className={`w-5 h-5 transition-transform ${
-                  currentLesson?._id === lesson._id 
-                    ? "text-blue-500 transform rotate-90" 
+                  currentLesson?._id === lesson._id
+                    ? "text-blue-500 transform rotate-90"
                     : "text-gray-400"
                 }`}
                 fill="none"

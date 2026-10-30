@@ -4,7 +4,6 @@ import InstructorCard from "../components/InstructorCard";
 import ProgressLoader from "../components/ProgressLoader";
 import { handleApiError } from "../utils/apiErrorHandler";
 
-
 const InstructorList = () => {
   const { data: users, isLoading, error } = useGetUsersQuery();
 

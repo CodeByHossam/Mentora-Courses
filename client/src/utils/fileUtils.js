@@ -11,10 +11,9 @@ export const getDownloadUrl = (fileUrl, fileName, fileType) => {
   if (!fileUrl) return "";
 
   // ONE UNIFIED LOGIC: Use original URL for all file types
-  
+
   return fileUrl;
 };
-
 
 /**
  * Ensures a filename has the correct extension for download

@@ -1,14 +1,14 @@
 /**
  * Student Sessions Component
- * 
+ *
  * Displays upcoming and past live sessions for students
  */
 
 import React, { useState, useEffect } from 'react';
-import { 
+import {
   useGetStudentSessionsQuery,
   useJoinLiveSessionMutation,
-  useLeaveLiveSessionMutation 
+  useLeaveLiveSessionMutation
 } from '../../store/services/liveSessionApi';
 import { toast } from 'react-toastify';
 
@@ -16,11 +16,11 @@ const StudentSessions = () => {
   const [filter, setFilter] = useState('upcoming');
   const [joinedSessions, setJoinedSessions] = useState(new Set());
 
-  const { 
-    data: sessionsData, 
-    isLoading, 
+  const {
+    data: sessionsData,
+    isLoading,
     error,
-    refetch 
+    refetch
   } = useGetStudentSessionsQuery({
     upcoming: filter === 'upcoming' ? 'true' : undefined
   });
@@ -43,9 +43,9 @@ const StudentSessions = () => {
     try {
       const result = await joinSession(sessionId).unwrap();
       toast.success('Joined session successfully! 🎉');
-      
+
       setJoinedSessions(prev => new Set([...prev, sessionId]));
-      
+
       // Open Zoom join URL in new tab
       if (result.data?.zoomJoinUrl) {
         window.open(result.data.zoomJoinUrl, '_blank');
@@ -122,7 +122,7 @@ const StudentSessions = () => {
     const sessionStart = new Date(session.scheduledDate);
     const sessionEnd = new Date(sessionStart.getTime() + session.duration * 60 * 1000);
     const canJoinTime = new Date(sessionStart.getTime() - 60 * 60 * 1000); // 1 hour before (for testing)
-    
+
     return (
       (session.status === 'scheduled' || session.status === 'live') &&
       now >= canJoinTime &&
@@ -229,7 +229,7 @@ const StudentSessions = () => {
             <div className="text-gray-400 text-6xl mb-4">📅</div>
             <h3 className="text-xl font-semibold text-gray-800 mb-2">No Sessions Found</h3>
             <p className="text-gray-600">
-              {filter === 'upcoming' 
+              {filter === 'upcoming'
                 ? "No upcoming live sessions scheduled."
                 : "No live sessions found in your enrolled courses."
               }
@@ -240,7 +240,7 @@ const StudentSessions = () => {
             {sessions.map(session => {
               const status = session.currentStatus || session.status;
               const isJoined = joinedSessions.has(session._id);
-              
+
               return (
                 <div key={session._id} className="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-shadow duration-200">
                   {/* Live Session Alert */}
@@ -280,9 +280,9 @@ const StudentSessions = () => {
                           </div>
                           <div className="flex items-center text-gray-600">
                             <span className="mr-2">⏰</span>
-                            {new Date(session.scheduledDate).toLocaleTimeString([], { 
-                              hour: '2-digit', 
-                              minute: '2-digit' 
+                            {new Date(session.scheduledDate).toLocaleTimeString([], {
+                              hour: '2-digit',
+                              minute: '2-digit'
                             })}
                           </div>
                           <div className="flex items-center text-gray-600">
@@ -302,7 +302,7 @@ const StudentSessions = () => {
                         {/* Countdown Timer for Upcoming Sessions */}
                         {status === 'upcoming' && (
                           <div className="mb-6">
-                            <CountdownTimer 
+                            <CountdownTimer
                               scheduledDate={session.scheduledDate}
                               onTimeUp={() => refetch()}
                             />

@@ -1,24 +1,24 @@
 /**
  * Payment Details Modal Component
- * 
+ *
  * Displays detailed information about a payment including:
  * - Payment information (amount, method, status)
  * - User and course details
  * - Receipt information for direct transfers
  * - Admin approval actions
- * 
+ *
  * @author Mentora Team
  * @version 1.0.0
  */
 
 import React, { useState } from 'react';
-import { 
-  X, 
-  User, 
-  CreditCard, 
-  Calendar, 
-  FileText, 
-  CheckCircle, 
+import {
+  X,
+  User,
+  CreditCard,
+  Calendar,
+  FileText,
+  CheckCircle,
   XCircle,
   ExternalLink,
   DollarSign,
@@ -27,13 +27,13 @@ import {
 } from 'lucide-react';
 import Button from './Button';
 
-const PaymentDetailsModal = ({ 
-  isOpen, 
-  onClose, 
-  payment, 
-  onApprove, 
-  onReject, 
-  loading = false 
+const PaymentDetailsModal = ({
+  isOpen,
+  onClose,
+  payment,
+  onApprove,
+  onReject,
+  loading = false
 }) => {
   const [adminNotes, setAdminNotes] = useState('');
 
@@ -211,7 +211,7 @@ const PaymentDetailsModal = ({
                     <p className="font-medium">{payment.receiptInfo.transferReference}</p>
                   </div>
                 )}
-                
+
                 {payment.receiptInfo.transferDate && (
                   <div>
                     <p className="text-sm text-gray-600">Transfer Date</p>
@@ -252,7 +252,7 @@ const PaymentDetailsModal = ({
           {(payment.status === 'pending_admin_approval' || payment.status === 'pending_verification') && (
             <div className="border-t pt-6">
               <h3 className="text-lg font-medium mb-4">Admin Actions</h3>
-              
+
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -309,7 +309,7 @@ const PaymentDetailsModal = ({
                       )}
                     </>
                   )}
-                  
+
                   {payment.adminApproval.rejectedBy && (
                     <>
                       <p className="text-sm">

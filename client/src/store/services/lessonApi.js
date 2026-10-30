@@ -31,7 +31,7 @@ export const lessonApi = apiSlice.injectEndpoints({
     // Add a new lesson to a course (use FormData for file uploads)
     createLesson: builder.mutation({
       query: ({ courseId, formData }) => ({
-        url: `/lessons/${courseId}`, 
+        url: `/lessons/${courseId}`,
         method: "POST",
         body: formData,
       }),

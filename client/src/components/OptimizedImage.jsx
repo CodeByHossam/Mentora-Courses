@@ -26,11 +26,11 @@ const OptimizedImage = memo(({
   // Generate responsive image sources
   const generateSrcSet = (baseSrc) => {
     if (!baseSrc) return '';
-    
+
     const widths = [320, 640, 768, 1024, 1280, 1920];
     const baseUrl = baseSrc.split('?')[0];
     const params = new URLSearchParams(baseSrc.split('?')[1] || '');
-    
+
     return widths.map(w => {
       const newParams = new URLSearchParams(params);
       newParams.set('w', w.toString());
@@ -42,11 +42,11 @@ const OptimizedImage = memo(({
   // Generate WebP source
   const generateWebPSrc = (baseSrc) => {
     if (!baseSrc) return '';
-    
+
     const params = new URLSearchParams(baseSrc.split('?')[1] || '');
     params.set('fm', 'webp');
     params.set('q', quality.toString());
-    
+
     return `${baseSrc.split('?')[0]}?${params.toString()}`;
   };
 
@@ -82,18 +82,18 @@ const OptimizedImage = memo(({
 
   const loadImage = () => {
     const img = new Image();
-    
+
     img.onload = () => {
       setCurrentSrc(src);
       setImageState('loaded');
       onLoad?.();
     };
-    
+
     img.onerror = () => {
       setImageState('error');
       onError?.();
     };
-    
+
     // Try WebP first, fallback to original
     const webpSrc = generateWebPSrc(src);
     img.src = webpSrc || src;
@@ -102,7 +102,7 @@ const OptimizedImage = memo(({
   const renderPlaceholder = () => {
     if (placeholder === 'blur') {
       return (
-        <div 
+        <div
           className={`bg-gray-200 animate-pulse flex items-center justify-center ${className}`}
           style={{ width, height }}
           {...props}
@@ -111,9 +111,9 @@ const OptimizedImage = memo(({
         </div>
       );
     }
-    
+
     return (
-      <div 
+      <div
         className={`bg-gray-100 flex items-center justify-center ${className}`}
         style={{ width, height }}
         {...props}
@@ -124,7 +124,7 @@ const OptimizedImage = memo(({
   };
 
   const renderError = () => (
-    <div 
+    <div
       className={`bg-gray-100 flex items-center justify-center ${className}`}
       style={{ width, height }}
       {...props}
@@ -153,14 +153,14 @@ const OptimizedImage = memo(({
         sizes={sizes}
         type="image/webp"
       />
-      
+
       {/* Fallback source */}
       <source
         srcSet={generateSrcSet(src)}
         sizes={sizes}
         type="image/jpeg"
       />
-      
+
       {/* Main image */}
       <img
         ref={imgRef}

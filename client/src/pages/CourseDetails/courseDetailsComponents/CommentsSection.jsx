@@ -7,7 +7,7 @@ const CommentsSection = ({ comments = [], currentUser, courseId, lessonId = null
   const [addComment] = useAddCommentMutation();
   const [editComment] = useEditCommentMutation();
   const [deleteComment] = useDeleteCommentMutation();
-  
+
   const [commentContent, setCommentContent] = useState("");
   const [editingComment, setEditingComment] = useState(null);
   const [replyingTo, setReplyingTo] = useState(null);
@@ -30,7 +30,7 @@ const CommentsSection = ({ comments = [], currentUser, courseId, lessonId = null
         content: commentContent,
         parentCommentId: replyingTo?._id,
       }).unwrap();
-      
+
       setCommentContent("");
       setReplyingTo(null);
       toast.success(replyingTo ? "Reply added successfully!" : "Comment added successfully!");
@@ -53,7 +53,7 @@ const CommentsSection = ({ comments = [], currentUser, courseId, lessonId = null
         content: commentContent,
         replyId,
       }).unwrap();
-      
+
       setCommentContent("");
       setEditingComment(null);
       toast.success(replyId ? "Reply updated successfully!" : "Comment updated successfully!");
@@ -76,7 +76,7 @@ const CommentsSection = ({ comments = [], currentUser, courseId, lessonId = null
         commentId: comment._id,
         replyId,
       }).unwrap();
-      
+
       toast.success(replyId ? "Reply deleted successfully!" : "Comment deleted successfully!");
     } catch (error) {
       console.error("Failed to delete comment:", error);
@@ -153,7 +153,7 @@ const CommentsSection = ({ comments = [], currentUser, courseId, lessonId = null
             </div>
           </div>
         )}
-        
+
         <div className="relative">
           <textarea
             disabled={isSubmitting}
@@ -167,7 +167,7 @@ const CommentsSection = ({ comments = [], currentUser, courseId, lessonId = null
             {commentContent.length}/1000
           </div>
         </div>
-        
+
         <div className="flex justify-between items-center mt-4">
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <User className="w-4 h-4" />
@@ -316,7 +316,7 @@ const CommentsSection = ({ comments = [], currentUser, courseId, lessonId = null
                   </div>
                 </div>
               </div>
-              
+
               {editingComment?.comment._id === comment._id && !editingComment.reply ? (
                 <div className="mb-4">
                   <textarea
@@ -443,7 +443,7 @@ const CommentsSection = ({ comments = [], currentUser, courseId, lessonId = null
                           </div>
                         </div>
                       </div>
-                      
+
                       {editingComment?.comment._id === comment._id && editingComment.reply?._id === reply._id ? (
                         <div>
                           <textarea

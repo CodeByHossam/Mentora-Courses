@@ -3,7 +3,6 @@ import { Download, Edit, Trash2, X, GraduationCap, FileText } from "lucide-react
 import { useNavigate } from "react-router-dom";
 import { useEditTestMutation, useDeleteTestMutation } from "../../../store/services/courseInteractionApi";
 import { toast } from "react-toastify";
-
 const TestItem = ({
   test,
   studentSubmission,
@@ -28,14 +27,12 @@ const TestItem = ({
     dueDate: test?.dueDate ? new Date(test.dueDate).toISOString().split('T')[0] : "",
     testFile: null,
   });
-
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     if (!editForm.title.trim()) {
       toast.error("Test title is required");
       return;
     }
-
     setIsEditing(true);
     try {
       const formData = new FormData();
@@ -45,7 +42,6 @@ const TestItem = ({
       if (editForm.testFile) {
         formData.append("testFile", editForm.testFile);
       }
-
       await editTest({ courseId, testId: test._id, formData }).unwrap();
       toast.success("Test updated successfully!");
       setShowEditModal(false);
@@ -56,12 +52,10 @@ const TestItem = ({
       setIsEditing(false);
     }
   };
-
   const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to delete this test? This action cannot be undone.")) {
       return;
     }
-
     setIsDeleting(true);
     try {
       await deleteTest({ courseId, testId: test._id }).unwrap();
@@ -73,7 +67,6 @@ const TestItem = ({
       setIsDeleting(false);
     }
   };
-
   const handleEditFormChange = (e) => {
     const { name, value, files } = e.target;
     setEditForm(prev => ({
@@ -81,7 +74,6 @@ const TestItem = ({
       [name]: name === "testFile" ? (files ? files[0] : null) : value,
     }));
   };
-
   const handleGradeTest = () => {
     // Navigate to grading page with course and test context
     navigate(`/grading/${courseId}/${test._id}`, {
@@ -93,7 +85,6 @@ const TestItem = ({
       }
     });
   };
-
   return (
     <>
       <tr>
@@ -131,7 +122,6 @@ const TestItem = ({
                   Answer Key
                 </a>
               )}
-              
               {studentSubmission?.answerFileUrl && (
                 <>
                   <a
@@ -192,7 +182,6 @@ const TestItem = ({
           )}
         </td>
       </tr>
-
       {/* Edit Test Modal */}
       {showEditModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
@@ -204,9 +193,7 @@ const TestItem = ({
             >
               <X size={20} />
             </button>
-
             <h2 className="text-xl font-semibold mb-4">Edit Test</h2>
-
             <form onSubmit={handleEditSubmit} className="space-y-4">
               <div>
                 <label className="block mb-1 font-medium">Title *</label>
@@ -219,7 +206,6 @@ const TestItem = ({
                   required
                 />
               </div>
-
               <div>
                 <label className="block mb-1 font-medium">Description</label>
                 <textarea
@@ -229,7 +215,6 @@ const TestItem = ({
                   className="w-full border border-gray-300 rounded px-3 py-2"
                 />
               </div>
-
               <div>
                 <label className="block mb-1 font-medium">Due Date</label>
                 <input
@@ -240,7 +225,6 @@ const TestItem = ({
                   className="w-full border border-gray-300 rounded px-3 py-2"
                 />
               </div>
-
               <div>
                 <label className="block mb-1 font-medium">Test File (optional - leave empty to keep current file)</label>
                 <input
@@ -251,7 +235,6 @@ const TestItem = ({
                   className="w-full"
                 />
               </div>
-
               <button
                 type="submit"
                 disabled={isEditing}
@@ -266,5 +249,4 @@ const TestItem = ({
     </>
   );
 };
-
 export default TestItem;

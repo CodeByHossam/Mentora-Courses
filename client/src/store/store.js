@@ -14,7 +14,6 @@ import {liveSessionApi} from "./services/liveSessionApi";
 import messageApi from "./services/messageApi";
 import notificationApi from "./services/notificationApi";
 import {billingApi} from "./services/billingApi";
-import {levelApi} from "./services/levelApi";
 import {payoutApi} from "./services/payoutApi";
 import {videoApi} from "./services/videoApi";
 
@@ -34,7 +33,6 @@ export const store = configureStore({
     [messageApi.reducerPath]: messageApi.reducer,
     [notificationApi.reducerPath]: notificationApi.reducer,
     [billingApi.reducerPath]: billingApi.reducer,
-    [levelApi.reducerPath]: levelApi.reducer,
     [payoutApi.reducerPath]: payoutApi.reducer,
     [videoApi.reducerPath]: videoApi.reducer,
     [mailApi.reducerPath]: mailApi.reducer,
@@ -55,7 +53,6 @@ export const store = configureStore({
       messageApi.middleware,
       notificationApi.middleware,
       billingApi.middleware,
-      levelApi.middleware,
       payoutApi.middleware,
       videoApi.middleware,
       mailApi.middleware,
