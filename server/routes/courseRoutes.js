@@ -42,7 +42,7 @@ const {
   getCourseRatingInfo, // Get course rating information
   updateCourseStatus, // Update course status (published/draft)
   getCourseStudents, // Get enrolled students for a course
-} = require("../controllers/courseController");
+} = require("../controllers/course");
 
 // Import authentication and validation middleware
 const { protect, authorize } = require("../middleware/authMiddleware");

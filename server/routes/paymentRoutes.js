@@ -30,7 +30,7 @@ const {
   getPaymentReceipt
   // processAdminFeePayment,
   // uploadAdminFeeReceipt
-} = require("../controllers/paymentController");
+} = require("../controllers/payment");
 const { protect, admin } = require("../middleware/authMiddleware");
 const {
   validatePaymentInitiation,
@@ -131,7 +131,5 @@ router.route("/:id")
 
 // Apply payment error handler to all routes
 router.use(paymentErrorHandler);
-
-
 
 module.exports = router;
