@@ -90,7 +90,7 @@ const EditCourse = () => {
     );
   }
 
-  return <EditCourseView />;
+  return null;
 };
 
 export default EditCourse;

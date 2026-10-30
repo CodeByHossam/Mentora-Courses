@@ -375,8 +375,8 @@ const InstructorPayments = () => {
       </div>
     );
   }
-  return <InstructorPaymentsView />;
-  return <InstructorPaymentsView />;
+  return null;
+  return null;
 
 };
 

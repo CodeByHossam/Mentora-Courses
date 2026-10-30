@@ -234,7 +234,7 @@ const StudentNotifications = () => {
     );
   }
 
-  return <StudentNotificationsView />;
+  return null;
 };
 
 export default StudentNotifications;

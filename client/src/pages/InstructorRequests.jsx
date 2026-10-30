@@ -132,7 +132,7 @@ const InstructorRequests = () => {
 
   if (isLoading) return <ProgressLoader />;
 
-  return <InstructorRequestsView />;
+  return null;
 };
 
 export default InstructorRequests;

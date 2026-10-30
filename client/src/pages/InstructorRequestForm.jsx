@@ -51,7 +51,7 @@ const InstructorRequestForm = () => {
       toast.error(error?.data?.message || "Failed to submit request");
     }
   };
-  return <InstructorRequestFormView />;
+  return null;
 };
 
 export default InstructorRequestForm;

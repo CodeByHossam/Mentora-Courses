@@ -464,7 +464,7 @@ const SystemConfiguration = () => {
     }
   };
 
-  return <SystemConfigurationView />;
+  return null;
 };
 
 export default SystemConfiguration;

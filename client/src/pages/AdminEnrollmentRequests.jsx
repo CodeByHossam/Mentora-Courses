@@ -297,7 +297,7 @@ const AdminEnrollmentRequests = () => {
 
   if (isLoading) return <ProgressLoader />;
 
-  return <AdminEnrollmentRequestsView />;
+  return null;
 };
 
 export default AdminEnrollmentRequests;

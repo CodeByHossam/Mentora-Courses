@@ -152,7 +152,7 @@ const CourseEnrollment = () => {
     );
   }
 
-  return <CourseEnrollmentView />;
+  return null;
 };
 
 export default CourseEnrollment;

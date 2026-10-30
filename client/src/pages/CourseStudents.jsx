@@ -43,7 +43,7 @@ const CourseStudents = () => {
       </div>
     );
   }
-  return <CourseStudentsView />;
+  return null;
 };
 
 export default CourseStudents;

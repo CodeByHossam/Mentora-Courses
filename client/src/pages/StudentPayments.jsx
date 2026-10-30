@@ -151,7 +151,7 @@ const StudentPayments = () => {
     );
   }
 
-  return <StudentPaymentsView />;
+  return null;
 };
 
 export default StudentPayments;

@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-import StudentAssignmentsView from "../components/StudentAssignmentsView";
 import {
   FileText,
   Download,
@@ -147,7 +146,7 @@ const StudentAssignments = () => {
     );
   }
 
-  return <StudentAssignmentsView />;
+  return null;
 };
 
 export default StudentAssignments;

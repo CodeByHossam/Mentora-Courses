@@ -290,7 +290,7 @@ const StudentLiveSessions = () => {
     );
   }
 
-  return <StudentLiveSessionsView />;
+  return null;
 };
 
 export default StudentLiveSessions;

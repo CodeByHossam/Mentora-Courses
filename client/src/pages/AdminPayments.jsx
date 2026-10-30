@@ -308,7 +308,7 @@ const AdminPayments = () => {
     );
   }
 
-  return <AdminPaymentsView />;
+  return null;
 };
 
 export default AdminPayments;

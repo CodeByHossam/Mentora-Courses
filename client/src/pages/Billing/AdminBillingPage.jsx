@@ -451,7 +451,7 @@ const AdminBillingPage = () => {
     );
   }
 
-  return <AdminBillingPageView />;
+  return null;
 };
 
 export default AdminBillingPage;

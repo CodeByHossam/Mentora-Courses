@@ -105,7 +105,7 @@ const AdminMessages = () => {
     return matchesSearch;
   });
 
-  return <AdminMessagesView />;
+  return null;
 };
 
 export default AdminMessages;

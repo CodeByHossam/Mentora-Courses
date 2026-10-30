@@ -106,7 +106,7 @@ const CreateCourse = () => {
     }
   };
 
-  return <CreateCourseView />;
+  return null;
 };
 
 export default CreateCourse;

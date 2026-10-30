@@ -29,7 +29,7 @@ const AdminReports = () => {
     );
   if (!data) return null;
 
-  return <AdminReportsView />;
+  return null;
 };
 
 export default AdminReports;

@@ -172,7 +172,7 @@ const AdminNotifications = () => {
 
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
-  return <AdminNotificationsView />;
+  return null;
 };
 
 export default AdminNotifications;

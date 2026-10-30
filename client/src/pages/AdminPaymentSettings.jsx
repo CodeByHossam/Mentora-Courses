@@ -200,7 +200,7 @@ const AdminPaymentSettings = () => {
     );
   }
 
-  return <AdminPaymentSettingsView />;
+  return null;
 };
 
 export default AdminPaymentSettings;

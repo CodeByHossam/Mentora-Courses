@@ -105,7 +105,7 @@ const InstructorMessages = () => {
     return matchesSearch;
   });
 
-  return <InstructorMessagesView />;
+  return null;
 };
 
 export default InstructorMessages;

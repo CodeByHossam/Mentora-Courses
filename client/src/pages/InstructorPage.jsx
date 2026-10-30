@@ -79,7 +79,7 @@ const InstructorPage = () => {
   const profile = user.instructorProfile || {};
   const created = user.createdAt ? new Date(user.createdAt) : null;
 
-  return <InstructorPageView />;
+  return null;
 };
 
 export default InstructorPage;

@@ -82,7 +82,7 @@ const AdminManageCategories = () => {
       </div>
     );
   }
-  return <AdminManageCategoriesView />;
+  return null;
 };
 
 export default AdminManageCategories;

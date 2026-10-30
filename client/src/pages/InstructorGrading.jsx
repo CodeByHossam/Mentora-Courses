@@ -179,7 +179,7 @@ const InstructorGrading = () => {
 
   if (coursesLoading) return <LoadingSpinner />;
 
-  return <InstructorGradingView />;
+  return null;
 };
 
 export default InstructorGrading;

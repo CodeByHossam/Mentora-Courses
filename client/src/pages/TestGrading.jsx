@@ -227,7 +227,7 @@ const TestGrading = () => {
 
   if (courseLoading || studentsLoading || gradesLoading || interactionsLoading) return <LoadingSpinner />;
 
-  return <TestGradingView />;
+  return null;
 };
 
 export default TestGrading;

@@ -358,7 +358,7 @@ const Help = () => {
   const faqs = getFaqs();
   const quickActions = getQuickActions();
 
-  return <HelpView />;
+  return null;
 };
 
 export default Help;

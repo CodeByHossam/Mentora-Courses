@@ -88,7 +88,7 @@ const AdminPaymentReports = () => {
     { id: 'settings', label: 'Profit Settings', icon: DollarSign }
   ];
 
-  return <AdminPaymentReportsView />;
+  return null;
 };
 
 export default AdminPaymentReports;

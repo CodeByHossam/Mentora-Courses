@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import StudentGradesView from "../components/StudentGradesView";
 import { useSelector } from "react-redux";
 import {
   Star,
@@ -153,7 +152,7 @@ const StudentGrades = () => {
     );
   }
 
-  return <StudentGradesView />;
+  return null;
 };
 
 export default StudentGrades;

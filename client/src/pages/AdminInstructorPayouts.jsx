@@ -82,7 +82,7 @@ const AdminInstructorPayouts = () => {
     );
   }
 
-  return <AdminInstructorPayoutsView />;
+  return null;
 };
 
 export default AdminInstructorPayouts;

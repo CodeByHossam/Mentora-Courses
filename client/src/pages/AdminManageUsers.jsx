@@ -137,7 +137,7 @@ if (error) {
   );
 }
 
-  return <AdminManageUsersView />;
+  return null;
 };
 
 export default AdminManageUsers;

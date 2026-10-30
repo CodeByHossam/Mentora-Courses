@@ -149,7 +149,7 @@ const SystemHealth = () => {
     return <ProgressLoader isVisible={true} message="Loading system health..." />;
   }
 
-  return <SystemHealthView />;
+  return null;
 };
 
 export default SystemHealth;

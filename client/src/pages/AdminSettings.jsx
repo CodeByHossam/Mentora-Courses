@@ -198,7 +198,7 @@ const AdminSettings = () => {
     );
   }
 
-  return <AdminSettingsView />;
+  return null;
 };
 
 export default AdminSettings;

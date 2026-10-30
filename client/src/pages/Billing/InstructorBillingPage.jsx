@@ -468,8 +468,8 @@ const InstructorBillingPage = () => {
     return <LoadingSpinner />;
   }
 
-  return <InstructorBillingPageView />;
-  return <InstructorBillingPageView />;
+  return null;
+  return null;
 
 };
 

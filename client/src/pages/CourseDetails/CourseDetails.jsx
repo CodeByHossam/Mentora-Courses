@@ -401,7 +401,7 @@ const CourseDetails = () => {
     );
   }
 
-  return <CourseDetailsView />;
+  return null;
 };
 
 export default CourseDetails;

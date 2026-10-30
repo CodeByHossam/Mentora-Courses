@@ -172,7 +172,7 @@ const InstructorNotifications = () => {
 
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
-  return <InstructorNotificationsView />;
+  return null;
 };
 
 export default InstructorNotifications;

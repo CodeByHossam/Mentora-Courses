@@ -87,7 +87,7 @@ const StudentMessages = () => {
     return matchesSearch;
   });
 
-  return <StudentMessagesView />;
+  return null;
 };
 
 export default StudentMessages;

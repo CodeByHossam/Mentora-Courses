@@ -309,7 +309,7 @@ const InstructorLiveSessions = () => {
     );
   }
 
-  return <InstructorLiveSessionsView />;
+  return null;
 };
 
 export default InstructorLiveSessions;

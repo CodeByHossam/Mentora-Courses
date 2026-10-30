@@ -170,7 +170,7 @@ const StudentBills = ({ userId }) => {
     );
   }
 
-  return <StudentBillsView />;
+  return null;
 };
 
 export default StudentBills;

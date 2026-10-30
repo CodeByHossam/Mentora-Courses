@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import ProfileView from "../components/ProfileView";
 import { useSelector } from "react-redux";
 import {
   selectCurrentUser,
@@ -170,7 +169,7 @@ const Profile = () => {
       </div>
     );
 
-  return <ProfileView />;
+  return null;
 };
 
 export default Profile;

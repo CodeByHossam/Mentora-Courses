@@ -134,7 +134,7 @@ const StudentSchedule = () => {
     );
   }
 
-  return <StudentScheduleView />;
+  return null;
 };
 
 export default StudentSchedule;

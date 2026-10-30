@@ -310,7 +310,7 @@ const AdminLiveSessions = () => {
     );
   }
 
-  return <AdminLiveSessionsView />;
+  return null;
 };
 
 export default AdminLiveSessions;
