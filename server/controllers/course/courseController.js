@@ -186,7 +186,7 @@ const createCourse = asyncHandler(async (req, res) => {
 
 module.exports = {
   createCourse,
-  ...require('../courseQueryController'),
+  ...require('./courseQueryController'),
   ...require('./courseUpdateController'),
   ...require('./courseEnrollmentController'),
 };

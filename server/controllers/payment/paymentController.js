@@ -343,6 +343,7 @@ module.exports = {
   getStudentPayments,
   deletePayment,
   updatePayment,
+  createCreditPaymentMiddleware,
   ...require('../paymentReportController'),
   ...require('./paymentBillingController'),
 };

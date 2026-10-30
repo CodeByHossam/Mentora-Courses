@@ -4,24 +4,14 @@ const { protect, admin } = require("../middleware/authMiddleware");
 const upload = require("../middleware/upload"); // Import upload middleware at the top
 const {
   getBillingAccount,
-  getBillingSummaryController,
-  getAdminDashboard,
-  processCoursePaymentWithBilling,
   getAdminBillingAccount,
-  addGiftCard,
-  getGiftCardHistory,
-  getUserGiftCards,
-  deleteGiftCard,
-  submitAdminFeePayment,
-  getPendingAdminFeePayments,
-  approveAdminFeePayment,
-  getFinancialReconciliation,
+
   payoutInstructorCommission,
 } = require("../controllers/BillingController");
 
 const {
   getPendingDirectTransfers,
-} = require("../controllers/paymentController");
+} = require("../controllers/payment");
 
 const BillingTransaction = require("../models/BillingTransaction");
 
@@ -46,14 +36,14 @@ router.get("/account", getBillingAccount);
  * @desc    Get comprehensive billing summary
  * @access  Private (All authenticated users)
  */
-router.get("/summary", getBillingSummaryController);
+// /summary route removed - no backing controller
 
 /**
  * @route   GET /api/specialized-billing/admin/dashboard
  * @desc    Get admin financial dashboard
  * @access  Private (Admin only)
  */
-router.get("/admin/dashboard", getAdminDashboard);
+// /admin/dashboard route removed - no backing controller
 
 /**
  * @route   POST /api/specialized-billing/admin/payout/:instructorId
@@ -97,9 +87,9 @@ router.post("/admin/process-instructor-payout", admin, upload.single("receipt"),
     console.log(`   Total Earned: $${instructorAccount.totalCommissionEarned}`);
 
     if (payoutAmount > instructorAccount.pendingCommissions) {
-      return res.status(400).json({ 
-        success: false, 
-        message: `Payout amount ($${payoutAmount}) exceeds pending commissions ($${instructorAccount.pendingCommissions})` 
+      return res.status(400).json({
+        success: false,
+        message: `Payout amount ($${payoutAmount}) exceeds pending commissions ($${instructorAccount.pendingCommissions})`
       });
     }
 
@@ -156,9 +146,9 @@ router.post("/admin/process-instructor-payout", admin, upload.single("receipt"),
     });
   } catch (error) {
     console.error("Error processing instructor payout:", error);
-    res.status(500).json({ 
-      success: false, 
-      message: error.message || "Failed to process payout" 
+    res.status(500).json({
+      success: false,
+      message: error.message || "Failed to process payout"
     });
   }
 });
@@ -176,20 +166,6 @@ router.get("/admin/account", admin, getAdminBillingAccount);
  * @access  Private (Admin only)
  */
 router.get("/admin/pending-transfers", admin, getPendingDirectTransfers);
-
-/**
- * @route   POST /api/billing/admin/gift-card
- * @desc    Add gift card credits to user account
- * @access  Private (Admin only)
- */
-router.post("/admin/gift-card", admin, addGiftCard);
-
-/**
- * @route   GET /api/billing/admin/gift-cards
- * @desc    Get gift card history with filtering and pagination
- * @access  Private (Admin only)
- */
-router.get("/admin/gift-cards", admin, getGiftCardHistory);
 
 /**
  * @route   GET /api/billing/transactions
@@ -250,47 +226,41 @@ router.get("/transactions", async (req, res) => {
  * @desc    Process course payment with billing integration
  * @access  Private (Student/Instructor/Admin)
  */
-router.post("/process-course-payment", processCoursePaymentWithBilling);
+// /process-course-payment route removed - no backing controller
 
 /**
  * @route   POST /api/billing/admin-fee-payment
  * @desc    Submit admin fee payment with receipt upload
  * @access  Private (Students/Instructors)
  */
-router.post(
-  "/admin-fee-payment",
-  upload.single("receipt"),
-  submitAdminFeePayment
-);
+// /admin-fee-payment route removed - no backing controller
 
 /**
  * @route   GET /api/billing/admin/pending-fee-payments
  * @desc    Get pending admin fee payments for approval
  * @access  Private (Admin only)
  */
-router.get("/admin/pending-fee-payments", admin, getPendingAdminFeePayments);
+// /admin/pending-fee-payments route removed - no backing controller
 
 /**
  * @route   PUT /api/billing/admin/approve-fee-payment/:transactionId
  * @desc    Approve or reject admin fee payment
  * @access  Private (Admin only)
  */
-router.put(
-  "/admin/approve-fee-payment/:transactionId",
-  admin,
-  approveAdminFeePayment
-);
+// /admin/approve-fee-payment route removed - no backing controller
 
 // ============================================================================
 // 🎁 GIFT CARD ROUTES
 // ============================================================================
+
+/* Gift card routes removed
 
 /**
  * @route   GET /api/billing/my-gift-cards
  * @desc    Get user's gift cards
  * @access  Private
  */
-router.get("/my-gift-cards", protect, getUserGiftCards);
+// /my-gift-cards route removed - no backing controller
 
 /**
  * @route   GET /api/billing/course-gift-card/:courseId
@@ -519,7 +489,6 @@ router.post("/pay-with-gift-card", protect, async (req, res) => {
  * @desc    Delete gift card (Admin only)
  * @access  Private (Admin only)
  */
-router.delete("/admin/gift-card/:id", admin, deleteGiftCard);
 
 /**
  * @route   POST /api/billing/claim-gift-card/:id
@@ -620,7 +589,7 @@ router.post("/claim-gift-card/:id", protect, async (req, res) => {
  * @desc    Get financial reconciliation report (Admin only)
  * @access  Private (Admin only)
  */
-router.get("/admin/reconciliation", admin, getFinancialReconciliation);
+// /admin/reconciliation route removed - no backing controller
 
 /**
  * @route   GET /api/billing/summary/admin
