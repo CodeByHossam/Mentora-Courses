@@ -13,11 +13,11 @@ process.env.NODE_ENV = "test";
 const request = require("supertest");
 const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
-const app = require("../server"); // Adjust path as needed
-const User = require("../models/User");
-const Course = require("../models/Course");
-const Category = require("../models/Category");
-const Payment = require("../models/Payment");
+const app = require("../../server"); // Adjust path as needed
+const User = require("../../models/User");
+const Course = require("../../models/Course");
+const Category = require("../../models/Category");
+const Payment = require("../../models/Payment");
 
 describe("Payment Security Tests", () => {
   let authToken;

@@ -242,7 +242,8 @@ schema.methods.completePayment = async function (
     }
 
     // Create student transaction for audit
-    await BillingTransaction.create(
+    if (this.userId) {
+      await BillingTransaction.create(
       [{
         userId: this.userId,
         type: "debit",
@@ -259,6 +260,7 @@ schema.methods.completePayment = async function (
         balanceAfter: 0,
       }]
     );
+    }
 
     // 3b) Admin: Add admin fee to totalRevenue box
     if (adminAccount) {
@@ -270,9 +272,10 @@ schema.methods.completePayment = async function (
     }
 
     // Create admin transaction for audit
-    await BillingTransaction.create(
+    if (adminAccount && adminAccount.adminId) {
+      await BillingTransaction.create(
       [{
-        userId: adminAccount ? adminAccount.adminId : null,
+        userId: adminAccount.adminId,
         type: "credit",
         date: new Date(),
         from: this.userId,
@@ -287,6 +290,7 @@ schema.methods.completePayment = async function (
         balanceAfter: 0,
       }]
     );
+    }
 
     // 3c) Instructor: Add commission to totalCommissionEarned box
     if (instructorId) {

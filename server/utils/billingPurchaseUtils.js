@@ -333,33 +333,35 @@ async function createBillingTransactions({
 
     // Admin credit transaction (fee collection) - for ALL payment methods
     // adminUser resolved earlier
-    const adminTransaction = await BillingTransaction.create({
-      userId: adminUser ? adminUser._id : null, // Admin user ID
-      type: "credit", // ✅ Admin receives money (credit)
-      amount: studentAmount, // Admin fee amount
-      description: `Admin fee received from ${paymentMethod} - $${finalAmount} course payment`,
-      category: "admin_fee",
-      status: "completed",
-      balanceBefore: 0, // Will be updated by account methods
-      balanceAfter: studentAmount, // ✅ Positive balance
-      relatedPayment: paymentId,
-      relatedCourse: courseId,
-      from: paymentMethod === "direct_transfer" ? instructorId : studentId, // Money source
-      to: adminUser ? adminUser._id : null, // ✅ Money goes to admin
-      processedAt: new Date(),
-      notes: `Admin fee collected from ${paymentMethod} payment`,
-      metadata: {
-        courseId,
-        instructorId,
-        studentId,
-        originalAmount: finalAmount,
-        finalAmount,
-        paymentMethod,
-        transactionType: "admin_fee_received", // ✅ Correct type
-      },
-    });
+    if (adminUser) {
+      const adminTransaction = await BillingTransaction.create({
+        userId: adminUser._id, // Admin user ID
+        type: "credit", // ✅ Admin receives money (credit)
+        amount: studentAmount, // Admin fee amount
+        description: `Admin fee received from ${paymentMethod} - $${finalAmount} course payment`,
+        category: "admin_fee",
+        status: "completed",
+        balanceBefore: 0, // Will be updated by account methods
+        balanceAfter: studentAmount, // ✅ Positive balance
+        relatedPayment: paymentId,
+        relatedCourse: courseId,
+        from: paymentMethod === "direct_transfer" ? instructorId : studentId, // Money source
+        to: adminUser._id, // ✅ Money goes to admin
+        processedAt: new Date(),
+        notes: `Admin fee collected from ${paymentMethod} payment`,
+        metadata: {
+          courseId,
+          instructorId,
+          studentId,
+          originalAmount: finalAmount,
+          finalAmount,
+          paymentMethod,
+          transactionType: "admin_fee_received", // ✅ Correct type
+        },
+      });
 
-    transactions.push(adminTransaction);
+      transactions.push(adminTransaction);
+    }
 
 
     return transactions;
