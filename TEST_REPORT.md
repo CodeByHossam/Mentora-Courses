@@ -58,10 +58,10 @@ Generated: 2026-11-02
 - BillingTransaction validation error fixed.
 
 ### ⚠️ Pre-production fixes recommended
-1. **Update security test expectations** in `tests/legacy/paymentSecurity.test.js` to match the current API contract (`errors` array instead of `errorCode`, webhook 410 vs 400), or remove the legacy suite if those endpoints no longer exist. This validates XSS, CSRF, rate limiting, and input sanitization.
+1. **Update or remove** `tests/legacy/paymentSecurity.test.js` — 10/19 tests fail due to API contract mismatches (`errorCode` vs `errors` array, webhook 410 vs 400). The suite is in `tests/legacy/` and excluded from default jest runs. Either update expectations to match current API or remove the suite if those endpoints no longer exist.
 2. ✅ **FIXED: `BillingTransaction validation failed: userId is required`** in `models/paymentMethods.js`.
 3. **Verify environment variables** are set in production: `STRIPE_SECRET_KEY`, `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `ZOOM_*`, Cloudinary vars (`CLOUDINARY_*`), `MONGODB_URI`, `JWT_SECRET`.
-4. **Run `npm run test:coverage`** on the server to confirm coverage meets the configured thresholds (branches 5%, functions 10%, lines 10%, statements 10%).
+4. **Coverage:** 23.36% statements, 6.26% branches, 14.69% functions, 23.63% lines. Meets configured thresholds (5/10/10/10) but low. Recommend increasing test coverage for controllers and utils before production.
 5. **Smoke-test** the deployed app: login, course browsing, enrollment, payment flow, refund request, live session join.
 
 ### Tier summary (final)
@@ -81,3 +81,4 @@ Generated: 2026-11-02
 - E2E: PASS (2/2)
 - Build: PASS
 - Syntax check: PASS (all files)
+- Coverage: 23.36% stmts, 6.26% branches, 14.69% funcs, 23.63% lines (meets thresholds)
