@@ -41,3 +41,5 @@ study/
 temp/
 
 e2e/test-results/
+
+server/coverage/
