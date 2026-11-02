@@ -31,7 +31,7 @@ const {
   getMe,            // Get current user profile
   updateProfile,     // Update user profile
   updatePaymentDetails, // Update payment details
-} = require("../controllers/authController");
+} = require("../controllers/auth");
 
 // Import authentication, validation and sanitization middleware
 const { protect } = require("../middleware/authMiddleware");

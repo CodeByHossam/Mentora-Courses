@@ -5,7 +5,7 @@ const {
   verifyVideoAccess,
   getVideoMetadata,
   debugLessonVideo
-} = require('../controllers/videoController');
+} = require('../controllers/video');
 
 // Import specific rate limiters
 const {

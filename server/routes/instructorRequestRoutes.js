@@ -8,7 +8,7 @@ const {
   addNote,
   editNote,
   deleteNote,
-} = require("../controllers/instructorRequestController");
+} = require("../controllers/instructor");
 
 const { protect, admin, authorize } = require("../middleware/authMiddleware");
 const upload = require("../middleware/upload"); // multer for docs upload

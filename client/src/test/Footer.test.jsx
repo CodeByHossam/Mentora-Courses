@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import Footer from '../components/Footer';
+import { Footer } from '../components/layout';
 
 describe('Footer', () => {
   it('renders company name and quick links', () => {

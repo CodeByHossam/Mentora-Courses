@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {sendContactForm}=require('../controllers/emailController')
+const {sendContactForm}=require('../controllers/email')
 
 // Import specific rate limiters
 const {

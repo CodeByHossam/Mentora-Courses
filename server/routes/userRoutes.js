@@ -11,7 +11,7 @@ const {
   getInstructorReports,
   resendVerificationEmail,
   getAdminBankDetails
-} = require("../controllers/userController");
+} = require("../controllers/user");
 
 const { protect, admin, authorize, tokenMatchParams } = require("../middleware/authMiddleware");
 const upload = require("../middleware/upload"); // multer memory storage

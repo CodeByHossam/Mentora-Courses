@@ -34,23 +34,23 @@ import {
 } from "../../store/slices/authSlice";
 
 // UI components
-import ProgressLoader from "../../components/ProgressLoader";
+import { ProgressLoader } from "../../components/common";
 import { useCreateEnrollmentRequestMutation } from "../../store/services/enrollmentRequestApi";
 import { useConfirm } from "../../hooks/useConfirm";
 import { getDownloadUrl, ensureFileExtension } from "../../utils/fileUtils";
 
 // Subcomponents
-import CourseHeader from "./courseDetailsComponents/CourseHeader";
-import LessonList from "./courseDetailsComponents/LessonList";
-import TestList from "./courseDetailsComponents/TestList";
-import CommentsSection from "./courseDetailsComponents/CommentsSection";
-import AttachmentList from "./courseDetailsComponents/AttachmentList";
-import AddTestModal from "./courseDetailsComponents/AddTestModal";
-import CertificateSection from "../../components/CertificateSection";
+import { CourseHeader } from "./courseDetailsComponents";
+import { LessonList } from "./courseDetailsComponents";
+import { TestList } from "./courseDetailsComponents";
+import { CommentsSection } from "./courseDetailsComponents";
+import { AttachmentList } from "./courseDetailsComponents";
+import { AddTestModal } from "./courseDetailsComponents";
+import { CertificateSection } from "../../components/course";
 
 // Live Session Components
-import CourseLiveSessions from "../../components/LiveSession/CourseLiveSessions";
-import ScheduleSessionForm from "../../components/LiveSession/ScheduleSessionForm";
+import { CourseLiveSessions } from "../../components/LiveSession";
+import { ScheduleSessionForm } from "../../components/LiveSession";
 
 // Allowed file types for validation
 import allowedFileTypes from "../../config/allowedFileTypes";

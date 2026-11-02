@@ -4,7 +4,7 @@ import { Navigate } from "react-router-dom";
 import AdminBillingPage from "./AdminBillingPage";
 import InstructorBillingPage from "./InstructorBillingPage";
 import StudentBillingPage from "./StudentBillingPage";
-import ProgressLoader from "../../components/ProgressLoader";
+import { ProgressLoader } from "../../components/common";
 
 const BillingRouter = () => {
   const { user, isLoading } = useSelector((state) => state.auth);

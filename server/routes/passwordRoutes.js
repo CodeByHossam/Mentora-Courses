@@ -5,7 +5,7 @@ const {
   sendResetPasswordLink,
   handlePasswordReset,     // GET → render form
   handlePasswordUpdate,    // POST → update password
-} = require("../controllers/passwordController");
+} = require("../controllers/password");
 
 // Send reset password link via email
 router.post("/password-link", sendResetPasswordLink);

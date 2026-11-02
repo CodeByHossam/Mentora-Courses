@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useConfirmStripePaymentMutation } from "../../../store/services/paymentApi";
+import { useConfirmStripeBillingPaymentMutation } from "../../../store/services/billingApi";
 import { useAddBillingChargeMutation } from "../../../store/services/billingApi";
 
 const StripePaymentForm = ({ course, paymentData, onInitiate, loading }) => {
@@ -11,7 +11,7 @@ const StripePaymentForm = ({ course, paymentData, onInitiate, loading }) => {
   const navigate = useNavigate();
   const [processing, setProcessing] = useState(false);
 
-  const [confirmStripePayment] = useConfirmStripePaymentMutation();
+  const [confirmStripePayment] = useConfirmStripeBillingPaymentMutation();
   const [addBillingCharge] = useAddBillingChargeMutation();
 
   const handleSubmit = async (event) => {

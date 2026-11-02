@@ -14,7 +14,7 @@ const {
   getStudentGrades,
   getAllStudentGrades,
   deleteGrade,
-} = require("../controllers/gradeController");
+} = require("../controllers/grade");
 
 /**
  * GRADE MANAGEMENT ROUTES

@@ -23,7 +23,7 @@ const {
   cancelRefund,
   approveRefund,
   rejectRefund
-} = require('../controllers/refundController');
+} = require('../controllers/refund');
 const {authorize} = require('../middleware/authMiddleware');
 const upload  = require('../middleware/upload');
 

@@ -1,6 +1,6 @@
 // hooks/useConfirm.jsx
 import React, { useState } from "react"; // ✅ Capital "React"
-import ConfirmationModal from "../components/ConfirmationModal"; // ✅ Ensure this uses .jsx or .tsx too if it contains JSX
+import { ConfirmationModal } from "../components/common"; // ✅ Ensure this uses .jsx or .tsx too if it contains JSX
 
 export const useConfirm = () => {
   const [confirmState, setConfirmState] = useState({

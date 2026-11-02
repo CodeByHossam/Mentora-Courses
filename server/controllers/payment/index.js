@@ -1,4 +1,5 @@
 module.exports = {
   ...require('./paymentController'),
-  ...require('./paymentBillingController'),
 };
+
+// Import from this barrel only. Never deep-path into this folder.

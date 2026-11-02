@@ -15,7 +15,7 @@ const {
   generateZoomSignature,
   getZoomMeetingDetails,
   handleZoomWebhook
-} = require("../controllers/zoomController");
+} = require("../controllers/zoom");
 
 /**
  * @route   POST /api/zoom/signature

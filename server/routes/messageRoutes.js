@@ -9,7 +9,7 @@ const {
   getUnreadCount,
   searchMessages,
   getStudentInstructors,
-} = require("../controllers/messageController");
+} = require("../controllers/message");
 const { protect } = require("../middleware/authMiddleware");
 const { body } = require("express-validator");
 

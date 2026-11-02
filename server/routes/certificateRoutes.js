@@ -8,7 +8,7 @@ const {
   downloadCertificate,
   deleteCertificate,
   getEnrolledStudentsForCertificates,
-} = require("../controllers/certificateController");
+} = require("../controllers/certificate");
 const { protect, authorize } = require("../middleware/authMiddleware");
 const { validate } = require("../middleware/validateMiddleware");
 const { sanitizeInput } = require("../middleware/sanitizeMiddleware");

@@ -1,0 +1,20 @@
+// Import from this barrel only. Never deep-path into this folder.
+export { default as AddUserForm } from './AddUserForm';
+export { default as AdminDashboard } from './AdminDashboard';
+export { default as AdminEnrollmentRequests } from './AdminEnrollmentRequests';
+export { default as AdminInstructorPayouts } from './AdminInstructorPayouts';
+export { default as AdminLiveSessions } from './AdminLiveSessions';
+export { default as AdminManageCategories } from './AdminManageCategories';
+export { default as AdminManageCourses } from './AdminManageCourses';
+export { default as AdminManageUsers } from './AdminManageUsers';
+export { default as AdminMessages } from './AdminMessages';
+export { default as AdminNotifications } from './AdminNotifications';
+export { default as AdminPaymentReports } from './AdminPaymentReports';
+export { default as AdminPaymentSettings } from './AdminPaymentSettings';
+export { default as AdminPayments } from './AdminPayments';
+export { default as AdminRefundManagement } from './AdminRefundManagement';
+export { default as AdminReports } from './AdminReports';
+export { default as AdminSettings } from './AdminSettings';
+export { default as EditUser } from './EditUser';
+export { default as SystemConfiguration } from './SystemConfiguration';
+export { default as SystemHealth } from './SystemHealth';

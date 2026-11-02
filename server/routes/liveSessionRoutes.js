@@ -28,7 +28,7 @@ const {
   getAllLiveSessions,
   cancelLiveSession,
   testZoomCredentials
-} = require("../controllers/liveSessionController");
+} = require("../controllers/livesession");
 
 // Apply authentication middleware to all routes
 router.use(protect);

@@ -11,7 +11,7 @@ const {
   getLevelStatistics,
   reorderLevels,
   getLevelsDashboard
-} = require('../controllers/levelController');
+} = require('../controllers/level');
 
 // Validation middleware
 const validateLevel = [

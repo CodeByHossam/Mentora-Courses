@@ -29,7 +29,7 @@ const {
   bulkDeleteBillingTransactions,
   bulkDeleteGiftCards,
   bulkDeleteAdminFeePayments,
-} = require("../controllers/adminBulkDeleteController");
+} = require("../controllers/admin");
 
 // Rate limiting for deletion operations
 const deletionRateLimit = rateLimit({

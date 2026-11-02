@@ -10,10 +10,10 @@ import {
 } from "../../store/services/courseApi";
 
 // Components
-import CourseSummary from "./components/CourseSummary";
-import PaymentMethodSelector from "./components/PaymentMethodSelector";
-import DirectBankTransfer from "./components/DirectBankTransfer";
-import PaymentMethodUnavailable from "./components/PaymentMethodUnavailable";
+import { CourseSummary } from "./components";
+import { PaymentMethodSelector } from "./components";
+import { DirectBankTransfer } from "./components";
+import { PaymentMethodUnavailable } from "./components";
 
 const PaymentPage = () => {
   const { courseId } = useParams();

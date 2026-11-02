@@ -20,7 +20,7 @@ const {
   editAttachment,
   removeAttachment,
   deleteTestAnswer,
-} = require("../controllers/courseInteractionController");
+} = require("../controllers/course");
 
 // Use memory storage for file uploads (consistent with upload.js middleware)
 const storage = multer.memoryStorage();

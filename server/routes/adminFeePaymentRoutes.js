@@ -23,7 +23,7 @@ const {
   verifyPayment,
   approvePayment,
   rejectPayment
-} = require('../controllers/adminFeePaymentController');
+} = require('../controllers/admin');
 
 // Rate limiting for payment operations
 const rateLimit = require('express-rate-limit');

@@ -24,15 +24,15 @@ import {
 } from "../../store/services/courseInteractionApi";
 
 // Components
-import ProgressLoader from "../../components/ProgressLoader";
+import { ProgressLoader } from "../../components/common";
 import { useConfirm } from "../../hooks/useConfirm";
-import LessonHeader from "./components/LessonHeader";
-import LessonSidebar from "./components/LessonSidebar";
-import LessonContent from "./components/LessonContent";
-import TestSection from "./components/TestSection";
-import AttachmentSection from "./components/AttachmentSection";
-import CommentsSection from "./components/CommentsSection";
-import AddTestModal from "./components/AddTestModal";
+import { LessonHeader } from "./components";
+import { LessonSidebar } from "./components";
+import { LessonContent } from "./components";
+import { TestSection } from "./components";
+import { AttachmentSection } from "./components";
+import { CommentsSection } from "./components";
+import { AddTestModal } from "./components";
 
 const CourseLesson = () => {
   const dispatch = useDispatch();

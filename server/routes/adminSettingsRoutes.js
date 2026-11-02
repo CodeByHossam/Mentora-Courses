@@ -7,7 +7,7 @@ const {
   getPaymentStats,
   resetPaymentSettings,
   testPaymentGateway
-} = require("../controllers/adminSettingsController");
+} = require("../controllers/admin");
 const { protect, admin } = require("../middleware/authMiddleware");
 
 // All routes require admin authentication

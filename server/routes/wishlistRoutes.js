@@ -7,7 +7,7 @@ const {
   getWishlist,
   addToWishlist,
   removeFromWishlist,
-} = require("../controllers/wishlistController");
+} = require("../controllers/wishlist");
 
 const addSchema = Joi.object({
   courseId: Joi.string().required(),

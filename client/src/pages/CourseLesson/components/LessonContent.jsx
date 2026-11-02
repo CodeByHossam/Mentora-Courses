@@ -1,6 +1,6 @@
 import React from 'react';
 import { toast } from 'react-toastify';
-import VideoPlayer from '../../../components/VideoPlayer';
+import { VideoPlayer } from '../../../components/media';
 
 const LessonContent = ({ currentLesson }) => {
   return (

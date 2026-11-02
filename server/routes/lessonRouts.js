@@ -9,7 +9,7 @@ const {
   updateLesson,
   deleteLesson,
   getCourseLessons,
-} = require("../controllers/lessonsControllers");
+} = require("../controllers/lessons");
 
 const { protect, authorize } = require("../middleware/authMiddleware");
 const upload = require("../middleware/upload"); // multer memory storage

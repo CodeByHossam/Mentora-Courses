@@ -3,7 +3,7 @@ const router = express.Router();
 const { protect } = require("../middleware/authMiddleware");
 const { validate } = require("../middleware/validateMiddleware");
 const Joi = require("joi");
-const { getQuestions, createQuestion, answerQuestion, deleteQuestion } = require("../controllers/qaController");
+const { getQuestions, createQuestion, answerQuestion, deleteQuestion } = require("../controllers/qa");
 
 const createSchema = Joi.object({
   lessonId: Joi.string().optional(),

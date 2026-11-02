@@ -1,0 +1,21 @@
+// Import from this barrel only. Never deep-path into this folder.
+export { default as AddLesson } from './AddLesson';
+export { default as CourseStudents } from './CourseStudents';
+export { default as CreateCourse } from './CreateCourse';
+export { default as EditCourse } from './EditCourse';
+export { default as EditLesson } from './EditLesson';
+export { default as InstructorCourses } from './InstructorCourses';
+export { default as InstructorDashboard } from './InstructorDashboard';
+export { default as InstructorGrading } from './InstructorGrading';
+export { default as InstructorList } from './InstructorList';
+export { default as InstructorLiveSessions } from './InstructorLiveSessions';
+export { default as InstructorMessages } from './InstructorMessages';
+export { default as InstructorNotifications } from './InstructorNotifications';
+export { default as InstructorPage } from './InstructorPage';
+export { default as InstructorPayments } from './InstructorPayments';
+export { default as InstructorRefunds } from './InstructorRefunds';
+export { default as InstructorReports } from './InstructorReports';
+export { default as InstructorRequestForm } from './InstructorRequestForm';
+export { default as InstructorRequests } from './InstructorRequests';
+export { default as InstructorStudents } from './InstructorStudents';
+export { default as TestGrading } from './TestGrading';

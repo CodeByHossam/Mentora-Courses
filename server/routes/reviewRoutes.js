@@ -7,7 +7,7 @@ const {
   getCourseReviews,
   createReview,
   deleteReview,
-} = require("../controllers/reviewController");
+} = require("../controllers/review");
 
 const reviewSchema = Joi.object({
   rating: Joi.number().integer().min(1).max(5).required(),

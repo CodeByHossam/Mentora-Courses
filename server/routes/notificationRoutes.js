@@ -6,7 +6,7 @@ const {
   markAsRead,
   markAllAsRead,
   deleteNotification,
-} = require("../controllers/notificationController");
+} = require("../controllers/notification");
 const { protect } = require("../middleware/authMiddleware");
 
 // Import specific rate limiters

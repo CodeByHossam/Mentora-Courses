@@ -33,7 +33,7 @@ const {
   editAdminNote,             // Edit admin note
   deleteAdminNote,           // Delete admin note
   getReceiptUrl,             // Generate fresh signed URL for receipt
-} = require("../controllers/enrollmentRequestController");
+} = require("../controllers/enrollment");
 
 // Import authentication middleware
 const { protect, authorize } = require("../middleware/authMiddleware");

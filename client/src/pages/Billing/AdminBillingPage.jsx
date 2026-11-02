@@ -34,7 +34,7 @@ import {
 } from "../../store/services/billingApi";
 import { useGetUsersQuery, useGetAdminReportsQuery } from "../../store/services/userApi";
 import { useGetCoursesQuery } from "../../store/services/courseApi";
-import AdminFinancialSummaryCard from "../../components/AdminFinancialSummaryCard";
+import { AdminFinancialSummaryCard } from "../../components/admin";
 
 const AdminBillingPage = () => {
   const { user } = useSelector((state) => state.auth);

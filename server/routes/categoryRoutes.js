@@ -6,7 +6,7 @@ const {
   createCategory,
   updateCategory,
   deleteCategory,
-} = require("../controllers/categoryController");
+} = require("../controllers/category");
 const { protect, authorize } = require("../middleware/authMiddleware");
 const { validate } = require("../middleware/validateMiddleware");
 const { sanitizeInput } = require("../middleware/sanitizeMiddleware");
